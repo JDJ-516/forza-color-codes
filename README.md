@@ -2,7 +2,22 @@
 
 A responsive, self-contained Forza paint library with 11,008 recipes: 11,004 from the user-supplied Forza Colour Sheet (Est. 2019) (10,936 vehicle and 68 wheel), plus four explicitly labeled historical community alternatives. Search names, manufacturers, and notes; filter by collection, paint type, approximate color family, and review status; browse 48 results per page; copy full two-layer recipes; save favorites; and add personal recipes.
 
-## Run
+## Windows: install once, then use the desktop shortcut
+
+1. Close the old Forza CMD/server window once before switching.
+2. Open [Install Forza Garage.cmd](https://github.com/JDJ-516/forza-color-codes/blob/main/Install%20Forza%20Garage.cmd) on GitHub and select **Download raw file** (the download-arrow button). Download the actual file, not the browser's HTML page. GitHub sign-in is required for a private repository.
+3. Double-click that one downloaded installer. There is **no ZIP to extract**. It uses your existing Node.js 22+ installation, installs the app under `%LOCALAPPDATA%\ForzaGarage\app`, creates a **Forza Garage** desktop shortcut and Start Menu entries, and opens the app.
+4. From then on, click **Forza Garage**. The shortcut starts the background server/telemetry receiver if needed and automatically opens your default browser after readiness is confirmed. It reuses an already-running compatible server. No terminal or typed URL is required.
+
+The app uses the existing `http://127.0.0.1:3000` origin. Saved colors/favorites/setups remain in the same browser/profile you used before; storage does not transfer automatically to a different default browser. The installer does not delete browser data. Closing a browser tab leaves the small background receiver running. Use **Start Menu → Forza Garage → Stop Forza Garage** to stop it, or sign out of Windows. Export any in-memory telemetry capture before stopping/updating.
+
+For an update, download the latest single installer and run it again. It stops only the launcher-managed server whose PID and instance ID match its local state, refreshes app files, and keeps your browser data and shortcuts. It does not kill unrelated applications on port 3000. If an old manually started server occupies that port, close its original window once and retry. Runtime logs are under `%LOCALAPPDATA%\ForzaGarage\runtime`.
+
+This is a **browser-backed desktop shortcut**, not a native Electron window or a background Windows service. It requires the Node.js installation you already set up; Node is not bundled, no new npm packages are installed, and no startup-at-sign-in task is added. Updates are explicit downloads; no GitHub tokens or automatic private-repository credentials are embedded.
+
+The installer archive/checksum and background launcher lifecycle are validated in this cloud environment. Windows PowerShell/shortcut installation and default-browser activation still need an actual Windows test; no Windows GUI validation is claimed.
+
+## Run from a source checkout
 
 Requires Node.js 22 or later (validated with Node.js 24). No external packages, database, API keys, or build step are required.
 
@@ -87,13 +102,11 @@ If it stays waiting, confirm that Data Out is available and enabled, the destina
 
 These PowerShell commands document the Windows equivalent of the environment-variable startup validated on Linux; Windows and an actual FH6 connection have not been tested in this environment.
 
-### Easiest Windows launch
+### Existing extracted source folder
 
-Extract the complete project ZIP first, then double-click `Start Forza.cmd` in the extracted folder. This launcher selects its own project directory, restricts both listeners to this PC, and starts the server directly with Node.js. No npm install is needed because this app has no external dependencies. Keep the launcher window open and browse to `http://127.0.0.1:3000` after it reports that the server is listening. Do not run the launcher inside the ZIP preview. The launcher has not been executed on Windows in this cloud environment.
+If you already have the source folder, `Start Forza.cmd` now delegates to the same launcher and opens the browser automatically, then exits. It no longer needs to remain open. `npm run launch` does the same; `npm run stop` stops the launcher-managed server. For day-to-day use, install the desktop shortcut using the single-file installer above so you do not depend on the extracted folder's location.
 
-For optional browser regression checks, `scripts/browser-smoke.cjs` uses Playwright (not a runtime dependency). Start the app first, then run the script with Playwright available through `require('playwright')` or the `PLAYWRIGHT_MODULE` environment variable. Optional `CHROMIUM_PATH` selects a system Chromium binary; otherwise use Playwright's installed Chromium. `TEST_BASE_URL` overrides the default local port 3000. The script uses an isolated browser context and synthetic personal recipes, never your normal browser profile.
-
-Additional-source provenance and the research pass are documented in `data/RESEARCH.md`. The bundled `data/sources/nickdupuis-colors.csv` is the pinned historical snapshot used for the four alternatives. `public/import-report.json` records its commit, SHA-256, compared/skipped counts, and conflicts. Reimports use only retained local snapshots and require no external network access. Broader community research is incomplete because those sites were blocked by the cloud network policy; saved proposed allowances still need application through environment settings.
+Developer commands `npm start` / `npm run dev` still run a foreground server and need their terminal left open. Close that foreground server before switching to the desktop shortcut. Both launch methods use the same browser origin. On a non-Windows cloud machine, test the launcher with `--no-open` and an explicit temporary `FORZA_GARAGE_STATE_DIR`; no GUI/browser opener is needed for lifecycle validation.
 
 ## Garage: color lab and tuning bench
 
@@ -144,3 +157,11 @@ Tune Calculator initially presents three choices:
 - **Drift:** a gearing worksheet for a chosen engine RPM, working gear, road speed, and wheel-speed overrun, with save/load/delete/export via `fcc-drift-setups`. It solves final drive and displays road speeds/RPM by gear; it is not a lateral tire model or a game-verified alignment/differential tune.
 
 Selecting a discipline reveals its calculator and preserves the selection in `?tune=drag|track|drift#tuning`. Existing drag builds and track setups are retained. Drift input/output units and assumptions are displayed. Optional `scripts/workspace-smoke.cjs` tests light-device/dark-app behavior, a precise ten-minute deadline with a controlled clock, direct recipe links/reloads, home connection states, Favorites filtering, optional manufacturers, finish/layer completeness, drift setup persistence/export, and mobile modal overflow.
+
+## Building the one-file Windows installer (developers)
+
+`python3 scripts/build-windows-installer.py` regenerates `Install Forza Garage.cmd` offline. `python3 scripts/test_installer.py` checks its SHA-256, safe archive paths, file allowlist, reproducibility, and exact bundled runtime contents. The bundle includes app code and the generated catalogue; it excludes Git metadata, environment files, credentials, original workbook, development dependencies and test fixtures. It embeds a ZIP payload and PowerShell bootstrap, so the Windows user downloads just one file. The checksum detects corruption; it is not a code-signing or authenticity claim.
+
+Rebuild the installer after changing a bundled file, and bump the app version for published updates. The bootstrap uses normal PowerShell commands without weakening execution policy, TLS, or package verification. Installation is per-user and needs no administrator access. `packaging/install.ps1` is the reviewable source for file copying and shortcut creation; `launcher.js` handles readiness, browser opening, managed-instance reuse and shutdown. `npm test` includes real background-process lifecycle and occupied-port isolation checks. These tests do not substitute for Windows installer execution.
+
+To uninstall, first use the Stop shortcut, then remove `%LOCALAPPDATA%\ForzaGarage` and the Forza Garage shortcuts from Desktop and Start Menu. Browser-saved data remains unless you explicitly clear it in that browser.

@@ -13,6 +13,7 @@ test('serves the application and assets, rejects unknown routes and write method
     assert.equal(response.status, 200);
     assert.ok((await response.text()).length > 100);
     assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
+    assert.equal(response.headers.get('cache-control'),'no-cache');
   }
   assert.equal((await fetch(base + '/missing')).status, 404);
   assert.equal((await fetch(base + '/', {method:'POST'})).status, 405);

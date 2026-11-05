@@ -19,6 +19,8 @@ const files = new Map([
   ['/import-report.json', ['import-report.json', 'application/json; charset=utf-8']],
 ]);
 
+const version=JSON.parse(await readFile(new URL('./package.json',import.meta.url),'utf8')).version;
+
 export function createServer({telemetry} = {}) {
   return http.createServer(async (req, res) => {
     const path = new URL(req.url, 'http://localhost').pathname;
@@ -31,6 +33,10 @@ export function createServer({telemetry} = {}) {
     if (!['GET', 'HEAD'].includes(req.method)) {
       res.writeHead(405, { Allow: 'GET, HEAD' });
       return res.end();
+    }
+    if(path==='/api/health'){
+      res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});
+      return res.end(req.method==='HEAD'?undefined:JSON.stringify({app:'forza-garage',version,pid:process.pid,instanceId:process.env.FORZA_GARAGE_INSTANCE_ID||null}));
     }
     if (path === '/api/telemetry/session') {
       const session=telemetry?.session();
@@ -47,6 +53,7 @@ export function createServer({telemetry} = {}) {
       const body = await readFile(fileURLToPath(new URL(`./public/${entry[0]}`, import.meta.url)));
       res.writeHead(200, {
         'Content-Type': entry[1],
+        'Cache-Control': 'no-cache',
         'X-Content-Type-Options': 'nosniff',
         'Content-Security-Policy': "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
       });

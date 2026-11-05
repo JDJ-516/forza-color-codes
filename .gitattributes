@@ -1,0 +1,3 @@
+# Preserve Windows batch line endings; the generated installer is reviewed via its generator.
+*.cmd -text
+"Install Forza Garage.cmd" -diff
