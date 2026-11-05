@@ -58,25 +58,13 @@ In environments with a restricted command sandbox, starting servers, running HTT
 
 Run `npm ci --ignore-scripts` and `npm start` on a Node-capable host, with its assigned `PORT`. There is no build output to generate. Serve through HTTPS for clipboard support outside localhost. Alternatively host the contents of `public/` at the root of a static site. Deployment and a public URL have not been configured.
 
-## Forza Horizon 6 telemetry — packet monitor
+## Forza Horizon 6 telemetry — decoder and drag capture
 
-The optional UDP receiver monitors actual incoming packets, packet count, byte length, the last reception time, and a bounded hex preview. It detects a lost signal after 3 seconds. **FH6's field layout has not been verified: speed, RPM, gear, lap times, and other game fields are not decoded.** Incoming packets do not prove a particular game or sender. There is no simulated telemetry.
+The optional local UDP receiver now decodes the community-cross-checked 324-byte Horizon layout, rejects implausible packets, and retains bounded active driving captures. It exposes speed/RPM, engine power, inputs and wheel channels for measured drag analysis. **Actual FH6 validation on the gaming PC remains required**; automated checks use synthetic fixtures and real local UDP, not an actual game capture. See [telemetry documentation](docs/telemetry.md) for pinned sources, offsets, exact import units, and limitations.
 
-Run on a computer on the same private network as the game:
+Use `Start Forza.cmd` on the gaming PC, or the PowerShell commands below. If using a separate receiver on the same trusted private LAN, explicitly set `TELEMETRY_HOST` to its LAN listener and point the game to that machine's LAN IP, matching UDP port 5300. Restrict firewall access to the private network; do not expose UDP publicly. A cloud task does not automatically receive traffic from the gaming PC.
 
-```sh
-TELEMETRY_ENABLED=1 TELEMETRY_HOST=0.0.0.0 TELEMETRY_PORT=5300 npm start
-```
-
-If FH6 offers a Data Out setting, set its destination to that computer's LAN IPv4 address, UDP port 5300 (or your chosen matching port). Allow inbound UDP only from your private network/game device in the computer's firewall. On Windows, set these environment variables in your shell using its native syntax before running `npm start`.
-
-The receiver defaults to loopback (`127.0.0.1`) if `TELEMETRY_HOST` is omitted, and is disabled unless `TELEMETRY_ENABLED=1`. Errors are shown in the packet monitor. No packets are written to disk, and only the most recent packet's first 64 bytes are retained. The browser polls `/api/telemetry` once per second while visible. This endpoint has the same network accessibility as the app; there is no login. Making the GitHub repository private does not restrict access to a running app.
-
-A cloud instance does not automatically receive UDP sent from an Xbox or PC on your home LAN. Use a local installation for the current receiver. A secure outbound relay would be additional work for a cloud-hosted dashboard. Never expose the UDP port publicly to make this work.
-
-Decoded FH6 driving readings require its documented packet format or a representative packet captured from your own game, and validation against actual in-game readings. The selected platform is PC; see the Windows instructions below.
-
-`npm test` includes a real local UDP send/receive test, checks the telemetry HTTP response, bounds packet inspection, and verifies stale/disabled states. This validates the receiver, not FH6 compatibility.
+The receiver is disabled unless `TELEMETRY_ENABLED=1`, and defaults to loopback if `TELEMETRY_HOST` is omitted. Changing cars or clicking Start fresh capture clears the bounded buffer. Server restart loses it. Export capture JSON before closing if needed. No raw game packets are stored on disk. Browser session imports accept the documented JSON schema, not arbitrary CSV formats. GitHub repository privacy is separate from access to a running app; there is no account/login system.
 
 ### Windows PC setup (game and app on the same computer)
 
@@ -93,7 +81,7 @@ npm start
 
 Open your local browser at `http://127.0.0.1:3000`. Keep PowerShell running; stop the server with Ctrl+C. Both listeners in this configuration are restricted to this computer. No router port forwarding is needed.
 
-If FH6 exposes a compatible UDP Data Out feature, enable it and use destination IP `127.0.0.1` with port `5300`. The exact FH6 setting names and packet format have not been verified. Enter driving gameplay and check the app's Live telemetry panel: **Waiting for packets → Receiving UDP packets**. **Signal lost** means nothing has arrived for at least 3 seconds. Packet receipt validates transport only, not the FH6 field layout or decoded readings.
+Enable the game’s UDP Data Out feature, if available in the installed build, and use destination IP `127.0.0.1` with port `5300`. The community packet layout is cross-checked; verify actual decoded speed and RPM against your installed game. Enter driving gameplay and check the app's Live telemetry panel: **Waiting for packets → Receiving UDP packets**. **Signal lost** means nothing has arrived for at least 3 seconds. Packet receipt validates transport only; compare decoded readings against the game before trusting analysis.
 
 If it stays waiting, confirm that Data Out is available and enabled, the destination and port match, gameplay is active, and no other receiver is using UDP port 5300. Some Windows game installations restrict loopback traffic; do not disable the firewall or apply broad loopback exemptions. Identify the installed game version and its documented networking requirements before changing those settings. A separate receiver computer on your private LAN is another option using the LAN instructions above.
 
@@ -124,3 +112,17 @@ Name a car/build and save the combined setup. Saved setups can be loaded, delete
 ### LabsGG import status
 
 The requested main and community paint collections at `https://forza.labsgg.com/forza-horizon-6/paint` and `https://forza.labsgg.com/forza-horizon-6/paint?tab=community` are not imported yet. Both were blocked by the cloud network proxy before page content could be inspected. A proposed `forza.labsgg.com` allowance was saved; it must be applied through environment settings before retrying. A user-supplied export is another way to supply the data. The catalogue remains at 11,008 recipes and the workbook has not been changed from these sources. The live Google Sheet has not been edited. See `data/RESEARCH.md` for details and the remaining import steps.
+
+## Drag racing workflow
+
+The Tuning workspace now opens on a drag calculator. It includes the three user-provided FH6 strip profiles (Irakawa **321.869 m**, Ito **804.672 m**, Festival **965.606 m**) and separate standard 1/8-, 1/4-, 1/2-, and 1-mile distances. The first and third distances reflect the user's explicit clarifications, not a quarter-mile or a literal kilometer. Venue details remain user-provided, not independently map-verified. Other named measured strips and grades can be saved.
+
+Without telemetry, enter the actual build's mass, power/torque approximation, drivetrain, tire dimensions, traction/aero assumptions, gearing, launch mode/RPM and shift interruption. Results include ET, 0–60 mph, split times and instantaneous finish speed. LC on/off comparison uses different declared launch RPMs without a hidden grip bonus. The finite final-drive/launch-RPM search offers model candidates for explicit application; it does not claim a global optimum or verified game adjustment limits.
+
+With telemetry: start a fresh capture, stay stationary for at least 0.5 s, launch in first gear and drive through the selected finish. Analyze the live capture or import an exported session JSON. ET starts at the interpolated 1 km/h crossing; reaction time and one-foot rollout are excluded. This timing convention is not asserted to match the FH6 scoreboard. Label LC mode manually. Opt into measured engine-power bins only for the same car/build; uncovered RPM ranges retain the manual model. Review observed engine-limit/shift evidence, save measured summaries and compare equivalent-distance runs from the same known car. Build/weather/assists and driver differences still need manual control.
+
+See [drag model and strip sources](docs/drag-model.md) and [telemetry schema and capture instructions](docs/telemetry.md). Drag builds, named strips, and run summaries have separate local-storage keys, preserving existing color favorites and road setups. The general road gearing/suspension worksheets remain under a collapsible section and use independent inputs. This app is a model-and-test workflow, not a claim to reproduce FH6 physics or deliver the best possible tune without game validation.
+
+Optional `scripts/drag-smoke.cjs` uses the same Playwright environment selectors as the other browser suites. It tests venue selection, standard distances, launch modes, model search, build persistence, telemetry imports/live analysis, measured comparisons, capture reset/export and mobile layout. Synthetic test data lives only under `test-support/` and tests; it is never substituted for missing live data.
+
+The LabsGG paint import remains blocked by the cloud network policy. Clicking View paint recipe still requires page access; neither requested collection nor the workbook has been altered from those inaccessible sources. The saved allowance needs to be applied through environment settings, or the source data supplied as exports.

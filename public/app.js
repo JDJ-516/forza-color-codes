@@ -75,6 +75,7 @@ async function pollTelemetry() {
     const labels = {disabled:'Receiver disabled', stopped:'Receiver stopped', waiting:'Waiting for packets', receiving:'Receiving UDP packets', stale:'Signal lost', error:'Receiver error'};
     $('#telemetry-state').textContent = labels[data.state] || 'Unknown receiver state';
     $('#telemetry-state').classList.toggle('live', data.state === 'receiving');
+    $('#decoded-telemetry').textContent = data.latest ? `${data.decodedAt && Date.now()-data.decodedAt<3000 ? (data.latest.isRaceOn ? 'Decoded driving data' : 'Decoded · game inactive') : 'Last decoded data (stale)'}: ${data.latest.speedKph.toFixed(1)} km/h · ${Math.round(data.latest.rpm)} RPM · gear ${data.latest.gear} · ${data.recordedSamples} captured samples. Decoder: community-cross-checked; validate against your game.` : `No plausible decoded data yet. ${data.decodeError || 'Waiting for Horizon 324-byte packets.'}`;
     $('#packet-count').textContent = String(data.packets ?? 0);
     $('#packet-size').textContent = data.lastPacket ? `${data.lastPacket.bytes} bytes` : '—';
     $('#packet-age').textContent = data.lastReceivedAt != null ? new Date(data.lastReceivedAt).toLocaleTimeString() : '—';

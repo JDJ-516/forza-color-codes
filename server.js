@@ -11,17 +11,31 @@ const files = new Map([
   ['/recipe.js', ['recipe.js', 'text/javascript; charset=utf-8']],
   ['/garage.js', ['garage.js', 'text/javascript; charset=utf-8']],
   ['/calculators.js', ['calculators.js', 'text/javascript; charset=utf-8']],
+  ['/drag.js', ['drag.js', 'text/javascript; charset=utf-8']],
+  ['/drag-workspace.js', ['drag-workspace.js', 'text/javascript; charset=utf-8']],
+  ['/telemetry-analysis.js', ['telemetry-analysis.js', 'text/javascript; charset=utf-8']],
   ['/catalogue.json', ['catalogue.json', 'application/json; charset=utf-8']],
   ['/import-report.json', ['import-report.json', 'application/json; charset=utf-8']],
 ]);
 
 export function createServer({telemetry} = {}) {
   return http.createServer(async (req, res) => {
+    const path = new URL(req.url, 'http://localhost').pathname;
+    if(path==='/api/telemetry/reset' && req.method==='POST'){
+      const origin=req.headers.origin;
+      if(req.headers['x-forza-garage']!=='1' || (origin && origin!==`http://${req.headers.host}` && origin!==`https://${req.headers.host}`)){res.writeHead(403);return res.end('Forbidden');}
+      if(!telemetry){res.writeHead(409);return res.end('Telemetry is disabled');}
+      telemetry.reset();res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});return res.end('{"reset":true}');
+    }
     if (!['GET', 'HEAD'].includes(req.method)) {
       res.writeHead(405, { Allow: 'GET, HEAD' });
       return res.end();
     }
-    const path = new URL(req.url, 'http://localhost').pathname;
+    if (path === '/api/telemetry/session') {
+      const session=telemetry?.session();
+      res.writeHead(session?.samples?.length>=2?200:409, {'Content-Type':'application/json','Cache-Control':'no-store','Content-Disposition':'attachment; filename="forza-telemetry-session.json"'});
+      return res.end(req.method==='HEAD'?undefined:JSON.stringify(session?.samples?.length>=2?session:{error:'No usable capture yet. Enable telemetry and drive before exporting.'}));
+    }
     if (path === '/api/telemetry') {
       res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
       return res.end(req.method === 'HEAD' ? undefined : JSON.stringify(telemetry?.snapshot() || { state: 'disabled', packets: 0, format: 'unverified' }));

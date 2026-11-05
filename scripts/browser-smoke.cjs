@@ -42,7 +42,7 @@ const assert=require('node:assert/strict');
  assert.equal(await page.locator('.card').count(),2);
  await page.locator('#manufacturer').selectOption('');
  await page.locator('#search').fill('');
- await page.locator('#add-color').click();await page.locator('[name=name]').fill('Personal <safe>');await page.locator('[name=manufacturer]').fill('Mine');
+ await page.locator('#add-color').click();await page.locator('#color-form [name=name]').fill('Personal <safe>');await page.locator('[name=manufacturer]').fill('Mine');
  await page.locator('#color-form button[type=submit]').click();await page.locator('#detail[open]').waitFor();assert.equal(await page.locator('#detail h2').textContent(),'Personal <safe>');
  await page.locator('.close-detail').click();await page.reload();await page.waitForFunction(()=>document.querySelector('#result-count').textContent==='11009 colors');
  await page.locator('#category').selectOption('Personal');assert.equal(await page.locator('.card').count(),1);
