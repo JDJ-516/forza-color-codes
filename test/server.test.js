@@ -8,7 +8,7 @@ test('serves the application and assets, rejects unknown routes and write method
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   t.after(() => new Promise(resolve => server.close(resolve)));
   const base = `http://127.0.0.1:${server.address().port}`;
-  for (const path of ['/', '/app.js', '/styles.css', '/data.js', '/recipe.js', '/catalogue.json', '/import-report.json']) {
+  for (const path of ['/', '/app.js', '/styles.css', '/data.js', '/recipe.js', '/garage.js', '/calculators.js', '/catalogue.json', '/import-report.json']) {
     const response = await fetch(base + path);
     assert.equal(response.status, 200);
     assert.ok((await response.text()).length > 100);

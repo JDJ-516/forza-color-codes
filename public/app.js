@@ -4,7 +4,7 @@ let catalogue = [], loaded = false, page = 1;
 const PAGE_SIZE = 48;
 const $ = (s) => document.querySelector(s);
 const escape = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const validColor = c => c && typeof c.id === 'string' && ['name','manufacturer','notes'].every(k => typeof c[k] === 'string') && /^#[0-9a-f]{6}$/i.test(c.hex) && ['Solid','Metallic'].includes(c.finish) && ['Green','Red','Blue','Yellow','Pink','Purple','Orange','Neutral'].includes(c.family) && ['h','s','b'].every(k => Number.isFinite(c[k]) && c[k]>=0 && c[k]<=1);
+const validColor = c => c && typeof c.id === 'string' && ['name','manufacturer','notes'].every(k => typeof c[k] === 'string') && /^#[0-9a-f]{6}$/i.test(c.hex) && typeof c.finish === 'string' && c.finish.trim().length > 0 && c.finish.length <= 80 && ['Green','Red','Blue','Yellow','Pink','Purple','Orange','Neutral'].includes(c.family) && ['h','s','b'].every(k => Number.isFinite(c[k]) && c[k]>=0 && c[k]<=1) && (!c.layers || Array.isArray(c.layers) && c.layers.length >= 1 && c.layers.length <= 2 && c.layers.every(l => l && typeof l.label === 'string' && Array.isArray(l.raw) && l.raw.length === 3 && l.raw.every(v => typeof v === 'string' || typeof v === 'number') && Array.isArray(l.values) && l.values.length === 3 && l.values.every(v => Number.isFinite(v) && v >= 0 && v <= 1)));
 function read(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } }
 let customs = read('fcc-colors', []); customs = Array.isArray(customs) ? customs.filter(validColor).map(c => ({...c, sample:false})) : [];
 let saved = read('fcc-favorites', []); const favorites = new Set(Array.isArray(saved) ? saved.filter(x => typeof x === 'string') : []);
@@ -21,7 +21,7 @@ function render(resetPage = false) {
   $('#favorite-count').textContent = all().filter(c => favorites.has(c.id)).length;
   $('#result-count').textContent = `${colors.length} color${colors.length === 1 ? '' : 's'}`;
   $('#library-title').innerHTML = `${onlyFavorites ? 'Your favorites' : 'The color library'}<span>.</span>`;
-  $('#library-nav').classList.toggle('active', !onlyFavorites); $('#favorites-nav').classList.toggle('active', onlyFavorites);
+  $('#library-nav').classList.toggle('active', document.body.dataset.workspace === 'library' && !onlyFavorites); $('#favorites-nav').classList.toggle('active', document.body.dataset.workspace === 'library' && onlyFavorites);
   const pages = Math.max(1, Math.ceil(colors.length / PAGE_SIZE));
   page = Math.min(page, pages);
   $('#pagination').hidden = colors.length <= PAGE_SIZE;
@@ -34,7 +34,7 @@ function render(resetPage = false) {
 function toggleFavorite(id) { if(favorites.has(id)) favorites.delete(id); else favorites.add(id); persist(); render(); if(current?.id === id) detail(current); }
 function detail(c) {
   current = c;
-  $('#detail-content').innerHTML = `<div class="detail-swatch" style="--paint:${c.hex}"><span class="paint-sheen"></span><span class="detail-hex">${c.hex.toUpperCase()}</span><button class="icon-button close-detail" aria-label="Close recipe">×</button></div><div class="detail-body"><div class="eyebrow">${escape(c.manufacturer)} / ${escape(c.finish)}</div><h2>${escape(c.name)}</h2><p class="muted">${c.source ? `${escape(c.category)} recipe · ${c.source.historical ? 'Historical alternative' : 'Imported community settings'}` : 'Your personal paint recipe'}</p>${c.issues?.length ? '<p class="review-warning">Needs review: this source row contains malformed or missing settings. The original values are shown below without correction.</p>' : ''}${c.source?.historical ? `<p class="review-warning">${escape(c.source.warning)}</p>` : ''}${recipeLayers(c).map(layer => `<h3 class="layer-heading">${escape(layer.label)}</h3><div class="recipe-values">${['Hue','Saturation','Brightness'].map((label,i) => `<div><span>${label}</span><strong>${escape(displaySetting(layer.raw[i]))}</strong></div>`).join('')}</div>`).join('')}<p class="recipe-help">${c.source ? 'Paint type: '+escape(c.finish)+'. Preserve the L/R markers exactly as supplied in the source. Preview swatches approximate Color 1 using standard HSV; they do not simulate Forza’s lighting, material, or second layer. Game compatibility has not been independently verified.' : 'Use these HSB values as a starting point in the paint editor.'}</p>${c.notes ? `<p class="notes">${escape(c.notes)}</p>` : ''}${c.source ? `<p class="source-note">Source: <a href="${escape(c.source.url || catalogueMetadata.url)}" target="_blank" rel="noopener noreferrer">${escape(c.source.title || catalogueMetadata.title)}</a> · ${escape(c.source.sheet)} · Row ${c.source.row}</p>` : ''}<div class="detail-actions"><button class="button dark" id="copy-recipe">Copy recipe ›</button><button class="button outline" data-favorite="${escape(c.id)}">${favorites.has(c.id) ? '♥ Saved' : '♡ Save color'}</button>${!c.source ? '<button class="delete-button" id="delete-color">Delete</button>' : ''}</div></div>`;
+  $('#detail-content').innerHTML = `<div class="detail-swatch" style="--paint:${c.hex}"><span class="paint-sheen"></span><span class="detail-hex">${c.hex.toUpperCase()}</span><button class="icon-button close-detail" aria-label="Close recipe">×</button></div><div class="detail-body"><div class="eyebrow">${escape(c.manufacturer)} / ${escape(c.finish)}</div><h2>${escape(c.name)}</h2><p class="muted">${c.source ? `${escape(c.category)} recipe · ${c.source.historical ? 'Historical alternative' : 'Imported community settings'}` : 'Your personal paint recipe'}</p>${c.issues?.length ? '<p class="review-warning">Needs review: this source row contains malformed or missing settings. The original values are shown below without correction.</p>' : ''}${c.source?.historical ? `<p class="review-warning">${escape(c.source.warning)}</p>` : ''}${recipeLayers(c).map(layer => `<h3 class="layer-heading">${escape(layer.label)}</h3><div class="recipe-values">${['Hue','Saturation','Brightness'].map((label,i) => `<div><span>${label}</span><strong>${escape(displaySetting(layer.raw[i]))}</strong></div>`).join('')}</div>`).join('')}<p class="recipe-help">${c.source ? 'Paint type: '+escape(c.finish)+'. Preserve the L/R markers exactly as supplied in the source. Preview swatches approximate Color 1 using standard HSV; they do not simulate Forza’s lighting, material, or second layer. Game compatibility has not been independently verified.' : 'Use these HSB values as a starting point in the paint editor.'}</p>${c.notes ? `<p class="notes">${escape(c.notes)}</p>` : ''}${c.source ? `<p class="source-note">Source: <a href="${escape(c.source.url || catalogueMetadata.url)}" target="_blank" rel="noopener noreferrer">${escape(c.source.title || catalogueMetadata.title)}</a> · ${escape(c.source.sheet)} · Row ${c.source.row}</p>` : ''}<div class="detail-actions"><button class="button outline" id="experiment-color" ${recipeLayers(c).some(l=>l.values.some(v=>!Number.isFinite(v))) ? 'disabled title="Review malformed or missing source settings first"' : ''}>Experiment in color lab</button><button class="button dark" id="copy-recipe">Copy recipe ›</button><button class="button outline" data-favorite="${escape(c.id)}">${favorites.has(c.id) ? '♥ Saved' : '♡ Save color'}</button>${!c.source ? '<button class="delete-button" id="delete-color">Delete</button>' : ''}</div></div>`;
   if(!$('#detail').open) $('#detail').showModal();
 }
 $('#families').innerHTML = [['','All colors'],['Green','Green'],['Red','Red'],['Blue','Blue'],['Yellow','Yellow'],['Purple','Purple'],['Pink','Pink'],['Orange','Orange'],['Neutral','Neutral'],['Unknown','Unknown']].map(([value,label]) => `<button data-family="${value}" aria-pressed="${!value}">${label}</button>`).join('');
@@ -48,11 +48,12 @@ document.addEventListener('click', async e => {
     const text = recipeText(current);
     try { await navigator.clipboard.writeText(text); toast('Recipe copied. See you in the paint booth.'); } catch { toast('Clipboard unavailable. You can read the recipe values above.'); }
   }
+  if(e.target.closest('#experiment-color')) { $('#detail').close(); document.dispatchEvent(new CustomEvent('garage:experiment',{detail:current})); }
   if(e.target.closest('#delete-color')) { customs = customs.filter(c => c.id !== current.id); favorites.delete(current.id); persist(); $('#detail').close(); manufacturers(); render(); toast('Personal recipe deleted.'); }
 });
 for(const selector of ['#add-color','#add-bottom']) $(selector).addEventListener('click', () => $('#create').showModal());
 for(const selector of ['#search','#manufacturer','#finish','#sort','#category','#quality']) $(selector).addEventListener(selector === '#search' ? 'input' : 'change', () => render(true));
-function scrollLibrary() { $('#library').scrollIntoView({behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'}); }
+function scrollLibrary() { document.dispatchEvent(new CustomEvent('garage:navigate',{detail:'library'})); $('#library').scrollIntoView({behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'}); }
 $('#explore').addEventListener('click', scrollLibrary);
 for(const [selector,mode] of [['#library-nav',false],['#favorites-nav',true]]) $(selector).addEventListener('click', () => { onlyFavorites = mode; render(true); scrollLibrary(); });
 $('#reset').addEventListener('click', () => { family = ''; $('#search').value = ''; $('#manufacturer').value = ''; $('#finish').value = ''; $('#sort').value = 'featured'; $('#category').value=''; $('#quality').value=''; render(true); });
@@ -93,6 +94,7 @@ async function loadCatalogue() {
     const rows = await response.json();
     if (!Array.isArray(rows) || rows.length !== catalogueMetadata.total) throw new Error('Catalogue is incomplete');
     catalogue = rows; loaded = true;
+    $('#garage-catalogue-count').textContent = `${catalogueMetadata.total.toLocaleString()} community recipes`;
     const previousFinish = $('#finish').value;
     $('#finish').innerHTML = '<option value="">All finishes</option>' + [...new Set([...catalogue.map(c=>c.finish),'Solid','Metallic'])].sort().map(f=>`<option>${escape(f)}</option>`).join('');
     $('#finish').value = previousFinish;
@@ -104,3 +106,14 @@ async function loadCatalogue() {
   }
 }
 loadCatalogue();
+
+document.addEventListener('garage:notice', e => toast(e.detail));
+document.addEventListener('garage:save-color', e => {
+  const c = e.detail;
+  if (!validColor(c)) { toast('This experiment has invalid settings. Check both layers.'); return; }
+  customs.push(c);
+  const stored = persist(); manufacturers();
+  if (![...$('#finish').options].some(o=>o.value===c.finish)) $('#finish').add(new Option(c.finish,c.finish));
+  render(true);
+  if(stored) toast('Personal color saved to your library.');
+});

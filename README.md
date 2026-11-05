@@ -1,4 +1,4 @@
-# Forza Color Codes
+# Forza Garage — Paint & Tune
 
 A responsive, self-contained Forza paint library with 11,008 recipes: 11,004 from the user-supplied Forza Colour Sheet (Est. 2019) (10,936 vehicle and 68 wheel), plus four explicitly labeled historical community alternatives. Search names, manufacturers, and notes; filter by collection, paint type, approximate color family, and review status; browse 48 results per page; copy full two-layer recipes; save favorites; and add personal recipes.
 
@@ -106,3 +106,21 @@ Extract the complete project ZIP first, then double-click `Start Forza.cmd` in t
 For optional browser regression checks, `scripts/browser-smoke.cjs` uses Playwright (not a runtime dependency). Start the app first, then run the script with Playwright available through `require('playwright')` or the `PLAYWRIGHT_MODULE` environment variable. Optional `CHROMIUM_PATH` selects a system Chromium binary; otherwise use Playwright's installed Chromium. `TEST_BASE_URL` overrides the default local port 3000. The script uses an isolated browser context and synthetic personal recipes, never your normal browser profile.
 
 Additional-source provenance and the research pass are documented in `data/RESEARCH.md`. The bundled `data/sources/nickdupuis-colors.csv` is the pinned historical snapshot used for the four alternatives. `public/import-report.json` records its commit, SHA-256, compared/skipped counts, and conflicts. Reimports use only retained local snapshots and require no external network access. Broader community research is incomplete because those sites were blocked by the cloud network policy; saved proposed allowances still need application through environment settings.
+
+## Garage: color lab and tuning bench
+
+The app now opens on a garage dashboard with dedicated Color library, Color lab, Tuning, and Telemetry workspaces. Existing favorites and personal colors retain their original local-storage keys and remain available on the same browser origin. New setup records use `fcc-tunes` in local storage.
+
+**Color lab:** open a valid library recipe and select **Experiment in color lab**, or start a fresh experiment. Adjust HSB sliders/numeric inputs, change a hex preview color, enable a second layer, reset to the starting experiment, and save the result as a personal color. Original library recipes are never modified. L/R source markers remain in the original recipe; numeric experiments generate new personal settings without those markers. Previews use standard HSV and a decorative two-color gradient, not Forza's physical paint rendering. Malformed source recipes must be reviewed before they can initialize an experiment. Existing imported multi-layer recipes and new personal multi-layer colors copy both layers.
+
+**Gearing:** enter tire width/aspect/rim diameter for the driven wheels, shift RPM, final drive, and 4–10 descending gear ratios. Results show theoretical km/h and mph at shift RPM, RPM after each upshift, and the final drive that mathematically reaches the target speed at the selected RPM. Engine power, drag, slip, loaded tire radius, and game-specific physics are not modeled. A gearing-limited speed is not an achievable top-speed prediction; the calculator does not claim an optimized Forza tune.
+
+**Suspension:** enter vehicle mass, front weight percentage, unsprung mass per wheel, desired front/rear ride frequencies, spring/damper motion ratios (spring or damper travel divided by wheel travel), and damping ratio. The worksheet computes sprung corner mass, wheel rates, spring rates in N/mm and lb/in, and idealized damper coefficients in N·s/m. Motion ratio enters as its square. Tire stiffness, aero loading, bump stops, nonlinear suspension, and game slider mappings are not modeled. Default frequencies and motion ratios are editable examples, not recommendations for a particular car. There is no conversion to Forza bump/rebound sliders or claimed anti-roll/alignment/differential tune.
+
+Name a car/build and save the combined setup. Saved setups can be loaded, deleted, or exported as JSON through the browser. They are not synced between devices; clearing browser storage removes them. JSON export is provided; importing JSON is not currently implemented.
+
+`npm test` includes calculator dimensional checks, inverse gearing calculations, color roundtrips, invalid-input cases, and spring/motion-ratio/damping tests. Optional `scripts/garage-smoke.cjs` (same Playwright selectors as `scripts/browser-smoke.cjs`) checks workspace navigation, imported and personal two-layer experiments, persistence, malformed-source guards, both calculator outputs, setup export/load/delete, and mobile layouts.
+
+### LabsGG import status
+
+The requested main and community paint collections at `https://forza.labsgg.com/forza-horizon-6/paint` and `https://forza.labsgg.com/forza-horizon-6/paint?tab=community` are not imported yet. Both were blocked by the cloud network proxy before page content could be inspected. A proposed `forza.labsgg.com` allowance was saved; it must be applied through environment settings before retrying. A user-supplied export is another way to supply the data. The catalogue remains at 11,008 recipes and the workbook has not been changed from these sources. The live Google Sheet has not been edited. See `data/RESEARCH.md` for details and the remaining import steps.

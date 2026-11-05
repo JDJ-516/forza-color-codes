@@ -33,3 +33,14 @@ The CSV snapshot is retained at `data/sources/nickdupuis-colors.csv`; its SHA-25
 The cloud's enforced HTTP proxy denied CONNECT access (403) to `www.gtplanet.net`, `www.bing.com`, `forums.forza.net`, and `www.reddit.com`. Thus the linked GTPlanet thread, broader web search, the Forza forum, and Reddit have not been researched in this pass. This is a network restriction, not evidence that those sources lack additional recipes.
 
 Proposed allowances were saved in the environment draft, preserving existing `docs.google.com` access requirements. They are not active merely because the draft was saved. Review/save the proposed network settings and publish the environment as required by the environment UI, then retry the sources. Additional redirect hosts may need diagnosis if subsequently encountered. No recipe completeness or verified FH6 collection is claimed.
+
+## Requested LabsGG FH6 sources — pending access
+
+User-requested collections:
+
+- https://forza.labsgg.com/forza-horizon-6/paint
+- https://forza.labsgg.com/forza-horizon-6/paint?tab=community
+
+Both requests failed at the cloud proxy's CONNECT step with 403 Forbidden, before any page content could be read. `forza.labsgg.com` was added to the configuration draft's proposed network allowances while preserving existing entries. A draft save does not apply that allowance to this running environment. No LabsGG recipes, counts, author attributions, or game verification claims have been fabricated or added. The original workbook, live Google Sheet, and bundled catalogue have not been updated from these blocked pages.
+
+Next: apply the proposed allowance through environment settings, then retry both URLs, inspect pagination and any public data endpoints actually referenced by the site, and compare all downloaded records against the current recipe fingerprints. Retain author/source links, paint types, all layers, slider markers, and conflicting versions. Add only real sourced records; distinguish main and community collections. Alternatively the user can supply exports of both collections. Updating the live Google Sheet additionally needs a supported editing connection; the retained local workbook can be updated once the source data is available.

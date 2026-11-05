@@ -9,6 +9,8 @@ const files = new Map([
   ['/styles.css', ['styles.css', 'text/css; charset=utf-8']],
   ['/data.js', ['data.js', 'text/javascript; charset=utf-8']],
   ['/recipe.js', ['recipe.js', 'text/javascript; charset=utf-8']],
+  ['/garage.js', ['garage.js', 'text/javascript; charset=utf-8']],
+  ['/calculators.js', ['calculators.js', 'text/javascript; charset=utf-8']],
   ['/catalogue.json', ['catalogue.json', 'application/json; charset=utf-8']],
   ['/import-report.json', ['import-report.json', 'application/json; charset=utf-8']],
 ]);
