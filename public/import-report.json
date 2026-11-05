@@ -1,0 +1,133 @@
+{
+  "metadata": {
+    "title": "Forza Colour Sheet (Est. 2019)",
+    "url": "https://docs.google.com/spreadsheets/d/1wLXN4PusGWD7zcpLiS-uizYm6iZc2WM1EbBMurlAlj4/edit",
+    "sha256": "8799a5c366567eec5dcaf523539fd36ff3595c4d0f704ac19c746924e82ab026",
+    "total": 11004,
+    "sheets": {
+      "Vehicle Colours": 10936,
+      "Wheel Colours": 68
+    },
+    "blankRowsSkipped": {
+      "Vehicle Colours": 1049,
+      "Wheel Colours": 1047
+    },
+    "rowsNeedingReview": 7,
+    "invalidCells": 12,
+    "fh6ExplicitlyIdentified": false,
+    "verification": "Imported community recipes; game compatibility has not been independently verified."
+  },
+  "issues": [
+    {
+      "id": "sheet-51bdeb7368d93365af34-1",
+      "sheet": "Vehicle Colours",
+      "row": 355,
+      "manufacturer": "Alfa Romeo",
+      "name": "Luci di Bosco",
+      "cells": [
+        {
+          "cell": "D355",
+          "value": "0.0.0 L"
+        }
+      ]
+    },
+    {
+      "id": "sheet-4eefd5a5a979d0adab76-1",
+      "sheet": "Vehicle Colours",
+      "row": 815,
+      "manufacturer": "Aston Martin",
+      "name": "Satin Jet Black",
+      "cells": [
+        {
+          "cell": "F815",
+          "value": "0.10.R"
+        }
+      ]
+    },
+    {
+      "id": "sheet-2053be0a9768ced2f239-1",
+      "sheet": "Vehicle Colours",
+      "row": 4360,
+      "manufacturer": "Gran Turismo",
+      "name": "GT Polarised 010-P",
+      "cells": [
+        {
+          "cell": "D4360",
+          "value": "--"
+        },
+        {
+          "cell": "E4360",
+          "value": "--"
+        },
+        {
+          "cell": "F4360",
+          "value": "--"
+        },
+        {
+          "cell": "G4360",
+          "value": "--"
+        },
+        {
+          "cell": "H4360",
+          "value": "--"
+        },
+        {
+          "cell": "I4360",
+          "value": "--"
+        }
+      ]
+    },
+    {
+      "id": "sheet-5774a3df83f43077224f-1",
+      "sheet": "Vehicle Colours",
+      "row": 7104,
+      "manufacturer": "McLaren",
+      "name": "Borealis Black",
+      "cells": [
+        {
+          "cell": "I7104",
+          "value": null
+        }
+      ]
+    },
+    {
+      "id": "sheet-4a67427d63b33fb9bea4-1",
+      "sheet": "Vehicle Colours",
+      "row": 7284,
+      "manufacturer": "Mercedes-Benz",
+      "name": "Anthracite Blue Metallic",
+      "cells": [
+        {
+          "cell": "D7284",
+          "value": "9,57 L"
+        }
+      ]
+    },
+    {
+      "id": "sheet-f506d33d712cf014e253-1",
+      "sheet": "Vehicle Colours",
+      "row": 8829,
+      "manufacturer": "Pontiac",
+      "name": "Citrus Green",
+      "cells": [
+        {
+          "cell": "I8829",
+          "value": null
+        }
+      ]
+    },
+    {
+      "id": "sheet-a4a2aea537f3be7ff655-1",
+      "sheet": "Vehicle Colours",
+      "row": 10219,
+      "manufacturer": "Toyota",
+      "name": "Solar Shift",
+      "cells": [
+        {
+          "cell": "D10219",
+          "value": "0.05 R0"
+        }
+      ]
+    }
+  ]
+}

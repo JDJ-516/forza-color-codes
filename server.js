@@ -8,6 +8,9 @@ const files = new Map([
   ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
   ['/styles.css', ['styles.css', 'text/css; charset=utf-8']],
   ['/data.js', ['data.js', 'text/javascript; charset=utf-8']],
+  ['/recipe.js', ['recipe.js', 'text/javascript; charset=utf-8']],
+  ['/catalogue.json', ['catalogue.json', 'application/json; charset=utf-8']],
+  ['/import-report.json', ['import-report.json', 'application/json; charset=utf-8']],
 ]);
 
 export function createServer({telemetry} = {}) {

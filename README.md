@@ -1,6 +1,6 @@
 # Forza Color Codes
 
-A responsive, self-contained paint inspiration library for Forza players. Search by color or manufacturer, filter by color family and finish, sort the collection, open HSB paint recipes, copy recipes, save favorites, and add or delete personal recipes.
+A responsive, self-contained Forza paint library with 11,004 recipes imported from the user-supplied Forza Colour Sheet (Est. 2019): 10,936 vehicle colors and 68 wheel colors. Search names, manufacturers, and notes; filter by collection, paint type, approximate color family, and review status; browse 48 results per page; copy full two-layer recipes; save favorites; and add personal recipes.
 
 ## Run
 
@@ -18,18 +18,37 @@ The server uses port 3000 and binds to all interfaces. Override with `PORT` and 
 
 - `server.js`: HTTP server with an explicit static asset allowlist and security headers.
 - `public/index.html`, `public/styles.css`, `public/app.js`: accessible native browser UI, responsive styling, and interactions.
-- `public/data.js`: 12 clearly labeled illustrative starter recipes.
-- `test/server.test.js`: server behavior and starter data checks.
+- `public/catalogue.json`: all 11,004 spreadsheet recipes with raw layers, notes, source rows, and review flags.
+- `public/data.js`, `public/import-report.json`: source metadata, workbook SHA-256, row counts, and the seven rows needing review.
+- `public/recipe.js`: shared recipe formatting that preserves raw L/R markers.
+- `data/source.xlsx`: original uploaded workbook, retained for reproducibility.
+- `scripts/import_colors.py`: deterministic importer, requiring Python and `scripts/requirements.txt` only when refreshing the catalogue.
+- `test/`: HTTP, catalogue, recipe-copying, and UDP receiver checks.
 
 ## Data and scope
 
-Starter recipes are illustrative approximations, **not verified Forza settings or exact factory paint matches**. HSB values range from 0 to 1. Metallic recipes describe a base color only; additional metallic settings need in-game tuning. Preview swatches are approximations and can differ from in-game rendering. Replace starter data with independently verified recipes as available.
+The bundled catalogue imports every nonblank recipe row from both workbook tabs. Original paint types, Color 1 (X), Color 2 (Y), L/R slider markers, comments, and source row numbers are retained. Seven rows have 12 malformed or absent settings; they remain searchable and are explicitly flagged. No guessed corrections are made. See `public/import-report.json` for details. Blank formatting rows are skipped; named recipes such as `--` remain exactly represented.
+
+Color-family filters and hex previews are derived from standard HSV using Color 1; they approximate neither the second layer nor game materials and lighting. If Color 1 cannot be parsed, a neutral placeholder is used with the `Unknown` family. Copying and recipe details use the original cell text rather than derived preview values. The old 12 illustrative starter entries have been removed; existing personal recipes in local storage are retained. Favorites of removed illustrative entries no longer appear.
+
+Source: [Forza Colour Sheet (Est. 2019)](https://docs.google.com/spreadsheets/d/1wLXN4PusGWD7zcpLiS-uizYm6iZc2WM1EbBMurlAlj4/edit). These are community recipes; no independent in-game verification is claimed. The workbook does not explicitly identify FH6-specific additions. No unverified FH6 collection has been invented or merged. The bundled workbook is a static snapshot, not a live sync.
 
 Personal recipes and favorites use this origin's browser local storage. They are not shared between users, browsers, or devices, and clearing browser data removes them. The UI reports storage failures. There is no account system or online submission service. An independent fan project, unaffiliated with Forza or vehicle manufacturers.
 
 ## Validation
 
-`npm test` exercises real HTTP requests, assets, HEAD requests, unknown paths, rejected write methods, and sample data integrity. Chromium smoke validation also exercised search, combined filters, sorting, favorite persistence across reloads, custom recipe creation/persistence/deletion, safe rendering of user-entered text, dialogs, and a 390px mobile layout without horizontal overflow.
+`npm test` exercises real HTTP requests and assets, HEAD requests, unknown paths, rejected write methods, all catalogue counts and identities, source-review flags, raw two-layer copying, and real UDP receipt/stale/disabled states. Chromium validation also exercises full-catalogue pagination, wheel/material filters, searching comments, copied raw values, malformed/missing-value warnings, favorite persistence across reloads, custom recipes, catalogue-load failures, and the 390px mobile layout.
+
+To refresh or audit the import (development only):
+
+```sh
+python -m pip install -r scripts/requirements.txt
+python scripts/import_colors.py data/source.xlsx
+python scripts/test_import_colors.py
+npm test
+```
+
+The Python audit compares every nonblank workbook row and all six raw recipe cells plus notes against the generated catalogue, and checks that regeneration matches the bundled files. IDs are based on source content, with duplicate occurrence suffixes; identical reimports preserve imported favorite IDs. Changing a recipe's content produces a new ID. Normal app startup does not require Python or a connection to Google Sheets.
 
 In environments with a restricted command sandbox, starting servers, running HTTP tests, and launching Chromium may require the platform's supported elevated execution mode for local socket access.
 
@@ -81,3 +100,5 @@ These PowerShell commands document the Windows equivalent of the environment-var
 ### Easiest Windows launch
 
 Extract the complete project ZIP first, then double-click `Start Forza.cmd` in the extracted folder. This launcher selects its own project directory, restricts both listeners to this PC, and starts the server directly with Node.js. No npm install is needed because this app has no external dependencies. Keep the launcher window open and browse to `http://127.0.0.1:3000` after it reports that the server is listening. Do not run the launcher inside the ZIP preview. The launcher has not been executed on Windows in this cloud environment.
+
+For optional browser regression checks, `scripts/browser-smoke.cjs` uses Playwright (not a runtime dependency). Start the app first, then run the script with Playwright available through `require('playwright')` or the `PLAYWRIGHT_MODULE` environment variable. Optional `CHROMIUM_PATH` selects a system Chromium binary; otherwise use Playwright's installed Chromium. `TEST_BASE_URL` overrides the default local port 3000. The script uses an isolated browser context and synthetic personal recipes, never your normal browser profile.
