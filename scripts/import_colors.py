@@ -81,9 +81,18 @@ def import_workbook(path):
     }
     return colors, {'metadata':metadata,'issues':issues}
 
+def build_catalogue(path):
+    from import_external_colors import merge_historical
+    colors, report = import_workbook(path)
+    workbook_total = len(colors)
+    external = merge_historical(colors, ROOT/'data/sources/nickdupuis-colors.csv', slider, family_for)
+    report['metadata'].update({'total':len(colors),'workbookTotal':workbook_total,'historicalTotal':external['historicalRecipesAdded']})
+    report['externalSources'] = [external]
+    return colors, report
+
 if __name__ == '__main__':
     path = Path(sys.argv[1]) if len(sys.argv)>1 else ROOT/'data/source.xlsx'
-    colors, report = import_workbook(path)
+    colors, report = build_catalogue(path)
     (ROOT/'public/catalogue.json').write_text(json.dumps(colors,ensure_ascii=False,separators=(',',':'))+'\n')
     (ROOT/'public/import-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
     (ROOT/'public/data.js').write_text('export const catalogueMetadata = '+json.dumps(report['metadata'],ensure_ascii=False)+';\n')

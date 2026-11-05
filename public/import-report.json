@@ -3,7 +3,7 @@
     "title": "Forza Colour Sheet (Est. 2019)",
     "url": "https://docs.google.com/spreadsheets/d/1wLXN4PusGWD7zcpLiS-uizYm6iZc2WM1EbBMurlAlj4/edit",
     "sha256": "8799a5c366567eec5dcaf523539fd36ff3595c4d0f704ac19c746924e82ab026",
-    "total": 11004,
+    "total": 11008,
     "sheets": {
       "Vehicle Colours": 10936,
       "Wheel Colours": 68
@@ -15,7 +15,9 @@
     "rowsNeedingReview": 7,
     "invalidCells": 12,
     "fh6ExplicitlyIdentified": false,
-    "verification": "Imported community recipes; game compatibility has not been independently verified."
+    "verification": "Imported community recipes; game compatibility has not been independently verified.",
+    "workbookTotal": 11004,
+    "historicalTotal": 4
   },
   "issues": [
     {
@@ -126,6 +128,54 @@
         {
           "cell": "D10219",
           "value": "0.05 R0"
+        }
+      ]
+    }
+  ],
+  "externalSources": [
+    {
+      "url": "https://github.com/nickdupuis/forza-paint-code-picker/blob/b2825d88a48f34ea459e3100f76eeb5162b8d7b1/util/data/forza-colors.csv",
+      "commit": "b2825d88a48f34ea459e3100f76eeb5162b8d7b1",
+      "sha256": "2f1e1d5cba6f390907dac9b7dc00e33df3dbb83e9a7758795571a904764d8400",
+      "rowsCompared": 10899,
+      "duplicateRecipesSkipped": 10895,
+      "historicalRecipesAdded": 4,
+      "sameNameConflicts": 3,
+      "newNameIdentities": 1,
+      "added": [
+        {
+          "id": "online-c403b909d9c8f1318888",
+          "manufacturer": "Acura",
+          "name": "Tiger Eye Pearl",
+          "row": 182,
+          "conflictsWith": [
+            "sheet-b63f628772f81b967373-1"
+          ]
+        },
+        {
+          "id": "online-6196ee3eea785d181afa",
+          "manufacturer": "Chevrolet",
+          "name": "Cyber Gray Metallic",
+          "row": 2444,
+          "conflictsWith": [
+            "sheet-71d5769b6d5661d11d27-1"
+          ]
+        },
+        {
+          "id": "online-3b79b37e9d8dbed30b55",
+          "manufacturer": "Honda",
+          "name": "Meteorite Grey Metallic",
+          "row": 4697,
+          "conflictsWith": [
+            "sheet-9dd165129a6c30ef3bc3-1"
+          ]
+        },
+        {
+          "id": "online-4652cc8b2902b08eccf2",
+          "manufacturer": "Toyota",
+          "name": "Lunar Rock Pearl",
+          "row": 10053,
+          "conflictsWith": []
         }
       ]
     }

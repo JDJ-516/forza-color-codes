@@ -1,6 +1,6 @@
 # Forza Color Codes
 
-A responsive, self-contained Forza paint library with 11,004 recipes imported from the user-supplied Forza Colour Sheet (Est. 2019): 10,936 vehicle colors and 68 wheel colors. Search names, manufacturers, and notes; filter by collection, paint type, approximate color family, and review status; browse 48 results per page; copy full two-layer recipes; save favorites; and add personal recipes.
+A responsive, self-contained Forza paint library with 11,008 recipes: 11,004 from the user-supplied Forza Colour Sheet (Est. 2019) (10,936 vehicle and 68 wheel), plus four explicitly labeled historical community alternatives. Search names, manufacturers, and notes; filter by collection, paint type, approximate color family, and review status; browse 48 results per page; copy full two-layer recipes; save favorites; and add personal recipes.
 
 ## Run
 
@@ -18,7 +18,7 @@ The server uses port 3000 and binds to all interfaces. Override with `PORT` and 
 
 - `server.js`: HTTP server with an explicit static asset allowlist and security headers.
 - `public/index.html`, `public/styles.css`, `public/app.js`: accessible native browser UI, responsive styling, and interactions.
-- `public/catalogue.json`: all 11,004 spreadsheet recipes with raw layers, notes, source rows, and review flags.
+- `public/catalogue.json`: all 11,004 spreadsheet recipes plus four historical alternatives, with raw layers, notes, source references, and review flags.
 - `public/data.js`, `public/import-report.json`: source metadata, workbook SHA-256, row counts, and the seven rows needing review.
 - `public/recipe.js`: shared recipe formatting that preserves raw L/R markers.
 - `data/source.xlsx`: original uploaded workbook, retained for reproducibility.
@@ -27,7 +27,9 @@ The server uses port 3000 and binds to all interfaces. Override with `PORT` and 
 
 ## Data and scope
 
-The bundled catalogue imports every nonblank recipe row from both workbook tabs. Original paint types, Color 1 (X), Color 2 (Y), L/R slider markers, comments, and source row numbers are retained. Seven rows have 12 malformed or absent settings; they remain searchable and are explicitly flagged. No guessed corrections are made. See `public/import-report.json` for details. Blank formatting rows are skipped; named recipes such as `--` remain exactly represented.
+The bundled catalogue imports every nonblank recipe row from both workbook tabs. Four historical recipes from a pinned public GTPlanet mirror are appended without altering the workbook rows. Three are same-name alternatives and one is a name absent from the workbook; they may be outdated or superseded. Use the Historical alternatives filter to view them. Each includes a source link and warning, also included when copying. See `data/RESEARCH.md` for examined sources and remaining network blockers.
+
+Original paint types, Color 1 (X), Color 2 (Y), L/R slider markers, comments, and source row numbers are retained. Seven rows have 12 malformed or absent settings; they remain searchable and are explicitly flagged. No guessed corrections are made. See `public/import-report.json` for details. Blank formatting rows are skipped; named recipes such as `--` remain exactly represented.
 
 Color-family filters and hex previews are derived from standard HSV using Color 1; they approximate neither the second layer nor game materials and lighting. If Color 1 cannot be parsed, a neutral placeholder is used with the `Unknown` family. Copying and recipe details use the original cell text rather than derived preview values. The old 12 illustrative starter entries have been removed; existing personal recipes in local storage are retained. Favorites of removed illustrative entries no longer appear.
 
@@ -48,7 +50,7 @@ python scripts/test_import_colors.py
 npm test
 ```
 
-The Python audit compares every nonblank workbook row and all six raw recipe cells plus notes against the generated catalogue, and checks that regeneration matches the bundled files. IDs are based on source content, with duplicate occurrence suffixes; identical reimports preserve imported favorite IDs. Changing a recipe's content produces a new ID. Normal app startup does not require Python or a connection to Google Sheets.
+The Python audit compares every nonblank workbook row and all six raw recipe cells plus notes against the generated catalogue, and checks that regeneration of the workbook plus the pinned historical CSV matches the bundled files. The historical merge skips matching recipes and preserves conflicting versions with separate IDs and source warnings. IDs are based on source content, with duplicate occurrence suffixes; identical reimports preserve imported favorite IDs. Changing a recipe's content produces a new ID. Normal app startup does not require Python or a connection to Google Sheets.
 
 In environments with a restricted command sandbox, starting servers, running HTTP tests, and launching Chromium may require the platform's supported elevated execution mode for local socket access.
 
@@ -102,3 +104,5 @@ These PowerShell commands document the Windows equivalent of the environment-var
 Extract the complete project ZIP first, then double-click `Start Forza.cmd` in the extracted folder. This launcher selects its own project directory, restricts both listeners to this PC, and starts the server directly with Node.js. No npm install is needed because this app has no external dependencies. Keep the launcher window open and browse to `http://127.0.0.1:3000` after it reports that the server is listening. Do not run the launcher inside the ZIP preview. The launcher has not been executed on Windows in this cloud environment.
 
 For optional browser regression checks, `scripts/browser-smoke.cjs` uses Playwright (not a runtime dependency). Start the app first, then run the script with Playwright available through `require('playwright')` or the `PLAYWRIGHT_MODULE` environment variable. Optional `CHROMIUM_PATH` selects a system Chromium binary; otherwise use Playwright's installed Chromium. `TEST_BASE_URL` overrides the default local port 3000. The script uses an isolated browser context and synthetic personal recipes, never your normal browser profile.
+
+Additional-source provenance and the research pass are documented in `data/RESEARCH.md`. The bundled `data/sources/nickdupuis-colors.csv` is the pinned historical snapshot used for the four alternatives. `public/import-report.json` records its commit, SHA-256, compared/skipped counts, and conflicts. Reimports use only retained local snapshots and require no external network access. Broader community research is incomplete because those sites were blocked by the cloud network policy; saved proposed allowances still need application through environment settings.
