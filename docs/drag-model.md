@@ -1,6 +1,6 @@
 # Drag model and strip profiles
 
-The Drag bench works without telemetry, or with opted-in measured engine-power bins and measured-run analysis. It is a transparent simplified simulator and a test workflow, **not a validated FH6 physics emulator or a guarantee of the best possible tune**.
+Tune Calculator → Drag works without telemetry, or with opted-in measured engine-power bins and measured-run analysis. It is a transparent simplified simulator and a test workflow, **not a validated FH6 physics emulator or a guarantee of the best possible tune**.
 
 ## Venues supplied by the user
 

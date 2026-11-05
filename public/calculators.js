@@ -43,3 +43,11 @@ export function suspensionEstimate({mass,frontPercent,frontUnsprung,rearUnsprung
     return {axle,sprungMass,wheelRateNmm:wheelRate/1000,springNmm,springLbIn:springNmm*5.71014716277,wheelDamping,damperCoefficient:wheelDamping/(motion*motion)};
   });
 }
+export function driftEstimate({width,aspect,rim,rpm,finalDrive,gears,gear,roadKph,overrunPercent}){
+  positive(roadKph,'Target road speed (km/h)',10,250);positive(overrunPercent,'Wheel-speed overrun (%)',0,200);
+  if(!Number.isInteger(gear)||gear<1||gear>gears?.length)throw new Error('Choose a working gear within the entered gear ratios.');
+  const base=gearingEstimate({width,aspect,rim,rpm,finalDrive,gears}),factor=1+overrunPercent/100;
+  const suggestedFinalDrive=rpm*base.circumferenceM*60/(gears[gear-1]*roadKph*factor*1000);
+  return {suggestedFinalDrive,wheelKph:roadKph*factor,circumferenceM:base.circumferenceM,
+    gears:base.gears.map(row=>({gear:row.gear,roadKph:row.kph/factor,rpmAtTarget:roadKph*factor*row.ratio*finalDrive*1000/(base.circumferenceM*60)}))};
+}

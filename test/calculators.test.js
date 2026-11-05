@@ -29,3 +29,12 @@ test('suspension computes sprung corner mass, frequency rate, motion ratio squar
  assert.throws(()=>suspensionEstimate({...suspension,mass:500,frontPercent:20,frontUnsprung:150}),/sprung corner mass/);
  assert.throws(()=>suspensionEstimate({...suspension,frontHz:NaN}),/frequency/);
 });
+
+test('drift gearing accounts for declared wheel overrun and solves the inverse working-gear ratio',async()=>{
+ const {driftEstimate}=await import('../public/calculators.js');
+ const input={width:265,aspect:35,rim:19,rpm:6500,finalDrive:3.7,gears:[3.2,2.4,1.8,1.4,1.1,.9],gear:3,roadKph:80,overrunPercent:30};
+ const result=driftEstimate(input);close(result.wheelKph,104);
+ const solved=driftEstimate({...input,finalDrive:result.suggestedFinalDrive});close(solved.gears[2].roadKph,80);close(solved.gears[2].rpmAtTarget,6500);
+ const noOverrun=driftEstimate({...input,overrunPercent:0});close(noOverrun.suggestedFinalDrive/result.suggestedFinalDrive,1.3);
+ assert.throws(()=>driftEstimate({...input,gear:7}),/working gear/);assert.throws(()=>driftEstimate({...input,overrunPercent:-1}),/overrun/);
+});

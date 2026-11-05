@@ -33,7 +33,7 @@ No launch-control-enabled flag, current tuning sliders, vehicle mass, gear ratio
 
 1. Use `Start Forza.cmd` or the README's PowerShell commands. Both listeners bind to 127.0.0.1 in the Windows launcher. Enable Data Out in the game, directed to 127.0.0.1, UDP 5300.
 2. Check the Telemetry workspace. Compare decoded speed and RPM with the game before trusting analysis. Unknown-size or rejected packets should be investigated, not forced through another layout.
-3. In the Drag bench, select the real distance, enter your build, and click **Start fresh capture** for each run.
+3. In Tune Calculator → Drag, select the real distance, enter your build, and click **Start fresh capture** for each run.
 4. Stay stationary for at least 0.5 seconds, launch in first gear, and drive through the selected distance. Record launch-control mode using the manual selector.
 5. Click **Analyze live capture**. Use **Export capture JSON** to keep the original decoded session. Saved run summaries retain measured ET/finish speed; exports retain samples and user-supplied distance/LC labels.
 
@@ -43,7 +43,7 @@ The HTTP snapshot contains the most recent decoded reading and rejection counts,
 
 ## Import contract
 
-The Drag bench accepts JSON exported by this app. Other tools need conversion to the following explicit schema; arbitrary vendor CSV/JSON formats are not guessed:
+Tune Calculator → Drag accepts JSON exported by this app. Other tools need conversion to the following explicit schema; arbitrary vendor CSV/JSON formats are not guessed:
 
 - Top-level `schema`: `forza-garage-telemetry/v1`.
 - `samples`: 2–18,000 records with strictly increasing `timestampMs`.

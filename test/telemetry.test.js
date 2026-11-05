@@ -52,7 +52,7 @@ test('decoded captures export actual received samples, reject foreign reset requ
   time+=100;await new Promise((resolve,reject)=>sender.send(packet({timestamp:i*100}),telemetry.address().port,'127.0.0.1',e=>e?reject(e):resolve()));
   for(let j=0;j<50&&telemetry.snapshot().decodedPackets<i;j++)await delay(5);
  }
- assert.equal(telemetry.snapshot().recordedSamples,3);assert.equal(telemetry.snapshot().latest.speedKph,72);
+ assert.equal(telemetry.snapshot().recordedSamples,3);assert.equal(telemetry.snapshot().latest.speedKph,72);assert.equal(telemetry.snapshot().decodedAgeMs,0);time+=3500;assert.equal(telemetry.snapshot().decodedAgeMs,3500);
  const capture=await (await fetch(base+'/api/telemetry/session')).json();assert.equal(capture.schema,'forza-garage-telemetry/v1');assert.equal(capture.samples.length,3);assert.equal(capture.samples[0].powerW,200000);
  assert.equal((await fetch(base+'/api/telemetry/reset',{method:'POST'})).status,403);
  assert.equal((await fetch(base+'/api/telemetry/reset',{method:'POST',headers:{'X-Forza-Garage':'1',Origin:'https://foreign.example'}})).status,403);

@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
  const {dragSession}=await import('../test-support/telemetry-fixtures.js');
  const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true,args:['--no-sandbox']});
  const context=await browser.newContext({viewport:{width:1440,height:1000}}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
- const base=process.env.TEST_BASE_URL||'http://127.0.0.1:3000';await page.goto(base+'/#tuning');await page.locator('#drag-summary strong').first().waitFor();
+ const base=process.env.TEST_BASE_URL||'http://127.0.0.1:3000';await page.goto(base+'/#tuning');await page.locator('#tune-mode-picker [data-tune-mode=drag]').click();await page.locator('#drag-summary strong').first().waitFor();
  const input=name=>page.locator(`#drag-form [name="${name}"]`);
  const seconds=async()=>Number((await page.locator('#drag-summary strong').first().textContent()).replace(' s',''));
  assert.equal(await input('distanceM').inputValue(),'321.869');assert.match(await page.locator('#drag-strip-info').textContent(),/Pink Wristband/);

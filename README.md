@@ -97,7 +97,7 @@ Additional-source provenance and the research pass are documented in `data/RESEA
 
 ## Garage: color lab and tuning bench
 
-The app now opens on a garage dashboard with dedicated Color library, Color lab, Tuning, and Telemetry workspaces. Existing favorites and personal colors retain their original local-storage keys and remain available on the same browser origin. New setup records use `fcc-tunes` in local storage.
+The app opens on a permanently dark garage dashboard with Color Library, Color Lab, Tune Calculator, and Telemetry workspaces. Existing favorites and personal colors retain their original local-storage keys and remain available on the same browser origin. New setup records use `fcc-tunes` in local storage.
 
 **Color lab:** open a valid library recipe and select **Experiment in color lab**, or start a fresh experiment. Adjust HSB sliders/numeric inputs, change a hex preview color, enable a second layer, reset to the starting experiment, and save the result as a personal color. Original library recipes are never modified. L/R source markers remain in the original recipe; numeric experiments generate new personal settings without those markers. Previews use standard HSV and a decorative two-color gradient, not Forza's physical paint rendering. Malformed source recipes must be reviewed before they can initialize an experiment. Existing imported multi-layer recipes and new personal multi-layer colors copy both layers.
 
@@ -115,14 +115,32 @@ The requested main and community paint collections at `https://forza.labsgg.com/
 
 ## Drag racing workflow
 
-The Tuning workspace now opens on a drag calculator. It includes the three user-provided FH6 strip profiles (Irakawa **321.869 m**, Ito **804.672 m**, Festival **965.606 m**) and separate standard 1/8-, 1/4-, 1/2-, and 1-mile distances. The first and third distances reflect the user's explicit clarifications, not a quarter-mile or a literal kilometer. Venue details remain user-provided, not independently map-verified. Other named measured strips and grades can be saved.
+Tune Calculator opens with Drag, Track, and Drift choices, revealing a calculator only after selection. It includes the three user-provided FH6 strip profiles (Irakawa **321.869 m**, Ito **804.672 m**, Festival **965.606 m**) and separate standard 1/8-, 1/4-, 1/2-, and 1-mile distances. The first and third distances reflect the user's explicit clarifications, not a quarter-mile or a literal kilometer. Venue details remain user-provided, not independently map-verified. Other named measured strips and grades can be saved.
 
 Without telemetry, enter the actual build's mass, power/torque approximation, drivetrain, tire dimensions, traction/aero assumptions, gearing, launch mode/RPM and shift interruption. Results include ET, 0–60 mph, split times and instantaneous finish speed. LC on/off comparison uses different declared launch RPMs without a hidden grip bonus. The finite final-drive/launch-RPM search offers model candidates for explicit application; it does not claim a global optimum or verified game adjustment limits.
 
 With telemetry: start a fresh capture, stay stationary for at least 0.5 s, launch in first gear and drive through the selected finish. Analyze the live capture or import an exported session JSON. ET starts at the interpolated 1 km/h crossing; reaction time and one-foot rollout are excluded. This timing convention is not asserted to match the FH6 scoreboard. Label LC mode manually. Opt into measured engine-power bins only for the same car/build; uncovered RPM ranges retain the manual model. Review observed engine-limit/shift evidence, save measured summaries and compare equivalent-distance runs from the same known car. Build/weather/assists and driver differences still need manual control.
 
-See [drag model and strip sources](docs/drag-model.md) and [telemetry schema and capture instructions](docs/telemetry.md). Drag builds, named strips, and run summaries have separate local-storage keys, preserving existing color favorites and road setups. The general road gearing/suspension worksheets remain under a collapsible section and use independent inputs. This app is a model-and-test workflow, not a claim to reproduce FH6 physics or deliver the best possible tune without game validation.
+See [drag model and strip sources](docs/drag-model.md) and [telemetry schema and capture instructions](docs/telemetry.md). Drag builds, named strips, and run summaries have separate local-storage keys, preserving existing color favorites and road setups. The general road gearing/suspension worksheets are available under Track and use independent inputs. This app is a model-and-test workflow, not a claim to reproduce FH6 physics or deliver the best possible tune without game validation.
 
 Optional `scripts/drag-smoke.cjs` uses the same Playwright environment selectors as the other browser suites. It tests venue selection, standard distances, launch modes, model search, build persistence, telemetry imports/live analysis, measured comparisons, capture reset/export and mobile layout. Synthetic test data lives only under `test-support/` and tests; it is never substituted for missing live data.
 
 The LabsGG paint import remains blocked by the cloud network policy. Clicking View paint recipe still requires page access; neither requested collection nor the workbook has been altered from those inaccessible sources. The saved allowance needs to be applied through environment settings, or the source data supplied as exports.
+
+## Home, library, and calculator navigation
+
+Dark mode is permanent, including native controls and dialogs, regardless of the device color preference. Paint swatches retain their actual preview colors.
+
+The home page shows a random eligible color and its original HSB recipe (both layers when present), with a direct recipe hyperlink. The selection lasts ten minutes, survives reloads using `fcc-featured-color`, and rotates to a different eligible recipe when possible. Backgrounded pages check the deadline again when brought into view. Malformed and explicitly historical source entries are excluded from the rotating feature. The preview remains approximate. Recipe URLs use `?recipe=<id>#library`, work on direct reload, and clear the recipe parameter when the dialog closes.
+
+The home telemetry card uses the existing local endpoint and distinguishes disabled, waiting, raw-but-undecoded, live, inactive, lost-signal, and app-disconnected states. No connection or sample data is invented. Server-side decoded age avoids relying on synchronized browser/server wall clocks.
+
+Favorites are a Color Library filter, not a separate header tab. Existing favorites retain their `fcc-favorites` key. Add Color now lists all supported library finishes (plus an Other/custom finish field) and manufacturer choices from the catalogue/personal collection. Manufacturer is optional, with a blank choice and an Other/custom option. Layered finishes automatically require Color 1 (X) and Color 2 (Y); other finishes can optionally include a second layer. HSB values and optional L/R markers are saved and copied for both layers. `N/A` source placeholders are not offered as paint finishes. Missing manufacturers remain empty rather than being assigned a fake brand.
+
+Tune Calculator initially presents three choices:
+
+- **Drag:** the existing strip, launch-control, simulation/search, and measured-run workflow.
+- **Track:** the existing gearing and suspension-frequency worksheets and saved setups.
+- **Drift:** a gearing worksheet for a chosen engine RPM, working gear, road speed, and wheel-speed overrun, with save/load/delete/export via `fcc-drift-setups`. It solves final drive and displays road speeds/RPM by gear; it is not a lateral tire model or a game-verified alignment/differential tune.
+
+Selecting a discipline reveals its calculator and preserves the selection in `?tune=drag|track|drift#tuning`. Existing drag builds and track setups are retained. Drift input/output units and assumptions are displayed. Optional `scripts/workspace-smoke.cjs` tests light-device/dark-app behavior, a precise ten-minute deadline with a controlled clock, direct recipe links/reloads, home connection states, Favorites filtering, optional manufacturers, finish/layer completeness, drift setup persistence/export, and mobile modal overflow.

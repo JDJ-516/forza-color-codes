@@ -39,8 +39,9 @@ export function createTelemetryReceiver({host = '127.0.0.1', port = 5300, now = 
       return {
         state: error ? 'error' : !listening ? 'stopped' : lastReceivedAt !== null && now() - lastReceivedAt < 3000 ? 'receiving' : lastReceivedAt !== null ? 'stale' : 'waiting',
         packets, lastReceivedAt, lastPacket, error,
+        receiver:{host,port:listening?socket.address().port:port},
         format: latest ? 'horizon324-community' : 'unverified',
-        decodedPackets,rejectedPackets,decodeError,decodedAt,latest,recordedSamples:samples.length,
+        decodedPackets,rejectedPackets,decodeError,decodedAt,decodedAgeMs:decodedAt===null?null:Math.max(0,now()-decodedAt),latest,recordedSamples:samples.length,
         decoderValidation:'Community layout cross-checked against independent implementations; actual FH6 validation pending on this PC.',
       };
     },
