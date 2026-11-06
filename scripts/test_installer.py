@@ -19,7 +19,7 @@ ROOT,payload=_builder.ROOT,_builder.payload
 
 class InstallerTests(unittest.TestCase):
     def test_payload_integrity_allowlist_and_reproducibility(self):
-        installer=(ROOT/'Install Forza Garage.cmd').read_text()
+        installer=(ROOT/'Install Forza-ingenium.cmd').read_text()
         archive=base64.b64decode(installer.rsplit(':FORZA_PAYLOAD',1)[1].strip())
         expected=re.search(r"if\(\$actual -ne '([a-f0-9]{64})'",installer)[1]
         self.assertEqual(hashlib.sha256(archive).hexdigest(),expected)
@@ -38,7 +38,7 @@ class InstallerTests(unittest.TestCase):
                     self.assertEqual(z.read(name),(ROOT/name[4:]).read_bytes())
 
     def test_extracted_bundle_starts_and_serves_its_assets(self):
-        installer=(ROOT/'Install Forza Garage.cmd').read_text()
+        installer=(ROOT/'Install Forza-ingenium.cmd').read_text()
         archive=base64.b64decode(installer.rsplit(':FORZA_PAYLOAD',1)[1].strip())
         with tempfile.TemporaryDirectory(prefix='forza-bundle-') as directory:
             with zipfile.ZipFile(io.BytesIO(archive)) as z:z.extractall(directory)

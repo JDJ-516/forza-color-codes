@@ -30,7 +30,9 @@ Enabled mode holds the entered LC target RPM during idealized launch clutch slip
 
 ### Finite model search
 
-**Search model candidates** samples 15 final drives in 60–140% of the current final drive (bounded 0.5–10) and ten launch RPM points from 1,000 to min(shift RPM, 9,000), plus the current launch RPM. Other settings stay fixed. Search can be canceled by changing inputs; results are invalidated if inputs or evidence change. The UI reports the best completed candidate within this grid, not a global optimum. **Apply model candidate** is an explicit user action that updates only final drive and the selected mode's launch RPM. Check actual in-game part adjustment ranges and engine redline; the search has no verified car-specific game limits.
+**Search model candidates** explores nine final drives, five launch RPMs and four shift RPMs within the entered limits. Optional adjustable gear spacing tests three progressions (`original ratio × spacing^gear index`, starting at index zero), then four rounds of local coordinate refinement. The current configuration is retained as a candidate if it is within bounds. Ratios stay descending and within the simulator's 0.1–10 range; confirm each ratio's actual in-game adjustment range. Search preserves power, friction, mass, aero, shift delay and launch-control mode. It can be cancelled explicitly or by changing inputs/evidence. Five completed candidates are retained; the fastest model candidate can be applied explicitly, updating final drive, active launch RPM, shift RPM and ratios. A known telemetry engine limit prevents searching above that limit. This finite deterministic search is not a global or verified game optimum.
+
+The real-run validation panel compares the current prediction with the captured ET without applying a hidden calibration factor. Launch slip and braking diagnostics guide the next physical test. Confirm that model inputs and measured engine-power bins represent the captured build. The competitive development log compares repeated clean results against a manually entered leaderboard target; no live rank or top-10 guarantee is inferred.
 
 ### With telemetry
 

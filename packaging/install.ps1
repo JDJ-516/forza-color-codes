@@ -17,22 +17,22 @@ function Make-Shortcut([string]$path, [string]$flag) {
     $command = '& ' + (Quote-Literal $node) + ' ' + (Quote-Literal (Join-Path $appRoot 'launcher.js'))
     if ($flag) { $command += ' ' + $flag }
     $command += '; if ($LASTEXITCODE -ne 0) { Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show(' +
-        (Quote-Literal 'Forza Garage could not start or stop. Close any older Forza CMD window and retry. Details are in %LOCALAPPDATA%\ForzaGarage\runtime\launcher-error.txt.') + ', ' + (Quote-Literal 'Forza Garage') + ') | Out-Null }'
+        (Quote-Literal 'Forza-ingenium could not start or stop. Close any older Forza CMD window and retry. Details are in %LOCALAPPDATA%\ForzaGarage\runtime\launcher-error.txt.') + ', ' + (Quote-Literal 'Forza-ingenium') + ') | Out-Null }'
     $shortcut = $shell.CreateShortcut($path)
     $shortcut.TargetPath = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
     $shortcut.Arguments = '-NoLogo -NoProfile -WindowStyle Hidden -Command "' + $command + '"'
     $shortcut.WorkingDirectory = $appRoot
     $shortcut.WindowStyle = 7
-    $shortcut.Description = 'Start Forza Garage and its telemetry receiver'
+    $shortcut.Description = 'Start Forza-ingenium and its telemetry receiver'
     $shortcut.Save()
 }
 $desktop = [Environment]::GetFolderPath('Desktop')
-$programs = Join-Path ([Environment]::GetFolderPath('Programs')) 'Forza Garage'
+$programs = Join-Path ([Environment]::GetFolderPath('Programs')) 'Forza-ingenium'
 New-Item -ItemType Directory -Path $programs -Force | Out-Null
-Make-Shortcut (Join-Path $desktop 'Forza Garage.lnk') ''
-Make-Shortcut (Join-Path $programs 'Forza Garage.lnk') ''
-Make-Shortcut (Join-Path $programs 'Stop Forza Garage.lnk') '--stop'
-Write-Host 'Installed. Use the Forza Garage desktop shortcut from now on.' -ForegroundColor Green
-Write-Host 'The background app stops at sign-out, or with Start menu > Forza Garage > Stop Forza Garage.'
+Make-Shortcut (Join-Path $desktop 'Forza-ingenium.lnk') ''
+Make-Shortcut (Join-Path $programs 'Forza-ingenium.lnk') ''
+Make-Shortcut (Join-Path $programs 'Stop Forza-ingenium.lnk') '--stop'
+Write-Host 'Installed. Use the Forza-ingenium desktop shortcut from now on.' -ForegroundColor Green
+Write-Host 'The background app stops at sign-out, or with Start menu > Forza-ingenium > Stop Forza-ingenium.'
 & $node (Join-Path $appRoot 'launcher.js')
 if ($LASTEXITCODE -ne 0) { throw 'Installation completed, but the app could not start. Close the older Forza CMD window, then use the desktop shortcut.' }

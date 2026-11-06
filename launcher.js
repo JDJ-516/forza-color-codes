@@ -24,8 +24,8 @@ function openBrowser(){
 async function remember(info){if(info.instanceId)await writeFile(stateFile,JSON.stringify({pid:info.pid,instanceId:info.instanceId,port}),{mode:0o600});}
 export async function launch({browser=true}={}){
  await mkdir(stateRoot,{recursive:true});let info=await health();
- if(info){if(info.version!==version)throw new Error('An older Forza Garage is running. Run the installer to update it, or stop the older app first.');await remember(info);if(browser)await openBrowser();return info;}
- if(await portOpen())throw new Error(`Port ${port} is already in use. Close the previous Forza Garage CMD window or the application using that port, then retry the shortcut.`);
+ if(info){if(info.version!==version)throw new Error('An older Forza-ingenium is running. Run the installer to update it, or stop the older app first.');await remember(info);if(browser)await openBrowser();return info;}
+ if(await portOpen())throw new Error(`Port ${port} is already in use. Close the previous Forza-ingenium CMD window or the application using that port, then retry the shortcut.`);
  const log=await open(logFile,'a');const instanceId=randomUUID();
  const child=spawn(process.execPath,[join(root,'server.js')],{cwd:root,detached:true,windowsHide:true,stdio:['ignore',log.fd,log.fd],env:{...process.env,HOST:'127.0.0.1',PORT:String(port),TELEMETRY_ENABLED:'1',TELEMETRY_HOST:'127.0.0.1',TELEMETRY_PORT:process.env.FORZA_GARAGE_UDP_PORT||'5300',FORZA_GARAGE_INSTANCE_ID:instanceId}});
  let spawnError=null;child.once('error',e=>{spawnError=e;});child.unref();await log.close();
@@ -51,7 +51,7 @@ export async function stop(){
 if(process.argv[1]===fileURLToPath(import.meta.url)){
  try{
   if(!Number.isInteger(port)||port<1||port>65535)throw new Error('Invalid local HTTP port.');
-  if(process.argv.includes('--stop')){await stop();console.log('Managed Forza Garage stopped, or was not running.');}
-  else{const info=await launch({browser:!process.argv.includes('--no-open')});console.log(`Forza Garage ${info.version} ready at ${url}`);}
+  if(process.argv.includes('--stop')){await stop();console.log('Managed Forza-ingenium stopped, or was not running.');}
+  else{const info=await launch({browser:!process.argv.includes('--no-open')});console.log(`Forza-ingenium ${info.version} ready at ${url}`);}
  }catch(error){await mkdir(stateRoot,{recursive:true});await writeFile(join(stateRoot,'launcher-error.txt'),error.message+'\n');console.error(error.message);process.exitCode=1;}
 }

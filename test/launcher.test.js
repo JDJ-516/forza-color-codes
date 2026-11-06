@@ -15,7 +15,7 @@ test('launcher starts the real background app, reuses it, and stops only its rec
  const env={...process.env,FORZA_GARAGE_PORT:String(port),FORZA_GARAGE_UDP_PORT:'0',FORZA_GARAGE_STATE_DIR:state};
  const run=args=>exec(process.execPath,['launcher.js',...args],{cwd:root,env,timeout:20000});
  t.after(async()=>{try{await run(['--stop']);}catch{}await rm(state,{recursive:true,force:true});});
- await run(['--no-open']);const first=await (await fetch(`http://127.0.0.1:${port}/api/health`)).json();assert.equal(first.app,'forza-garage');assert.equal(first.version,'1.1.0');assert.ok(first.instanceId);
+ await run(['--no-open']);const first=await (await fetch(`http://127.0.0.1:${port}/api/health`)).json();assert.equal(first.app,'forza-garage');assert.equal(first.version,JSON.parse(await readFile(new URL('../package.json',import.meta.url),'utf8')).version);assert.ok(first.instanceId);
  assert.equal((await fetch(`http://127.0.0.1:${port}/`)).status,200);
  const udp=await (await fetch(`http://127.0.0.1:${port}/api/telemetry`)).json();assert.equal(udp.state,'waiting');
  await run(['--no-open']);const second=await (await fetch(`http://127.0.0.1:${port}/api/health`)).json();assert.equal(first.pid,second.pid);

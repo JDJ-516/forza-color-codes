@@ -42,12 +42,14 @@ def build():
       "& ([ScriptBlock]::Create($script)) -SourcePath (Join-Path $temp 'app'); "
       "} catch { Write-Host $_.Exception.Message -ForegroundColor Red; exit 1 } "
       "finally { if($temp -and (Test-Path -LiteralPath $temp)) { Remove-Item -LiteralPath $temp -Recurse -Force } }")
-    header='\r\n'.join(['@echo off','setlocal','title Install Forza Garage','set "FORZA_INSTALLER=%~f0"',
+    header='\r\n'.join(['@echo off','setlocal','title Install Forza-ingenium','set "FORZA_INSTALLER=%~f0"',
         'powershell.exe -NoLogo -NoProfile -Command "'+bootstrap+'"',
         'if errorlevel 1 (','  pause','  exit /b 1',')','exit /b 0',':FORZA_PAYLOAD',''])
     encoded=base64.b64encode(binary).decode('ascii')
-    target=ROOT/'Install Forza Garage.cmd'
+    target=ROOT/'Install Forza-ingenium.cmd'
     target.write_bytes((header+'\r\n'.join(encoded[i:i+120] for i in range(0,len(encoded),120))+'\r\n').encode('ascii'))
+    # Preserve the download link shared before the rebrand.
+    (ROOT/'Install Forza Garage.cmd').write_bytes(target.read_bytes())
     return target,len(binary),digest
 
 if __name__=='__main__':

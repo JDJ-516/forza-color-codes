@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const files = new Map([
+  ...['drag-optimizer','competition','competition-workspace'].map(name=>['/'+name+'.js',[name+'.js','text/javascript; charset=utf-8']]),
   ['/', ['index.html', 'text/html; charset=utf-8']],
   ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
   ['/styles.css', ['styles.css', 'text/css; charset=utf-8']],
@@ -73,7 +74,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     console.log(`Telemetry receiver: ${telemetry.snapshot().state}`);
   }
   const server = createServer({telemetry});
-  server.listen(port, process.env.HOST || '0.0.0.0', () => console.log(`Forza Color Codes listening on port ${port}`));
+  server.listen(port, process.env.HOST || '0.0.0.0', () => console.log(`Forza-ingenium listening on port ${port}`));
   async function stop() { if (telemetry) await telemetry.close(); server.close(() => process.exit(0)); }
   process.on('SIGINT', stop);
   process.on('SIGTERM', stop);
