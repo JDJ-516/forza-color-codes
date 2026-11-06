@@ -4,7 +4,7 @@ const $=s=>document.querySelector(s);
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function notice(text){document.dispatchEvent(new CustomEvent('garage:notice',{detail:text}));}
 function show(view){
-  if(!['garage','library','lab','tuning','telemetry'].includes(view))view='garage';
+  if(!['garage','library','lab','tuning','telemetry','cars'].includes(view))view='garage';
   document.body.dataset.workspace=view;
   document.querySelectorAll('[data-view]').forEach(el=>el.hidden=el.dataset.view!==view);
   document.querySelectorAll('button[data-workspace]').forEach(el=>{el.classList.toggle('active',el.dataset.workspace===view);el.setAttribute('aria-current',el.dataset.workspace===view?'page':'false');});

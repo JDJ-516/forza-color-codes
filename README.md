@@ -175,3 +175,25 @@ The drag performance search explores final drive, launch RPM, shift RPM and opti
 The competitive development panel remembers the current benchmark context and supports Drag (seconds), Track (lap seconds), and Drift (points). Record event, exact car/build, class/PI, conditions, assists, setup revision, and clean-run status. Drag also matches distance and launch-control state. Results are grouped only by exactly matching context; setup comparisons need three clean attempts per revision and report medians, best values, and spread. The spread comparison is descriptive, not a statistical confidence test. Use an A/B/A sequence to check driver and condition effects. Manual results work without telemetry. Telemetry can supply the analyzed standing-start drag ET or a selected full track lap from continuous captured boundaries; clean-run validity must be confirmed in-game. The same exact telemetry attempt cannot be recorded twice to manufacture repeat runs. Clean status must be explicitly marked after importing telemetry. Drift scoring is manual. Export the bounded 300-attempt log as JSON; results stay in browser storage.
 
 Enter a leaderboard target and its source/date manually for the exact event/class. A negative or zero median gap means the entered target is matched, not that a rank is verified. No live leaderboard integration, automatic rank certification, top-10 guarantee, or automatic game-slider application is provided. Competitive performance still needs validated game telemetry, build selection and repeated real driving. Track and Drift calculators retain their physical/gearing scope; the experiment log supports measured iteration in all three disciplines.
+
+## Rare Cars: dynamic KS21 spreadsheet
+
+Version 1.3 adds **Rare Cars**, backed by [KS21's FH6 Rare Car Sheet](https://docs.google.com/spreadsheets/d/1anCEWRN_SrteKIznuJLe8TrGXpVF-8vAUrNlb6nAFnM/edit?gid=1485355139#gid=1485355139). The uploaded workbook supplies an offline snapshot: **284 entries across ten tabs**. Entries are not unique cars; a car can appear in several acquisition categories. This is an acquisition guide, separate from the paint library and physics inputs. “Use car in Tune Calculator” fills its name, not invented mass/power/ratios or a guessed telemetry car ordinal.
+
+The app reads the entire Google Sheets XLSX export, preserving all tabs, source row numbers, acquisition fields, per-car notes, source-highlight classification labels, and category guidance. It preserves source claims such as “Unreleased” rather than inferring availability from the current date. Blank padding and explanatory sidebar text are separated from car entries. Source statements, release dates, locations and game compatibility are community data, not independently verified.
+
+Open Rare Cars to check Google Sheets; an open visible app checks again every ten minutes after the workspace has first loaded. Returning to a visible page triggers an overdue check. **Refresh now** can check sooner (one request per 30 seconds). The browser uses same-origin `/api/rare-cars`; Node fetches only the fixed source export URL, with a 15-second timeout and bounded downloads/decompression. The app requires no new npm packages, Google credentials or Python runtime. It never writes to the source spreadsheet.
+
+A successful full import atomically updates `%LOCALAPPDATA%\ForzaGarage\runtime\rare-cars-cache.json` (or `FORZA_GARAGE_STATE_DIR`). The uploaded copy displays immediately; a saved newer copy is used on subsequent runs. Network errors, access denial, malformed exports or changed/unrecognized tab headers leave the last good data intact. The UI distinguishes the bundled snapshot (date unknown), a cached copy, and a successful live check, and shows the last successful check and any error. The timestamp is the fetch/check time, not the spreadsheet's editing date.
+
+**Source access has not been verified live here:** the Google Sheets export returned HTTP 403 from this cloud environment. The provided workbook was fully imported; refresh/failure/recovery logic is checked with fixtures. On the gaming PC, automatic refresh requires internet and an export accessible without Google sign-in. If the sheet requires authentication, the app retains its uploaded/cached copy; it does not embed cookies or credentials or change source sharing permissions. A downloaded workbook is a snapshot and cannot update itself.
+
+To reproduce/audit the bundled snapshot (development only):
+
+```sh
+node scripts/import-rare-cars.mjs
+python3 scripts/test_rare_cars.py
+npm test
+```
+
+The source workbook is `data/rare-cars-source.xlsx`. The Windows installer bundles only the normalized snapshot and the runtime parser/service, not the workbook or developer scripts. Re-run the updated installer once to install the Rare Cars feature; later source-sheet changes need no new app download when live export works.

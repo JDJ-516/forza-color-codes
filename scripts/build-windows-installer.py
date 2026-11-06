@@ -10,7 +10,7 @@ import zipfile
 ROOT=Path(__file__).resolve().parents[1]
 
 def payload():
-    files=[ROOT/name for name in ['package.json','server.js','telemetry.js','fh6-decoder.js','launcher.js','README.md']]
+    files=[ROOT/name for name in ['package.json','server.js','telemetry.js','fh6-decoder.js','rare-cars.js','launcher.js','README.md']]
     files+=sorted((ROOT/'public').glob('*'))
     files+=sorted((ROOT/'docs').glob('*.md'))
     output=io.BytesIO()

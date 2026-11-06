@@ -1,10 +1,11 @@
+import {createRareCarSource} from './rare-cars.js';
 import http from 'node:http';
 import { createTelemetryReceiver } from './telemetry.js';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const files = new Map([
-  ...['drag-optimizer','competition','competition-workspace'].map(name=>['/'+name+'.js',[name+'.js','text/javascript; charset=utf-8']]),
+  ...['drag-optimizer','competition','competition-workspace','rare-cars-workspace'].map(name=>['/'+name+'.js',[name+'.js','text/javascript; charset=utf-8']]),
   ['/', ['index.html', 'text/html; charset=utf-8']],
   ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
   ['/styles.css', ['styles.css', 'text/css; charset=utf-8']],
@@ -16,15 +17,23 @@ const files = new Map([
   ['/drag.js', ['drag.js', 'text/javascript; charset=utf-8']],
   ['/drag-workspace.js', ['drag-workspace.js', 'text/javascript; charset=utf-8']],
   ['/telemetry-analysis.js', ['telemetry-analysis.js', 'text/javascript; charset=utf-8']],
+  ['/rare-cars.json', ['rare-cars.json', 'application/json; charset=utf-8']],
   ['/catalogue.json', ['catalogue.json', 'application/json; charset=utf-8']],
   ['/import-report.json', ['import-report.json', 'application/json; charset=utf-8']],
 ]);
 
 const version=JSON.parse(await readFile(new URL('./package.json',import.meta.url),'utf8')).version;
 
-export function createServer({telemetry} = {}) {
+export function createServer({telemetry,rareCars=createRareCarSource()} = {}) {
   return http.createServer(async (req, res) => {
     const path = new URL(req.url, 'http://localhost').pathname;
+    if(path==='/api/rare-cars'){
+      const force=req.method==='POST';
+      if(!['GET','HEAD','POST'].includes(req.method)){res.writeHead(405,{Allow:'GET, HEAD, POST'});return res.end();}
+      if(force){const origin=req.headers.origin;if(req.headers['x-forza-garage']!=='1'||(origin&&origin!==`http://${req.headers.host}`&&origin!==`https://${req.headers.host}`)){res.writeHead(403);return res.end('Forbidden');}}
+      try{const data=await rareCars.snapshot({force});res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});return res.end(req.method==='HEAD'?undefined:JSON.stringify(data));}
+      catch{res.writeHead(503,{'Content-Type':'application/json','Cache-Control':'no-store'});return res.end(JSON.stringify({error:'Rare-car data is unavailable. Reload to retry.'}));}
+    }
     if(path==='/api/telemetry/reset' && req.method==='POST'){
       const origin=req.headers.origin;
       if(req.headers['x-forza-garage']!=='1' || (origin && origin!==`http://${req.headers.host}` && origin!==`https://${req.headers.host}`)){res.writeHead(403);return res.end('Forbidden');}
