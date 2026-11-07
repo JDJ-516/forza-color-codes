@@ -11,3 +11,12 @@ test('decoder rejects wrong layouts, nonfinite values and mismatched velocity',(
  const c=packet();c.writeFloatLE(100,256);assert.throws(()=>decodeHorizonPacket(c),/velocity/);
  const d=packet();d.writeFloatLE(4,68);assert.throws(()=>decodeHorizonPacket(d),/suspension/);
 });
+
+test('inactive zero-engine frames are connected data but active frames still need a plausible engine limit',()=>{
+ const inactive=decodeHorizonPacket(Buffer.alloc(324));assert.equal(inactive.isRaceOn,false);assert.equal(inactive.engineMaxRpm,null);assert.equal(inactive.rpm,0);assert.equal(inactive.speedKph,0);
+ const active=packet();active.writeFloatLE(0,8);assert.throws(()=>decodeHorizonPacket(active),error=>error.message.includes('Maximum engine RPM at byte 8: 0')&&error.inspection.failures.some(c=>c.offset===8));
+});
+test('rejections report the exact bad field and signed full-left steering is normalized',()=>{
+ const b=packet();b.writeFloatLE(NaN,16);assert.throws(()=>decodeHorizonPacket(b),error=>{assert.equal(error.inspection.checks.find(c=>c.offset===16).value,'NaN');assert.match(error.message,/Current engine RPM at byte 16/);return true;});
+ const left=packet();left.writeInt8(-128,320);assert.equal(decodeHorizonPacket(left).steer,-1);
+});

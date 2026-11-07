@@ -49,6 +49,10 @@ export function createServer({telemetry,rareCars=createRareCarSource()} = {}) {
       res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});
       return res.end(req.method==='HEAD'?undefined:JSON.stringify({app:'forza-garage',version,pid:process.pid,instanceId:process.env.FORZA_GARAGE_INSTANCE_ID||null}));
     }
+    if(path==='/api/telemetry/diagnostics'){
+      const diagnostic=telemetry?.diagnostics();res.writeHead(diagnostic?200:409,{'Content-Type':'application/json','Cache-Control':'no-store','Content-Disposition':'attachment; filename="forza-ingenium-packet-diagnostics.json"'});
+      return res.end(req.method==='HEAD'?undefined:JSON.stringify(diagnostic?{...diagnostic,appVersion:version}:{error:'No packet has arrived yet. Start the local receiver and game Data Out first.'}));
+    }
     if (path === '/api/telemetry/session') {
       const session=telemetry?.session();
       res.writeHead(session?.samples?.length>=2?200:409, {'Content-Type':'application/json','Cache-Control':'no-store','Content-Disposition':'attachment; filename="forza-telemetry-session.json"'});

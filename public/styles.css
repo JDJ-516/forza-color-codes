@@ -78,3 +78,5 @@ body select,body textarea,.tool-form select,.tool-form textarea,.form-grid selec
  body[data-workspace=garage] .garage-overview .workbench-grid{height:100%}
 }
 .seasonal-spotlight>div:first-child{min-width:0}.seasonal-spotlight h2{overflow-wrap:anywhere}.seasonal-controls{display:flex;align-items:center;gap:8px;margin-top:8px}.seasonal-controls .icon-button{width:25px;height:25px;min-width:25px;padding:0;font-size:18px}.seasonal-controls .button{padding:4px 8px!important;font-size:10px!important}#seasonal-car-count:empty{display:none}
+
+#home-telemetry-title,#telemetry-title,#home-telemetry-state,#telemetry-state{color:#ffb86b}#home-telemetry-title.is-connected,#telemetry-title.is-connected,#home-telemetry-state.is-connected,#telemetry-state.is-connected{color:#6be09c}.packet-check-failed{color:#ffb86b!important}#packet-checks td{max-width:300px;overflow-wrap:anywhere}
