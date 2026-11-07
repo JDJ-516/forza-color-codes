@@ -14,7 +14,7 @@ const fs=require('node:fs');
  await page.route('**/api/telemetry',route=>route.fulfill({contentType:'application/json',body:JSON.stringify(telemetry)}));
  await page.goto(base);await page.locator('#result-count').filter({hasText:'11008 colors'}).waitFor({state:'attached'});
  assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).colorScheme),'dark');
- assert.equal(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),'rgb(16, 21, 22)');
+ assert.equal(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),'rgb(20, 20, 20)');
  assert.equal(await page.locator('.topbar #favorites-nav').count(),0);
  assert.equal(await page.locator('#featured-name').textContent(),first.name);assert.match(await page.locator('#featured-code').textContent(),/0.53 L/);
  const originalLink=await page.locator('#featured-recipe').getAttribute('href');assert.ok(originalLink.includes(first.id));
@@ -45,6 +45,12 @@ const fs=require('node:fs');
  const download=page.waitForEvent('download');await page.locator('[data-drift-export]').click();assert.equal((await download).suggestedFilename(),'forza-drift-setup.json');await page.locator('[data-drift-delete]').click();
  await page.locator('[data-tune-mode=track]').click();assert.equal(await page.locator('#tune-form').isVisible(),true);assert.equal(await page.locator('#drift-form').isVisible(),false);
  await page.locator('[data-tune-mode=drag]').click();assert.equal(await page.locator('#drag-form').isVisible(),true);assert.equal(await page.locator('#tune-form').isVisible(),false);
+ await page.locator('#drag-form [name=name]').fill('Retained after collapse');await page.locator('[data-tune-mode=drag]').click();assert.equal(await page.locator('#drag-form').isVisible(),false);assert.equal(await page.locator('#competition-panel').isVisible(),false);assert.equal(new URL(page.url()).searchParams.has('tune'),false);
+ await page.locator('[data-tune-mode=drag]').click();assert.equal(await page.locator('#drag-form [name=name]').inputValue(),'Retained after collapse');assert.equal(await page.locator('[data-tune-mode=drag]').getAttribute('aria-expanded'),'true');
+ await page.locator('[data-collapse-tune=drag]').click();assert.equal(await page.locator('#drag-form').isVisible(),false);assert.equal(await page.locator('[data-tune-mode=drag]').evaluate(e=>e===document.activeElement),true);
+ for(const mode of ['track','drift']){await page.locator(`[data-tune-mode=${mode}]`).click();assert.equal(await page.locator(`[data-tune-panel=${mode}]`).isVisible(),true);await page.locator(`[data-collapse-tune=${mode}]`).click();assert.equal(await page.locator(`[data-tune-panel=${mode}]`).isVisible(),false);}
+ assert.equal(await page.locator('#sort').count(),0);assert.doesNotMatch(await page.locator('#catalogue-status').textContent(),/rows need review|Game compatibility/);assert.equal(await page.locator('.topbar [data-workspace=garage]').textContent(),'Dashboard');
+ assert.deepEqual(await page.locator('.topbar .nav-link').allTextContents(),['Dashboard','Color Library','Color Lab','Rare Cars','Tune Calculator','Telemetry']);
  await page.setViewportSize({width:390,height:844});for(const view of ['garage','lab','tuning','telemetry']){await page.locator(`.topbar [data-workspace=${view}]`).click();assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,view+' overflow');}
  await page.locator('#library-nav').click();await page.locator('#add-bottom').click();await page.locator('#color-finish').selectOption('Two-Tone Polished');assert.equal(await page.locator('#create').evaluate(el=>el.scrollWidth<=el.clientWidth),true);await page.keyboard.press('Escape');
  assert.deepEqual(errors,[]);console.log('PASS: permanent dark mode despite light preference, timed color rotation, deep recipe links/reload, home telemetry states, favorites filter, optional manufacturer, complete finishes/two layers/LR persistence, calculator selection, drift save/load/export/delete, and mobile layouts.');await browser.close();

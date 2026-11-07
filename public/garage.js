@@ -106,14 +106,16 @@ $('#tune-form').addEventListener('input',calculate);
 $('#tune-form').addEventListener('submit',e=>{e.preventDefault();const data=calculate();if(!data||!data.name||!data.car||!e.currentTarget.reportValidity())return;tunes.unshift({id:crypto.randomUUID(),...data});const stored=saveTunes();renderTunes();if(stored)notice('Setup saved to your garage.');});
 gearControls();calculate();renderTunes();
 
-// Selecting a discipline reveals only its calculator; direct links preserve the choice.
+// The discipline cards are accordion controls. Collapsing preserves form values.
 function tuneMode(mode,writeUrl=true){
  const valid=['drag','track','drift'].includes(mode);
  document.querySelectorAll('[data-tune-panel]').forEach(el=>el.hidden=!valid||el.dataset.tunePanel!==mode);
- document.querySelectorAll('[data-tune-mode]').forEach(el=>el.setAttribute('aria-pressed',String(valid&&el.dataset.tuneMode===mode)));
- if(writeUrl&&valid){const url=new URL(location.href);url.searchParams.set('tune',mode);url.hash='tuning';history.replaceState(null,'',url);}
+ document.querySelectorAll('[data-tune-mode]').forEach(el=>{const expanded=valid&&el.dataset.tuneMode===mode;el.setAttribute('aria-pressed',String(expanded));el.setAttribute('aria-expanded',String(expanded));});
+ if(writeUrl){const url=new URL(location.href);if(valid)url.searchParams.set('tune',mode);else url.searchParams.delete('tune');url.hash='tuning';history.replaceState(null,'',url);}
+ document.dispatchEvent(new CustomEvent('garage:tune-mode',{detail:valid?mode:null}));
 }
-document.querySelectorAll('[data-tune-mode]').forEach(button=>button.addEventListener('click',()=>tuneMode(button.dataset.tuneMode)));
+document.querySelectorAll('[data-tune-mode]').forEach(button=>button.addEventListener('click',()=>tuneMode(button.getAttribute('aria-expanded')==='true'?null:button.dataset.tuneMode)));
+document.querySelectorAll('[data-collapse-tune]').forEach(button=>button.addEventListener('click',()=>{tuneMode(null);document.querySelector(`[data-tune-mode="${button.dataset.collapseTune}"]`).focus();}));
 tuneMode(new URL(location.href).searchParams.get('tune'),false);
 
 const driftForm=$('#drift-form');

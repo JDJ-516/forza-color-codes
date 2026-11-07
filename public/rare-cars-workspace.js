@@ -1,6 +1,6 @@
 const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let data=null,page=1,busy=false,lastLoaded=0;const SIZE=24;
-const time=value=>value?new Date(value).toLocaleString():'never';
+const time=value=>value?new Date(value).toLocaleString():'Not available';
 function render(){
  if(!data)return;const query=$('#rare-cars-search').value.trim().toLocaleLowerCase(),category=$('#rare-cars-category').value;
  const cars=data.cars.filter(c=>(!category||c.category===category)&&[c.year,c.brand,c.model,c.category,c.classification,...c.details.map(d=>d.value)].join(' ').toLocaleLowerCase().includes(query));
@@ -11,10 +11,10 @@ function render(){
  const info=data.categories.find(c=>c.name===category);$('#rare-cars-notes').hidden=!info;$('#rare-cars-category-notes').innerHTML=info?info.notes.map(n=>`<p>${esc(n)}</p>`).join(''):'';
 }
 async function load(force=false){
- if(busy)return;busy=true;$('#rare-cars-refresh').disabled=true;$('#rare-cars-sync').textContent=data?'Checking Google Sheets; the displayed copy remains available…':'Loading the spreadsheet copy and checking Google Sheets…';
+ if(busy)return;busy=true;$('#rare-cars-refresh').disabled=true;$('#rare-cars-sync').textContent=`Last updated: ${time(data?.sync?.checkedAt)}`;
  try{if(!data){const bundled=await fetch('/rare-cars.json');if(bundled.ok){data=await bundled.json();const selected=$('#rare-cars-category').value;$('#rare-cars-category').innerHTML='<option value="">All categories</option>'+data.categories.map(c=>`<option value="${esc(c.name)}">${esc(c.name)} (${c.count})</option>`).join('');$('#rare-cars-category').value=selected;render();}}const r=await fetch('/api/rare-cars',{method:force?'POST':'GET',headers:force?{'X-Forza-Garage':'1'}:{},cache:'no-store'});const next=await r.json();if(!r.ok||!Array.isArray(next.cars)||!next.sync)throw new Error(next.error||'The data service is unavailable.');data=next;lastLoaded=Date.now();const selected=$('#rare-cars-category').value;$('#rare-cars-category').innerHTML='<option value="">All categories</option>'+data.categories.map(c=>`<option value="${esc(c.name)}">${esc(c.name)} (${c.count})</option>`).join('');$('#rare-cars-category').value=selected;
-  const s=data.sync;$('#rare-cars-sync').textContent=`${s.origin==='bundled'?'Uploaded workbook snapshot (source date unknown)':s.origin==='cached'?'Saved copy from a previous session':'Google Sheets copy'} · Last successful check: ${time(s.checkedAt)}. ${s.error?'Update unavailable: '+s.error:'Next automatic check: '+time(s.nextCheckAt)+'.'} ${s.cacheWarning||''} Updates are checked every 10 minutes while this page is open. Refresh now is limited to one source check per 30 seconds.`;render();
- }catch(e){$('#rare-cars-sync').textContent=`Unable to check updates: ${e.message}${data?' Showing the last loaded copy.':' Reload to retry.'}`;}
+  const s=data.sync;$('#rare-cars-sync').textContent=`Last updated: ${time(s.checkedAt)}`;$('#rare-cars-sync').dataset.state=s.error?'cached':s.origin;render();
+ }catch(e){$('#rare-cars-sync').textContent=`Last updated: ${time(data?.sync?.checkedAt)}`;$('#rare-cars-sync').dataset.state='unavailable';}
  finally{busy=false;$('#rare-cars-refresh').disabled=false;}
 }
 $('#rare-cars-search').addEventListener('input',()=>{page=1;render();});$('#rare-cars-category').addEventListener('change',()=>{page=1;render();});$('#rare-cars-refresh').addEventListener('click',()=>load(true));$('#rare-cars-prev').addEventListener('click',()=>{page--;render();});$('#rare-cars-next').addEventListener('click',()=>{page++;render();});

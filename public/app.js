@@ -51,7 +51,6 @@ function render(resetPage = false) {
   if (resetPage) page = 1;
   const q = $('#search').value.toLowerCase().trim();
   let colors = all().filter(c => (!onlyFavorites || favorites.has(c.id)) && (!family || c.family === family) && (!$('#manufacturer').value || c.manufacturer === $('#manufacturer').value) && (!$('#finish').value || c.finish === $('#finish').value) && (!$('#category').value || c.category === $('#category').value) && (!$('#quality').value || ($('#quality').value === 'historical' ? c.source?.historical : c.issues?.length)) && `${c.name} ${c.manufacturer} ${c.family} ${c.notes}`.toLowerCase().includes(q));
-  const sort = $('#sort').value; if(sort !== 'featured') colors.sort((a,b) => a[sort].localeCompare(b[sort]));
   $('#favorites-filter option[value=favorites]').textContent = `Favorites (${all().filter(c=>favorites.has(c.id)).length})`;
   $('#result-count').textContent = `${colors.length} color${colors.length === 1 ? '' : 's'}`;
   $('#library-title').innerHTML = `${onlyFavorites ? 'Your favorites' : 'The color library'}<span>.</span>`;
@@ -89,12 +88,12 @@ document.addEventListener('click', async e => {
   if(e.target.closest('#delete-color')) { customs = customs.filter(c => c.id !== current.id); favorites.delete(current.id); persist(); closeDetail(); manufacturers(); render();updateFeatured();toast('Personal recipe deleted.'); }
 });
 for(const selector of ['#add-color','#add-bottom']) $(selector).addEventListener('click', () => $('#create').showModal());
-for(const selector of ['#search','#manufacturer','#finish','#sort','#category','#quality']) $(selector).addEventListener(selector === '#search' ? 'input' : 'change', () => render(true));
+for(const selector of ['#search','#manufacturer','#finish','#category','#quality']) $(selector).addEventListener(selector === '#search' ? 'input' : 'change', () => render(true));
 function scrollLibrary() { document.dispatchEvent(new CustomEvent('garage:navigate',{detail:'library'})); $('#library').scrollIntoView({behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'}); }
 $('#explore').addEventListener('click', scrollLibrary);
 $('#library-nav').addEventListener('click',()=>{render(true);scrollLibrary();});
 $('#favorites-filter').addEventListener('change',()=>{onlyFavorites=$('#favorites-filter').value==='favorites';render(true);});
-$('#reset').addEventListener('click', () => { family = ''; $('#search').value = ''; $('#manufacturer').value = ''; $('#finish').value = ''; onlyFavorites=false;$('#favorites-filter').value='all';$('#sort').value = 'featured'; $('#category').value=''; $('#quality').value=''; render(true); });
+$('#reset').addEventListener('click', () => { family = ''; $('#search').value = ''; $('#manufacturer').value = ''; $('#finish').value = ''; onlyFavorites=false;$('#favorites-filter').value='all';$('#category').value=''; $('#quality').value=''; render(true); });
 $('#color-form').addEventListener('submit', e => {
  e.preventDefault();const form=e.currentTarget;if(!form.reportValidity())return;
  try{
@@ -152,7 +151,7 @@ async function loadCatalogue() {
     const previousFinish = $('#finish').value;
     $('#finish').innerHTML = '<option value="">All finishes</option>' + [...new Set([...catalogue.map(c=>c.finish),'Solid','Metallic'])].sort().map(f=>`<option>${escape(f)}</option>`).join('');
     $('#finish').value = previousFinish;
-    $('#catalogue-status').innerHTML = `${catalogueMetadata.total.toLocaleString()} recipes:  ${catalogueMetadata.sheets['Vehicle Colours'].toLocaleString()} vehicle + ${catalogueMetadata.sheets['Wheel Colours']} wheel + ${catalogueMetadata.historicalTotal} historical alternatives. <a href="${catalogueMetadata.url}" target="_blank" rel="noopener noreferrer">Spreadsheet source</a> · <a href="/import-report.json" target="_blank">${catalogueMetadata.rowsNeedingReview} rows need review</a>. Game compatibility, including FH6, is unverified.`;
+    $('#catalogue-status').textContent = `${catalogueMetadata.total.toLocaleString()} recipes: ${catalogueMetadata.sheets['Vehicle Colours'].toLocaleString()} vehicle + ${catalogueMetadata.sheets['Wheel Colours']} wheel + ${catalogueMetadata.historicalTotal} historical alternatives.`;
     manufacturers();finishes();modalLayers();render(true);updateFeatured();
     const id=new URL(location.href).searchParams.get('recipe');if(id){const color=all().find(c=>c.id===id);if(color)detail(color);else toast('That recipe is no longer in this collection.');}
   } catch {

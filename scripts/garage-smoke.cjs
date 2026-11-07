@@ -29,7 +29,7 @@ const assert=require('node:assert/strict');
  await page.locator('[data-gear="1"]').fill('4');assert.match(await page.locator('#tune-error').textContent(),/decrease/);assert.equal(await page.locator('#gear-results tr').count(),0);
  await page.locator('[data-gear="1"]').fill('2.4');await page.locator('#gear-count').selectOption('8');assert.equal(await page.locator('#gear-results tr').count(),8);
  await page.locator('#tune-name').fill('Track <safe>');await page.locator('#tune-car').fill('My car');await page.locator('#tune-form button[type=submit]').click();
- assert.equal(await page.locator('.saved-tune').count(),1);await page.reload();await page.locator('#tune-mode-picker [data-tune-mode=track]').click();await page.locator('.saved-tune').waitFor();
+ assert.equal(await page.locator('.saved-tune').count(),1);await page.reload();await page.locator('.saved-tune').waitFor();
  assert.equal(await page.locator('.saved-tune strong').textContent(),'Track <safe>');await page.locator('[data-load-tune]').click();assert.equal(await page.locator('#gear-count').inputValue(),'8');
  assert.equal(await page.locator('#front-motion').inputValue(),'0.5');
  const downloadPromise=page.waitForEvent('download');await page.locator('[data-export-tune]').click();const download=await downloadPromise;assert.equal(download.suggestedFilename(),'forza-garage-setup.json');

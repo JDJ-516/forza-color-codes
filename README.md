@@ -110,7 +110,7 @@ Developer commands `npm start` / `npm run dev` still run a foreground server and
 
 ## Garage: color lab and tuning bench
 
-The app opens on a permanently dark garage dashboard with Color Library, Color Lab, Tune Calculator, and Telemetry workspaces. Existing favorites and personal colors retain their original local-storage keys and remain available on the same browser origin. New setup records use `fcc-tunes` in local storage.
+The app opens on a permanently dark Dashboard with Color Library, Color Lab, Tune Calculator, and Telemetry workspaces. Existing favorites and personal colors retain their original local-storage keys and remain available on the same browser origin. New setup records use `fcc-tunes` in local storage.
 
 **Color lab:** open a valid library recipe and select **Experiment in color lab**, or start a fresh experiment. Adjust HSB sliders/numeric inputs, change a hex preview color, enable a second layer, reset to the starting experiment, and save the result as a personal color. Original library recipes are never modified. L/R source markers remain in the original recipe; numeric experiments generate new personal settings without those markers. Previews use standard HSV and a decorative two-color gradient, not Forza's physical paint rendering. Malformed source recipes must be reviewed before they can initialize an experiment. Existing imported multi-layer recipes and new personal multi-layer colors copy both layers.
 
@@ -184,7 +184,7 @@ The app reads the entire Google Sheets XLSX export, preserving all tabs, source 
 
 Open Rare Cars to check Google Sheets; an open visible app checks again every ten minutes after the workspace has first loaded. Returning to a visible page triggers an overdue check. **Refresh now** can check sooner (one request per 30 seconds). The browser uses same-origin `/api/rare-cars`; Node fetches only the fixed source export URL, with a 15-second timeout and bounded downloads/decompression. The app requires no new npm packages, Google credentials or Python runtime. It never writes to the source spreadsheet.
 
-A successful full import atomically updates `%LOCALAPPDATA%\ForzaGarage\runtime\rare-cars-cache.json` (or `FORZA_GARAGE_STATE_DIR`). The uploaded copy displays immediately; a saved newer copy is used on subsequent runs. Network errors, access denial, malformed exports or changed/unrecognized tab headers leave the last good data intact. The UI distinguishes the bundled snapshot (date unknown), a cached copy, and a successful live check, and shows the last successful check and any error. The timestamp is the fetch/check time, not the spreadsheet's editing date.
+A successful full import atomically updates `%LOCALAPPDATA%\ForzaGarage\runtime\rare-cars-cache.json` (or `FORZA_GARAGE_STATE_DIR`). The uploaded copy displays immediately; a saved newer copy is used on subsequent runs. Network errors, access denial, malformed exports or changed/unrecognized tab headers leave the last good data intact. The Rare Cars interface displays only “Last updated” with the last successful check time, or “Not available” before the first successful check. Cache provenance and refresh errors remain available in `/api/rare-cars`. The timestamp is the fetch/check time, not the spreadsheet's editing date.
 
 **Source access has not been verified live here:** the Google Sheets export returned HTTP 403 from this cloud environment. The provided workbook was fully imported; refresh/failure/recovery logic is checked with fixtures. On the gaming PC, automatic refresh requires internet and an export accessible without Google sign-in. If the sheet requires authentication, the app retains its uploaded/cached copy; it does not embed cookies or credentials or change source sharing permissions. A downloaded workbook is a snapshot and cannot update itself.
 
@@ -197,3 +197,5 @@ npm test
 ```
 
 The source workbook is `data/rare-cars-source.xlsx`. The Windows installer bundles only the normalized snapshot and the runtime parser/service, not the workbook or developer scripts. Re-run the updated installer once to install the Rare Cars feature; later source-sheet changes need no new app download when live export works.
+
+Version 1.3.1 simplifies Dashboard and source summaries, moves Rare Cars before Tune Calculator in navigation, and removes the color-sort selector. Drag, Track, and Drift use collapsible controls: selecting an open discipline or its Collapse button closes it while preserving inputs. Direct links still open the chosen discipline; collapsing removes that selection from the URL. Rare Cars retains automatic ten-minute refresh and cached fallback; it needs an open, visible app and source access, not a weekly manual import. No sync runs after the app is closed.

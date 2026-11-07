@@ -48,7 +48,7 @@ const assert=require('node:assert/strict');
  await page.locator('#category').selectOption('Personal');assert.equal(await page.locator('.card').count(),1);
  await page.locator('.color-title').click();await page.locator('#delete-color').click();assert.equal(await page.locator('#empty').isVisible(),true);
  await page.locator('#reset').click();await page.locator('#search').fill('176/A');assert.ok(await page.locator('.card').count()>0);
- await page.locator('#search').fill('');await page.locator('#sort').selectOption('name');
+ await page.locator('#search').fill('');
  await page.setViewportSize({width:390,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
  const failure=await context.newPage();await failure.route('**/catalogue.json',route=>route.abort());await failure.goto(process.env.TEST_BASE_URL || 'http://127.0.0.1:3000');
  await failure.waitForFunction(()=>document.querySelector('#catalogue-status').textContent.includes('could not load'));
