@@ -1,10 +1,10 @@
 const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let data=null,page=1,busy=false,lastLoaded=0,newOnly=false;const SIZE=24,NEW_MS=30*86400000;
+let data=null,page=1,busy=false,lastLoaded=0,newOnly=false,pendingCategory=null;const SIZE=24,NEW_MS=30*86400000;
 const time=value=>value?new Date(value).toLocaleString():'Not available';
 const isNew=c=>{const age=Date.now()-Date.parse(c.addedAt);return Number.isFinite(age)&&age>=0&&age<NEW_MS;};
 const colors=['#8bbcff','#c1a5ff','#ffc18b','#93cfe0','#e5a8cf'];
 function card(c){return `<article class="rare-car"><div class="rare-car-labels"><span class="eyebrow">${esc(c.category)}</span>${isNew(c)?'<span class="new-badge">New</span>':''}</div><h3>${esc(c.year)} ${esc(c.brand)}<br>${esc(c.model)}</h3>${c.details.map(d=>`<p><strong>${esc(d.label)}</strong><span>${esc(d.value)}</span></p>`).join('')}${c.classification?`<p class="source-classification">${esc(c.classification)}</p>`:''}${isNew(c)?`<p class="first-seen">First seen ${esc(new Date(c.addedAt).toLocaleDateString())}</p>`:''}<button class="button outline" data-rare-car="${esc(c.id)}">Use car in Tune Calculator ›</button></article>`;}
-function categories(){const selected=$('#rare-cars-category').value;$('#rare-cars-category').innerHTML='<option value="">All categories</option>'+data.categories.map(c=>`<option value="${esc(c.name)}">${esc(c.name)} (${c.count})</option>`).join('');$('#rare-cars-category').value=data.categories.some(c=>c.name===selected)?selected:'';}
+function categories(){const selected=pendingCategory||$('#rare-cars-category').value;pendingCategory=null;$('#rare-cars-category').innerHTML='<option value="">All categories</option>'+data.categories.map(c=>`<option value="${esc(c.name)}">${esc(c.name)} (${c.count})</option>`).join('');$('#rare-cars-category').value=data.categories.some(c=>c.name===selected)?selected:'';}
 function render(){
  if(!data)return;const query=$('#rare-cars-search').value.trim().toLocaleLowerCase(),category=$('#rare-cars-category').value;
  const cars=data.cars.filter(c=>(!category||c.category===category)&&(!newOnly||isNew(c))&&[c.year,c.brand,c.model,c.category,c.classification,...c.details.map(d=>d.value)].join(' ').toLocaleLowerCase().includes(query));
@@ -25,7 +25,7 @@ async function load(force=false){
  try{
   if(!data){const bundled=await fetch('/rare-cars.json');if(bundled.ok){data=await bundled.json();categories();render();}}
   const response=await fetch('/api/rare-cars',{method:force?'POST':'GET',headers:force?{'X-Forza-Garage':'1'}:{},cache:'no-store'}),next=await response.json();if(!response.ok||!Array.isArray(next.cars)||!next.sync)throw new Error(next.error||'The data service is unavailable.');
-  data=next;lastLoaded=Date.now();categories();$('#rare-cars-sync').textContent=`Last updated: ${time(data.sync.checkedAt)}`;$('#rare-cars-sync').dataset.state=data.sync.error?'cached':data.sync.origin;render();
+  data=next;document.dispatchEvent(new CustomEvent('ingenium:rare-cars-updated',{detail:data}));lastLoaded=Date.now();categories();$('#rare-cars-sync').textContent=`Last updated: ${time(data.sync.checkedAt)}`;$('#rare-cars-sync').dataset.state=data.sync.error?'cached':data.sync.origin;render();
  }catch{$('#rare-cars-sync').textContent=`Last updated: ${time(data?.sync?.checkedAt)}`;$('#rare-cars-sync').dataset.state='unavailable';}
  finally{busy=false;$('#rare-cars-refresh').disabled=false;}
 }
@@ -38,3 +38,5 @@ $('#rare-cars-results').addEventListener('click',e=>{
 function open(){if(document.body.dataset.workspace==='cars'&&(!data||Date.now()-lastLoaded>=600000))load();}
 new MutationObserver(open).observe(document.body,{attributes:true,attributeFilter:['data-workspace']});open();setInterval(()=>{if(!document.hidden&&data)load();},600000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&data&&Date.now()-lastLoaded>=600000)load();});
+
+document.addEventListener('ingenium:show-seasonal',()=>{pendingCategory='Seasonal';newOnly=false;page=1;if(data){categories();render();}});

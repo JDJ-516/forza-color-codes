@@ -1,3 +1,4 @@
+const {fillTrack}=require('./browser-inputs.cjs');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const assert=require('node:assert/strict');
 (async()=>{
@@ -22,12 +23,12 @@ const assert=require('node:assert/strict');
  await page.locator('#delete-color').click();await page.locator('#reset').click();await page.locator('#quality').selectOption('review');
  await page.locator('#search').fill('Luci di Bosco');await page.locator('.color-title').click();assert.equal(await page.locator('#experiment-color').isDisabled(),true);await page.locator('.close-detail').click();
  await page.locator('.topbar [data-workspace=tuning]').click();
- await page.locator('#tune-mode-picker [data-tune-mode=track]').click();
+ await page.locator('#tune-mode-picker [data-tune-mode=track]').click();await fillTrack(page);
  assert.equal(await page.locator('#gear-results tr').count(),6);assert.equal(await page.locator('.suspension-card').count(),2);
  const rate=Number((await page.locator('.suspension-card strong').first().textContent()).split(' ')[0]);await page.locator('#front-motion').fill('0.5');
  const rate2=Number((await page.locator('.suspension-card strong').first().textContent()).split(' ')[0]);assert.ok(Math.abs(rate2/rate-4)<.02);
  await page.locator('[data-gear="1"]').fill('4');assert.match(await page.locator('#tune-error').textContent(),/decrease/);assert.equal(await page.locator('#gear-results tr').count(),0);
- await page.locator('[data-gear="1"]').fill('2.4');await page.locator('#gear-count').selectOption('8');assert.equal(await page.locator('#gear-results tr').count(),8);
+ await page.locator('[data-gear="1"]').fill('2.4');await page.locator('#gear-count').selectOption('8');await page.locator('[data-gear="6"]').fill('0.78');await page.locator('[data-gear="7"]').fill('0.68');assert.equal(await page.locator('#gear-results tr').count(),8);
  await page.locator('#tune-name').fill('Track <safe>');await page.locator('#tune-car').fill('My car');await page.locator('#tune-form button[type=submit]').click();
  assert.equal(await page.locator('.saved-tune').count(),1);await page.reload();await page.locator('.saved-tune').waitFor();
  assert.equal(await page.locator('.saved-tune strong').textContent(),'Track <safe>');await page.locator('[data-load-tune]').click();assert.equal(await page.locator('#gear-count').inputValue(),'8');

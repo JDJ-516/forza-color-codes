@@ -62,3 +62,19 @@ body select,body textarea,.tool-form select,.tool-form textarea,.form-grid selec
  body[data-workspace=garage] .workbench-foot{font-size:9px}
  body[data-workspace=garage] footer{padding:12px 5%;margin-top:12px;font-size:9px}
 }
+
+/* Give the same Dashboard grid more vertical breathing room. */
+@media(min-width:1000px){
+ body[data-workspace=garage] main{min-height:calc(100svh - 128px)}
+ body[data-workspace=garage] .hero h1{font-size:clamp(34px,4.8vh,46px)}
+ body[data-workspace=garage] .hero-copy>p{font-size:clamp(12px,1.45vh,15px)}
+ body[data-workspace=garage] .featured-swatch{height:clamp(72px,10vh,112px)}
+ body[data-workspace=garage] .featured-info{padding:14px 16px}
+ body[data-workspace=garage] .featured-info h2{font-size:clamp(22px,2.7vh,30px)}
+ body[data-workspace=garage] .home-telemetry{padding:clamp(14px,2vh,22px)}
+ body[data-workspace=garage] .workbench-card{padding:clamp(14px,1.8vh,22px)}
+ body[data-workspace=garage] .workbench-card h3{font-size:clamp(19px,2.4vh,25px)}
+ body[data-workspace=garage] .workbench-card p{font-size:clamp(11px,1.4vh,14px)}
+ body[data-workspace=garage] .garage-overview .workbench-grid{height:100%}
+}
+.seasonal-spotlight>div:first-child{min-width:0}.seasonal-spotlight h2{overflow-wrap:anywhere}.seasonal-controls{display:flex;align-items:center;gap:8px;margin-top:8px}.seasonal-controls .icon-button{width:25px;height:25px;min-width:25px;padding:0;font-size:18px}.seasonal-controls .button{padding:4px 8px!important;font-size:10px!important}#seasonal-car-count:empty{display:none}
