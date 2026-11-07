@@ -16,7 +16,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  await page.locator('#rare-cars-refresh').click();await page.waitForFunction(()=>document.querySelector('#rare-cars-sync').dataset.state==='cached');assert.equal(await page.locator('#rare-cars-results .rare-car').count(),1);
  const autoRefresh=page.waitForRequest('**/api/rare-cars');await page.clock.fastForward(600001);await autoRefresh;
  await page.locator('#rare-cars-search').fill('');await page.screenshot({path:'/tmp/rare-cars-desktop.png',fullPage:true});await page.setViewportSize({width:390,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await page.screenshot({path:'/tmp/rare-cars-mobile.png',fullPage:true});
- await page.clock.fastForward(31*86400000);await page.locator('[data-car-tab=new]').click();assert.equal(await page.locator('.new-badge').count(),0);assert.match(await page.locator('#rare-cars-results').textContent(),/No new entries/);
+ await page.clock.fastForward(16*86400000);await page.clock.fastForward(15*86400000);await page.locator('[data-car-tab=new]').click();assert.equal(await page.locator('.new-badge').count(),0);assert.match(await page.locator('#rare-cars-results').textContent(),/No new entries/);
  assert.deepEqual(errors,[]);console.log('PASS: all categories, search, source legends, calculator name handoff, live additions, cached error display, and mobile layout. Remote refresh responses use fixtures.');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});
