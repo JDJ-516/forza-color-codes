@@ -1,6 +1,6 @@
 # Forza-ingenium — Paint & Tune
 
-Current build: **0.14.0**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.14.0.md) for checks and practical limits.
+Current build: **0.14.1**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.14.1.md) for checks and practical limits.
 
 ## Install and run on Windows
 
@@ -30,7 +30,7 @@ The pinned historical source, counts and remaining import work are documented in
 
 ## Rare Cars and New entries
 
-[KS21's FH6 Rare Car Sheet](https://docs.google.com/spreadsheets/d/1anCEWRN_SrteKIznuJLe8TrGXpVF-8vAUrNlb6nAFnM/edit?gid=1485355139#gid=1485355139) supplies **284 acquisition entries across ten categories** in the uploaded snapshot. A car may appear in several categories. Each spreadsheet category has a section with previews and a View all action; category buttons, search and the category filter open the full paginated lists. Unreleased classification notices are orange. Source-row labels are hidden while internal audit metadata remains intact.
+[KS21's FH6 Rare Car Sheet](https://docs.google.com/spreadsheets/d/1anCEWRN_SrteKIznuJLe8TrGXpVF-8vAUrNlb6nAFnM/edit?gid=1485355139#gid=1485355139) supplies **284 acquisition entries across ten categories** in the uploaded snapshot. A car may appear in several categories. Each spreadsheet category has a section with previews and a View all action; category buttons, search and the category filter open the full paginated lists. Unreleased classification notices use the standard neutral text styling. Source-row labels are hidden while internal audit metadata remains intact.
 
 The **New** section shows entries first detected by this app within 30 days, with badges and first-seen dates. Those dates are not spreadsheet edit dates or in-game release dates. History survives restarts and updates. Changes to acquisition notes or row positions do not create a new identity; category/year/brand/model and special-livery title identify an entry. Removed/reappearing entries keep their original first-seen date. Model/category renames count as new identities. Old caches migrate as already known entries, preventing a blanket New collection after an app update. Separate installations may first detect additions at different times.
 
@@ -86,7 +86,7 @@ Keep `data/source.xlsx`, `data/rare-cars-source.xlsx` and the pinned `data/sourc
 
 ### Browser and installer checks
 
-Seven Playwright suites live in `scripts/`: `browser-smoke.cjs`, `garage-smoke.cjs`, `drag-smoke.cjs`, `workspace-smoke.cjs`, `competitive-smoke.cjs`, `rare-cars-smoke.cjs` and `release-smoke.cjs`. Start the app with telemetry enabled for capture/reset checks. Set `TEST_BASE_URL`, `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` for the local environment, then run each suite with Node. Tests cover real localhost HTTP/UDP and synthetic captures; Google refresh tests use source fixtures.
+Eight Playwright suites live in `scripts/`: `browser-smoke.cjs`, `garage-smoke.cjs`, `drag-smoke.cjs`, `workspace-smoke.cjs`, `competitive-smoke.cjs`, `rare-cars-smoke.cjs`, `release-smoke.cjs`, and `dashboard-smoke.cjs`. Start the app with telemetry enabled for capture/reset checks. Set `TEST_BASE_URL`, `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` for the local environment, then run each suite with Node. Tests cover real localhost HTTP/UDP and synthetic captures; Google refresh tests use source fixtures.
 
 ```sh
 python3 -B scripts/build-windows-installer.py
@@ -96,3 +96,5 @@ python3 -B scripts/test_installer.py
 The deterministic Windows installer includes app code, the generated catalogues and documentation, and excludes Git metadata, credentials, environment files, source workbooks, development dependencies and tests. It embeds its own archive with a SHA-256 corruption check; this is not a signing/authenticity claim. The installed version is checked by the launcher; a matching managed process is reused and unrelated applications are not stopped. Native PowerShell/shortcut activation still needs a Windows PC test.
 
 The obsolete installer filename and source CMD wrapper have been removed. `Install Forza-ingenium.cmd` is the only installer; source users run `npm run launch`.
+
+Build 0.14.1 removes the brand subtitle, adds an offline SVG browser-tab icon, and compacts the desktop Dashboard. Desktop layouts are verified at 1280×720, 1366×768, 1440×900 and 1920×1080; small screens retain normal vertical flow for readability. Dashboard and Telemetry headings/status text turn green only while fresh decoded telemetry is being received, including an inactive game; stale/missing/unverified data and app disconnection clear the green state.

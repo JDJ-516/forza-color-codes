@@ -15,7 +15,7 @@ const fs=require('node:fs');
  await page.goto(base);await page.locator('#result-count').filter({hasText:'11008 colors'}).waitFor({state:'attached'});
  assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).colorScheme),'dark');
  assert.equal(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),'rgb(20, 20, 20)');
- assert.equal(await page.locator('.topbar #favorites-nav').count(),0);assert.doesNotMatch(await page.locator('h1').textContent(),/Your dashboard/);assert.doesNotMatch(await page.locator('#featured-refresh').textContent(),/Preview is approximate/);assert.equal(await page.locator('footer').getByText('Build 0.14.0').count(),1);
+ assert.equal(await page.locator('.topbar #favorites-nav').count(),0);assert.doesNotMatch(await page.locator('h1').textContent(),/Your dashboard/);assert.doesNotMatch(await page.locator('#featured-refresh').textContent(),/Preview is approximate/);assert.equal(await page.locator('footer').getByText('Build 0.14.1').count(),1);
  assert.equal(await page.locator('#featured-name').textContent(),first.name);assert.match(await page.locator('#featured-code').textContent(),/0.53 L/);
  const originalLink=await page.locator('#featured-recipe').getAttribute('href');assert.ok(originalLink.includes(first.id));
  await page.clock.fastForward(599999);assert.equal(await page.locator('#featured-recipe').getAttribute('href'),originalLink);

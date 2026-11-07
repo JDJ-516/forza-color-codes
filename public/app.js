@@ -114,6 +114,7 @@ for(const d of document.querySelectorAll('dialog')) d.addEventListener('click', 
 document.addEventListener('keydown', e => { if(e.key === '/' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName) && !document.querySelector('dialog[open]')) { e.preventDefault(); scrollLibrary(); $('#search').focus(); } });
 manufacturers(); render();
 
+function setTelemetryConnected(connected){for(const id of ['home-telemetry-title','telemetry-title','home-telemetry-state','telemetry-state'])$('#'+id).classList.toggle('is-connected',connected);}
 async function pollTelemetry() {
   try {
     const response = await fetch('/api/telemetry', {cache:'no-store'});
@@ -121,20 +122,21 @@ async function pollTelemetry() {
     const data = await response.json();
     const labels = {disabled:'Receiver disabled', stopped:'Receiver stopped', waiting:'Waiting for packets', receiving:'Receiving UDP packets', stale:'Signal lost', error:'Receiver error'};
     $('#telemetry-state').textContent = labels[data.state] || 'Unknown receiver state';
-    const fresh=data.latest&&(data.decodedAgeMs!=null?data.decodedAgeMs<3000:data.decodedAt&&Date.now()-data.decodedAt<3000);
+    const fresh=data.state==='receiving'&&data.latest&&(data.decodedAgeMs!=null?data.decodedAgeMs<3000:data.decodedAt&&Date.now()-data.decodedAt<3000);
+    setTelemetryConnected(!!fresh);
     const state=fresh?(data.latest.isRaceOn?'Live driving data':'Connected · game inactive'):({disabled:'Receiver disabled',waiting:'Waiting for game',stopped:'Receiver stopped',stale:'Signal lost',error:'Receiver error',receiving:'UDP received · decoder needs attention'}[data.state]||'Unknown connection');
     $('#home-telemetry-state').textContent=state;$('#home-telemetry-state').classList.toggle('live',!!fresh&&data.latest.isRaceOn);
     $('#home-telemetry-count').textContent=`${data.packets??0} packets · ${data.recordedSamples??0} captured frames`;
     $('#home-telemetry-message').textContent=fresh?`${data.latest.speedKph.toFixed(1)} km/h · ${Math.round(data.latest.rpm)} RPM · gear ${data.latest.gear}`:data.state==='disabled'?'Start the app with telemetry enabled, then direct game Data Out to this PC.':data.error?`Receiver error: ${data.error}`:data.decodeError||`Data Out ${data.receiver?.port?'UDP '+data.receiver.port:'receiver'} · last packet ${data.lastReceivedAt?new Date(data.lastReceivedAt).toLocaleTimeString():'not received yet'}`;
 
-    $('#telemetry-state').classList.toggle('live', data.state === 'receiving');
+    $('#telemetry-state').classList.toggle('live',data.state==='receiving'&&!!fresh);
     $('#decoded-telemetry').textContent = data.latest ? `${fresh ? (data.latest.isRaceOn ? 'Decoded driving data' : 'Decoded · game inactive') : 'Last decoded data (stale)'}: ${data.latest.speedKph.toFixed(1)} km/h · ${Math.round(data.latest.rpm)} RPM · gear ${data.latest.gear} · ${data.recordedSamples} captured samples. Decoder: community-cross-checked; validate against your game.` : `No plausible decoded data yet. ${data.decodeError || 'Waiting for Horizon 324-byte packets.'}`;
     $('#packet-count').textContent = String(data.packets ?? 0);
     $('#packet-size').textContent = data.lastPacket ? `${data.lastPacket.bytes} bytes` : '—';
     $('#packet-age').textContent = data.lastReceivedAt != null ? new Date(data.lastReceivedAt).toLocaleTimeString() : '—';
     $('#packet-preview').textContent = data.lastPacket?.previewHex || (data.error ? `Receiver error: ${data.error}. Check the configured UDP host and port.` : 'No packet received.');
   } catch {
-    $('#telemetry-state').textContent = 'App connection lost';$('#home-telemetry-state').textContent='App disconnected';$('#home-telemetry-state').classList.remove('live');$('#home-telemetry-message').textContent='Cannot reach the local app server. Connection readings are unavailable.';
+    setTelemetryConnected(false);$('#telemetry-state').textContent = 'App connection lost';$('#home-telemetry-state').textContent='App disconnected';$('#home-telemetry-state').classList.remove('live');$('#home-telemetry-message').textContent='Cannot reach the local app server. Connection readings are unavailable.';
     $('#telemetry-state').classList.remove('live');
   } finally { setTimeout(pollTelemetry, document.hidden ? 5000 : 1000); }
 }
