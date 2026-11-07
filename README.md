@@ -77,7 +77,7 @@ Run `npm ci --ignore-scripts` and `npm start` on a Node-capable host, with its a
 
 The optional local UDP receiver now decodes the community-cross-checked 324-byte Horizon layout, rejects implausible packets, and retains bounded active driving captures. It exposes speed/RPM, engine power, inputs and wheel channels for measured drag analysis. **Actual FH6 validation on the gaming PC remains required**; automated checks use synthetic fixtures and real local UDP, not an actual game capture. See [telemetry documentation](docs/telemetry.md) for pinned sources, offsets, exact import units, and limitations.
 
-Use `Start Forza.cmd` on the gaming PC, or the PowerShell commands below. If using a separate receiver on the same trusted private LAN, explicitly set `TELEMETRY_HOST` to its LAN listener and point the game to that machine's LAN IP, matching UDP port 5300. Restrict firewall access to the private network; do not expose UDP publicly. A cloud task does not automatically receive traffic from the gaming PC.
+Use the installed **Forza-ingenium** shortcut on the gaming PC, or the PowerShell commands below. If using a separate receiver on the same trusted private LAN, explicitly set `TELEMETRY_HOST` to its LAN listener and point the game to that machine's LAN IP, matching UDP port 5300. Restrict firewall access to the private network; do not expose UDP publicly. A cloud task does not automatically receive traffic from the gaming PC.
 
 The receiver is disabled unless `TELEMETRY_ENABLED=1`, and defaults to loopback if `TELEMETRY_HOST` is omitted. Changing cars or clicking Start fresh capture clears the bounded buffer. Server restart loses it. Export capture JSON before closing if needed. No raw game packets are stored on disk. Browser session imports accept the documented JSON schema, not arbitrary CSV formats. GitHub repository privacy is separate from access to a running app; there is no account/login system.
 
@@ -104,7 +104,7 @@ These PowerShell commands document the Windows equivalent of the environment-var
 
 ### Existing extracted source folder
 
-If you already have the source folder, `Start Forza.cmd` now delegates to the same launcher and opens the browser automatically, then exits. It no longer needs to remain open. `npm run launch` does the same; `npm run stop` stops the launcher-managed server. For day-to-day use, install the desktop shortcut using the single-file installer above so you do not depend on the extracted folder's location.
+From a source folder, `npm run launch` starts the app and opens the browser automatically, then exits. `npm run stop` stops the launcher-managed server. For day-to-day use, install the desktop shortcut using the single-file installer above so you do not depend on the extracted folder's location.
 
 Developer commands `npm start` / `npm run dev` still run a foreground server and need their terminal left open. Close that foreground server before switching to the desktop shortcut. Both launch methods use the same browser origin. On a non-Windows cloud machine, test the launcher with `--no-open` and an explicit temporary `FORZA_GARAGE_STATE_DIR`; no GUI/browser opener is needed for lifecycle validation.
 
@@ -168,7 +168,7 @@ To uninstall, first use the Stop shortcut, then remove `%LOCALAPPDATA%\ForzaGara
 
 ## Forza-ingenium competitive development
 
-Version 1.2 uses a neutral graphite/silver theme, with original paint swatches unchanged. Windows shortcuts are named Forza-ingenium. The existing internal ForzaGarage install/runtime folders, localhost URL, browser keys, and export schemas stay compatible with prior installations. Re-run the single-file installer to update; the old download filename remains an alias.
+Version 1.2 uses a neutral graphite/silver theme, with original paint swatches unchanged. Windows shortcuts are named Forza-ingenium. The existing internal ForzaGarage install/runtime folders, localhost URL, browser keys, and export schemas stay compatible with prior installations. Re-run `Install Forza-ingenium.cmd` to update.
 
 The drag performance search explores final drive, launch RPM, shift RPM and optionally gear spacing within user-supplied ranges, with coarse search and local refinement. It retains five candidates, permits cancellation, validates known telemetry engine limits, and applies the fastest candidate's gearing/RPM values. Friction, power, weight, aero, shift delay and launch-control mode stay fixed during the search. It never improves predictions by inventing more grip or power. Check every ratio against the in-game gearbox range. Engine-power bins are opt-in and must come from the matching build; unsupported RPM ranges use manual assumptions. No full vehicle physics or game-specific optimum is claimed.
 
@@ -199,3 +199,5 @@ npm test
 The source workbook is `data/rare-cars-source.xlsx`. The Windows installer bundles only the normalized snapshot and the runtime parser/service, not the workbook or developer scripts. Re-run the updated installer once to install the Rare Cars feature; later source-sheet changes need no new app download when live export works.
 
 Version 1.3.1 simplifies Dashboard and source summaries, moves Rare Cars before Tune Calculator in navigation, and removes the color-sort selector. Drag, Track, and Drift use collapsible controls: selecting an open discipline or its Collapse button closes it while preserving inputs. Direct links still open the chosen discipline; collapsing removes that selection from the URL. Rare Cars retains automatic ten-minute refresh and cached fallback; it needs an open, visible app and source access, not a weekly manual import. No sync runs after the app is closed.
+
+Version 1.3.2 removes the obsolete pre-rebrand installer and source CMD wrapper. `Install Forza-ingenium.cmd` is the only downloadable installer; source checkouts use `npm run launch` / `npm run stop`. During an update, the installer removes old Forza Garage desktop/Start Menu shortcuts only if their target, working directory, launcher path and description match this app. It removes the old Start Menu folder only if it is empty. Existing internal `ForzaGarage` app/runtime folders remain in use, preserving cache and launcher state; browser data is unchanged.

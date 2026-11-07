@@ -48,8 +48,6 @@ def build():
     encoded=base64.b64encode(binary).decode('ascii')
     target=ROOT/'Install Forza-ingenium.cmd'
     target.write_bytes((header+'\r\n'.join(encoded[i:i+120] for i in range(0,len(encoded),120))+'\r\n').encode('ascii'))
-    # Preserve the download link shared before the rebrand.
-    (ROOT/'Install Forza Garage.cmd').write_bytes(target.read_bytes())
     return target,len(binary),digest
 
 if __name__=='__main__':

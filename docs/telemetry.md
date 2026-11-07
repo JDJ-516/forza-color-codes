@@ -31,7 +31,7 @@ No launch-control-enabled flag, current tuning sliders, vehicle mass, gear ratio
 
 ## Capture procedure on the gaming PC
 
-1. Use `Start Forza.cmd` or the README's PowerShell commands. Both listeners bind to 127.0.0.1 in the Windows launcher. Enable Data Out in the game, directed to 127.0.0.1, UDP 5300.
+1. Use the installed **Forza-ingenium** shortcut, `npm run launch` from a source checkout, or the README's PowerShell commands. Both listeners bind to 127.0.0.1 in the Windows launcher. Enable Data Out in the game, directed to 127.0.0.1, UDP 5300.
 2. Check the Telemetry workspace. Compare decoded speed and RPM with the game before trusting analysis. Unknown-size or rejected packets should be investigated, not forced through another layout.
 3. In Tune Calculator → Drag, select the real distance, enter your build, and click **Start fresh capture** for each run.
 4. Stay stationary for at least 0.5 seconds, launch in first gear, and drive through the selected distance. Record launch-control mode using the manual selector.
