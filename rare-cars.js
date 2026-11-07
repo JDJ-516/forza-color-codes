@@ -68,14 +68,35 @@ export function parseRareCars(buffer){
  return {schema:'ingenium-rare-cars/v1',title:"KS21's FH6 Rare Car Sheet",url:SHEET_URL,sha256:createHash('sha256').update(buffer).digest('hex'),cars,categories};
 }
 function valid(data){return data?.schema==='ingenium-rare-cars/v1'&&Array.isArray(data.cars)&&data.cars.length>0&&data.cars.length<=10000&&Array.isArray(data.categories)&&data.categories.every(c=>typeof c.name==='string'&&Array.isArray(c.notes)&&c.notes.every(n=>typeof n==='string'))&&data.cars.every(c=>c&&typeof c.id==='string'&&typeof c.model==='string'&&typeof c.brand==='string'&&typeof c.category==='string'&&Number.isInteger(c.year)&&typeof c.classification==='string'&&Number.isInteger(c.sourceRow)&&Array.isArray(c.details)&&c.details.every(d=>typeof d.label==='string'&&typeof d.value==='string'));}
-export function createRareCarSource({fetcher=fetch,now=Date.now,cachePath=join(process.env.FORZA_GARAGE_STATE_DIR||join(process.env.LOCALAPPDATA||process.env.XDG_STATE_HOME||tmpdir(),'ForzaGarage','runtime'),'rare-cars-cache.json'),fallbackPath=new URL('./public/rare-cars.json',import.meta.url)}={}){
- let data=null,origin='bundled',checkedAt=null,lastAttempt=-Infinity,error=null,pending=null,cacheWarning=null;
- const ready=(async()=>{try{data=JSON.parse(await readFile(fallbackPath,'utf8'));if(!valid(data))throw Error();}catch{throw new Error('Bundled rare-car snapshot is missing or invalid.');}try{const cached=JSON.parse(await readFile(cachePath,'utf8'));if(valid(cached.data)&&Number.isFinite(cached.checkedAt)){data=cached.data;checkedAt=cached.checkedAt;origin='cached';}}catch{}})();
+// Acquisition-note edits do not make an existing entry new. Distinct special liveries do.
+export function rareCarKey(car){return createHash('sha256').update(JSON.stringify([car.category,car.year,car.brand.trim().toLowerCase(),car.model.trim().toLowerCase(),car.details.find(d=>d.label==='Livery Title')?.value.trim().toLowerCase()||''])).digest('hex').slice(0,24);}
+export function trackRareCarChanges(previous,cars,timestamp){
+ const known=new Set(previous.knownKeys),addedAt={...previous.addedAt};
+ for(const car of cars){const key=rareCarKey(car);if(!known.has(key)){known.add(key);addedAt[key]=new Date(timestamp).toISOString();}}
+ if(known.size>50000)throw new Error('Change history limit reached; keeping the last good copy.');
+ return {knownKeys:[...known],addedAt};
+}
+export function createRareCarSource({fetcher=fetch,now=Date.now,parseWorkbook=parseRareCars,cachePath=join(process.env.FORZA_GARAGE_STATE_DIR||join(process.env.LOCALAPPDATA||process.env.XDG_STATE_HOME||tmpdir(),'ForzaGarage','runtime'),'rare-cars-cache.json'),fallbackPath=new URL('./public/rare-cars.json',import.meta.url)}={}){
+ let data=null,origin='bundled',checkedAt=null,lastAttempt=-Infinity,error=null,pending=null,cacheWarning=null,tracking={knownKeys:[],addedAt:{}};
+ const ready=(async()=>{
+  try{data=JSON.parse(await readFile(fallbackPath,'utf8'));if(!valid(data))throw Error();}catch{throw new Error('Bundled rare-car snapshot is missing or invalid.');}
+  tracking.knownKeys=data.cars.map(rareCarKey);
+  try{const cached=JSON.parse(await readFile(cachePath,'utf8'));if(valid(cached.data)&&Number.isFinite(cached.checkedAt)){
+   data=cached.data;checkedAt=cached.checkedAt;origin='cached';
+   const history=cached.tracking;
+   if(history&&Array.isArray(history.knownKeys)&&history.knownKeys.length<=50000&&history.knownKeys.every(k=>/^[a-f0-9]{24}$/.test(k))&&history.addedAt&&typeof history.addedAt==='object'){
+    tracking.knownKeys=[...new Set([...tracking.knownKeys,...history.knownKeys])];
+    for(const [key,date] of Object.entries(history.addedAt))if(/^[a-f0-9]{24}$/.test(key)&&typeof date==='string'&&Number.isFinite(Date.parse(date)))tracking.addedAt[key]=date;
+   }
+   // Upgrade old caches without calling their entire existing collection "new".
+   tracking.knownKeys=[...new Set([...tracking.knownKeys,...data.cars.map(rareCarKey)])];
+  }}catch{}
+ })();
  async function refresh(force=false){await ready;if(pending)return pending;if(now()-lastAttempt<(force?30000:REFRESH_MS))return;lastAttempt=now();
   pending=(async()=>{try{const response=await fetcher(EXPORT_URL,{signal:AbortSignal.timeout(15000),headers:{'Accept':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'},redirect:'follow'});if(!response.ok)throw new Error(`Google Sheets returned HTTP ${response.status}. Check that the sheet is accessible to anyone with the link as a viewer.`);if(Number(response.headers.get('content-length'))>MAX)throw new Error('Workbook exceeds the 8 MB limit.');const reader=response.body.getReader();let size=0;const chunks=[];try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>MAX)throw new Error('Workbook exceeds the 8 MB limit.');chunks.push(Buffer.from(value));}}finally{await reader.cancel().catch(()=>{});}
-   const next=parseRareCars(Buffer.concat(chunks));data=next;checkedAt=now();origin='live';error=null;cacheWarning=null;
-   try{await mkdir(dirname(cachePath),{recursive:true});const temp=cachePath+'.tmp';await writeFile(temp,JSON.stringify({data,checkedAt}),{mode:0o600});await rename(temp,cachePath);}catch{cacheWarning='Updated for this session, but the disk cache could not be saved.';}
+   const next=parseWorkbook(Buffer.concat(chunks)),nextTracking=trackRareCarChanges(tracking,next.cars,now());data=next;tracking=nextTracking;checkedAt=now();origin='live';error=null;cacheWarning=null;
+   try{await mkdir(dirname(cachePath),{recursive:true});const temp=cachePath+'.tmp';await writeFile(temp,JSON.stringify({data,checkedAt,tracking}),{mode:0o600});await rename(temp,cachePath);}catch{cacheWarning='Updated for this session, but the disk cache could not be saved.';}
   }catch(e){error=e.name==='TimeoutError'?'Google Sheets timed out; keeping the previous data.':e.message;}finally{pending=null;}})();return pending;
  }
- return {async snapshot({force=false}={}){await refresh(force);return {...data,sync:{origin,checkedAt:checkedAt===null?null:new Date(checkedAt).toISOString(),lastAttemptAt:Number.isFinite(lastAttempt)?new Date(lastAttempt).toISOString():null,nextCheckAt:new Date(lastAttempt+REFRESH_MS).toISOString(),error,cacheWarning,intervalMs:REFRESH_MS}};}};
+ return {async snapshot({force=false}={}){await refresh(force);return {...data,cars:data.cars.map(c=>({...c,addedAt:tracking.addedAt[rareCarKey(c)]||null})),sync:{origin,checkedAt:checkedAt===null?null:new Date(checkedAt).toISOString(),lastAttemptAt:Number.isFinite(lastAttempt)?new Date(lastAttempt).toISOString():null,nextCheckAt:new Date(lastAttempt+REFRESH_MS).toISOString(),error,cacheWarning,intervalMs:REFRESH_MS}};}};
 }

@@ -115,7 +115,6 @@ function tuneMode(mode,writeUrl=true){
  document.dispatchEvent(new CustomEvent('garage:tune-mode',{detail:valid?mode:null}));
 }
 document.querySelectorAll('[data-tune-mode]').forEach(button=>button.addEventListener('click',()=>tuneMode(button.getAttribute('aria-expanded')==='true'?null:button.dataset.tuneMode)));
-document.querySelectorAll('[data-collapse-tune]').forEach(button=>button.addEventListener('click',()=>{tuneMode(null);document.querySelector(`[data-tune-mode="${button.dataset.collapseTune}"]`).focus();}));
 tuneMode(new URL(location.href).searchParams.get('tune'),false);
 
 const driftForm=$('#drift-form');

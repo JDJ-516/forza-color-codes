@@ -1,9 +1,9 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile,mkdtemp,rm} from 'node:fs/promises';
+import {readFile,mkdtemp,rm,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {parseRareCars,createRareCarSource,REFRESH_MS} from '../rare-cars.js';
+import {parseRareCars,createRareCarSource,REFRESH_MS,rareCarKey,trackRareCarChanges} from '../rare-cars.js';
 import {createServer} from '../server.js';
 const source=await readFile(new URL('../data/rare-cars-source.xlsx',import.meta.url));
 test('all workbook categories and acquisition details survive import, including source legends and dates',async()=>{
@@ -33,4 +33,23 @@ test('first offline launch uses uploaded workbook, reports unknown age, and API 
  const response=await fetch(base+'/api/rare-cars'),data=await response.json();assert.equal(response.status,200);assert.equal(data.sync.origin,'bundled');assert.equal(data.sync.checkedAt,null);assert.equal(data.sync.error,'offline');assert.equal(data.cars.length,284);
  assert.equal((await fetch(base+'/api/rare-cars',{method:'POST',headers:{Origin:'https://other.example','X-Forza-Garage':'1'}})).status,403);
  assert.equal((await fetch(base+'/api/rare-cars',{method:'POST',headers:{'X-Forza-Garage':'1'}})).status,200);
+});
+
+test('New tracking ignores acquisition edits and remembers removed/reappearing entries',()=>{
+ const car={category:'Seasonal',year:2025,brand:'Brand',model:'Car',details:[]};
+ const baseline={knownKeys:[rareCarKey(car)],addedAt:{}};
+ const edited={...car,details:[{label:'Notes',value:'Changed reward'}]};
+ assert.equal(rareCarKey(car),rareCarKey(edited));
+ const next=trackRareCarChanges(baseline,[edited,{...car,model:'New car'}],1000);assert.equal(Object.keys(next.addedAt).length,1);
+ const removed=trackRareCarChanges(next,[car],2000),restored=trackRareCarChanges(removed,[car,{...car,model:'New car'}],3000);assert.deepEqual(restored.addedAt,next.addedAt);
+});
+test('first-seen dates persist through refresh failures and restart, and old caches migrate without false New badges',async t=>{
+ const dir=await mkdtemp(join(tmpdir(),'rare-new-'));t.after(()=>rm(dir,{recursive:true,force:true}));const cachePath=join(dir,'cache.json');
+ let now=Date.UTC(2026,10,7);const original=parseRareCars(source),next=structuredClone(original);next.cars.push({...next.cars[0],id:'fixture-new',model:'Newly added model'});
+ const service=createRareCarSource({cachePath,now:()=>now,fetcher:async()=>new Response('fixture'),parseWorkbook:()=>structuredClone(next)});
+ const first=await service.snapshot();assert.equal(first.cars.filter(c=>c.addedAt).length,1);const firstDate=first.cars.at(-1).addedAt;assert.equal(firstDate,new Date(now).toISOString());
+ now+=REFRESH_MS;next.cars[0].details.push({label:'Notes',value:'Updated notes'});const second=await service.snapshot();assert.equal(second.cars.filter(c=>c.addedAt).length,1);assert.equal(second.cars.at(-1).addedAt,firstDate);
+ const restored=await createRareCarSource({cachePath,now:()=>now,fetcher:async()=>{throw Error('offline');}}).snapshot();assert.equal(restored.cars.at(-1).addedAt,firstDate);
+ await writeFile(cachePath,JSON.stringify({data:next,checkedAt:now}));
+ const migrated=await createRareCarSource({cachePath,now:()=>now,fetcher:async()=>{throw Error('offline');}}).snapshot();assert.equal(migrated.cars.filter(c=>c.addedAt).length,0);
 });
