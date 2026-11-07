@@ -32,3 +32,10 @@ test('drift maximizes points and reports a positive target gap for points still 
 test('capture identity is independent of labels and changes with the underlying samples',()=>{
  const a={samples:[{timestampMs:100,speedKph:40}],source:'one'},b={...a,source:'another'};assert.equal(captureKey(a),captureKey(b));assert.notEqual(captureKey(a),captureKey({samples:[{timestampMs:100,speedKph:41}]}));
 });
+
+test('optimizer preserves unchanged gear precision and keeps rounded candidates within exact user bounds',async()=>{
+ const input={...base,finalDrive:3.7004,gears:[3.23456,2.45678,1.87654,1.43219,1.12345,.91234]};
+ const report=await optimizeDrag(input,[],{fdMin:3.7004,fdMax:3.9004,launchMin:4500,launchMax:4500,shiftMin:8000,shiftMax:8000});
+ assert.ok(report.candidates.length>0);assert.ok(report.candidates[0].result.seconds<=report.baseline.seconds);
+ for(const c of report.candidates){assert.ok(c.input.finalDrive>=3.7004&&c.input.finalDrive<=3.9004);assert.deepEqual(c.input.gears,input.gears);}
+});

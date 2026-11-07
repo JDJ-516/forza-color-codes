@@ -8,15 +8,18 @@ export async function optimizeDrag(input,curve=[],options={},progress=()=>{},can
  const seen=new Set(),leaders=[];let tested=0;
  function evaluate(fd,launch,shift,spacing){
   if(cancelled())throw new Error('Search cancelled after inputs changed.');
-  const vector=[round(fd),Math.round(launch),Math.round(shift),round(spacing)],key=vector.join(':');if(seen.has(key))return;seen.add(key);
+  const clamp=(v,key)=>Math.max(bounds[key][0],Math.min(bounds[key][1],v));
+  const vector=[clamp(round(fd),'fd'),clamp(Math.round(launch),'launch'),clamp(Math.round(shift),'shift'),round(spacing)],key=vector.join(':');if(seen.has(key))return;seen.add(key);
   if(vector[1]>vector[2])return;
-  const gears=input.gears.map((g,i)=>round(g*Math.pow(vector[3],i)));
+  const gears=vector[3]===1?[...input.gears]:input.gears.map((g,i)=>round(g*Math.pow(vector[3],i)));
   if(gears.some((g,i)=>g<.1||g>10||(i&&g>=gears[i-1])))return;
   const value={...input,gears,finalDrive:vector[0],[launchKey]:vector[1],shiftRpm:vector[2]},result=simulateDrag(value,curve);tested++;
   if(result.completed){leaders.push({input:value,result,vector});leaders.sort((a,b)=>a.result.seconds-b.result.seconds);leaders.length=Math.min(leaders.length,5);}
  }
  const inside=(v,key)=>v>=bounds[key][0]&&v<=bounds[key][1];
- if(inside(input.finalDrive,'fd')&&inside(input[launchKey],'launch')&&inside(input.shiftRpm,'shift'))evaluate(input.finalDrive,input[launchKey],input.shiftRpm,1);
+ if(baseline.completed&&inside(input.finalDrive,'fd')&&inside(input[launchKey],'launch')&&inside(input.shiftRpm,'shift')){
+  const vector=[input.finalDrive,input[launchKey],input.shiftRpm,1];seen.add(vector.join(':'));leaders.push({input:structuredClone(input),result:baseline,vector});tested++;
+ }
  const spacing=options.gearSpacing?[.94,1,1.06]:[1];
  for(const fd of lin(...bounds.fd,9)){
   for(const launch of lin(...bounds.launch,5))for(const shift of lin(...bounds.shift,4))for(const shape of spacing)evaluate(fd,launch,shift,shape);
