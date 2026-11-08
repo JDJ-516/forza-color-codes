@@ -1,0 +1,17 @@
+Forza-ingenium - Windows x64 (Windows 10/11)
+
+Node.js is included. No Node installation, npm, or terminal commands needed.
+
+1. Extract ALL files from this ZIP into a folder.
+2. Double-click Start Forza-ingenium.cmd. Your browser opens automatically.
+3. Use Stop Forza-ingenium.cmd to stop the background app.
+
+Optional: Double-click Setup Forza-ingenium.cmd once to install per-user
+and create desktop and Start Menu shortcuts. No administrator access required.
+Then the downloaded/extracted folder can be deleted; use your desktop shortcut.
+
+To share: send this complete ZIP, not just a launcher file.
+Closing the browser does not stop the background telemetry receiver.
+Export telemetry before stopping/updating. Personal data stays in your browser.
+Updates are manual: download the new package and run Setup again.
+The included runtime license is app/runtime/LICENSE.

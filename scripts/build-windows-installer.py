@@ -1,32 +1,55 @@
 """Build a self-contained Windows bootstrap installer, without network access.
-Requires the existing Node.js installation at runtime; does not bundle credentials.
+Bundles a pinned, checksum-verified Windows Node.js runtime; no runtime downloads.
 """
 from pathlib import Path
 import base64
 import hashlib
 import io
 import zipfile
+import json
+import urllib.request
 
 ROOT=Path(__file__).resolve().parents[1]
 
-def payload():
+def runtime_files():
+    manifest=json.loads((ROOT/'packaging/node-runtime.json').read_text())
+    cache=ROOT/'.cache'/manifest['url'].rsplit('/',1)[1]
+    if not cache.exists():
+        raise RuntimeError('Runtime cache missing. Run this script with --fetch-runtime first.')
+    binary=cache.read_bytes()
+    if hashlib.sha256(binary).hexdigest()!=manifest['archiveSha256']:
+        raise RuntimeError('Official Node runtime archive checksum mismatch')
+    prefix='node-'+manifest['version']+'-'+manifest['platform']+'/'
+    with zipfile.ZipFile(io.BytesIO(binary)) as archive:
+        node=archive.read(prefix+'node.exe')
+        if hashlib.sha256(node).hexdigest()!=manifest['nodeExeSha256']:
+            raise RuntimeError('Node executable checksum mismatch')
+        return {'app/runtime/node.exe':node,
+                'app/runtime/LICENSE':archive.read(prefix+'LICENSE'),
+                'app/runtime/node-runtime.json':(ROOT/'packaging/node-runtime.json').read_bytes()}
+
+def payload_files():
     files=[ROOT/name for name in ['package.json','server.js','telemetry.js','fh6-decoder.js','rare-cars.js','launcher.js','README.md']]
     files+=sorted((ROOT/'public').glob('*'))
     files+=sorted((ROOT/'docs').glob('*.md'))
+    result={'app/'+file.relative_to(ROOT).as_posix():file.read_bytes() for file in files if file.is_file()}
+    result.update(runtime_files())
+    result['install.ps1']=(ROOT/'packaging/install.ps1').read_bytes()
+    for name in ['Start Forza-ingenium.cmd','Stop Forza-ingenium.cmd','Setup Forza-ingenium.cmd','READ ME.txt']:
+        result[name]=(ROOT/'packaging'/name).read_bytes()
+    return result
+
+def payload():
     output=io.BytesIO()
     with zipfile.ZipFile(output,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as archive:
-        for file in files:
-            if not file.is_file():continue
-            rel=file.relative_to(ROOT).as_posix()
-            entry=zipfile.ZipInfo('app/'+rel,date_time=(2026,1,1,0,0,0))
+        for name,data in payload_files().items():
+            entry=zipfile.ZipInfo(name,date_time=(2026,1,1,0,0,0))
             entry.compress_type=zipfile.ZIP_DEFLATED
-            archive.writestr(entry,file.read_bytes())
-        entry=zipfile.ZipInfo('install.ps1',date_time=(2026,1,1,0,0,0));entry.compress_type=zipfile.ZIP_DEFLATED
-        archive.writestr(entry,(ROOT/'packaging/install.ps1').read_bytes())
+            archive.writestr(entry,data)
     return output.getvalue()
 
 def build():
-    binary=payload();digest=hashlib.sha256(binary).hexdigest()
+    binary=payload();(ROOT/'Forza-ingenium-Windows-x64.zip').write_bytes(binary);digest=hashlib.sha256(binary).hexdigest()
     # The script reads its path from an environment variable, not interpolated command text.
     # SHA-256 detects a truncated/corrupted payload; it is not a code-signing claim.
     bootstrap=("$ErrorActionPreference='Stop'; $temp=$null; try { "
@@ -51,4 +74,13 @@ def build():
     return target,len(binary),digest
 
 if __name__=='__main__':
+    import sys
+    if '--fetch-runtime' in sys.argv:
+        manifest=json.loads((ROOT/'packaging/node-runtime.json').read_text())
+        destination=ROOT/'.cache'/manifest['url'].rsplit('/',1)[1]
+        destination.parent.mkdir(exist_ok=True)
+        data=urllib.request.urlopen(manifest['url'],timeout=120).read()
+        if hashlib.sha256(data).hexdigest()!=manifest['archiveSha256']:
+            raise RuntimeError('Downloaded runtime checksum mismatch')
+        destination.write_bytes(data)
     target,size,digest=build();print(f'Built {target.name}: {target.stat().st_size} bytes, payload {size} bytes, SHA256 {digest}')

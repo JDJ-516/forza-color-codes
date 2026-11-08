@@ -1,0 +1,7 @@
+{
+  "version": "v26.13.0",
+  "platform": "win-x64",
+  "url": "https://nodejs.org/dist/v26.13.0/node-v26.13.0-win-x64.zip",
+  "archiveSha256": "dcc60d59a0746999f99064a01c020445d54d84228c691cdbf25b49ac3b59150a",
+  "nodeExeSha256": "14319838b3f355e0398c13569a90270bce4fc68f25189f58c59b03dadae0e6d5"
+}

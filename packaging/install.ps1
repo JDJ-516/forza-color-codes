@@ -1,16 +1,20 @@
 param([Parameter(Mandatory=$true)][string]$SourcePath)
 $ErrorActionPreference = 'Stop'
-$node = (Get-Command node.exe -CommandType Application -ErrorAction Stop).Source
-$major = [int]((& $node --version).TrimStart('v').Split('.')[0])
-if ($major -lt 22) { throw 'Node.js 22 or newer is required. Install Node.js LTS, then run this installer again.' }
 $appRoot = Join-Path $env:LOCALAPPDATA 'ForzaGarage\app'
 $sourceRoot = [IO.Path]::GetFullPath($SourcePath)
-if (!(Test-Path -LiteralPath (Join-Path $sourceRoot 'launcher.js'))) { throw 'The installer payload is incomplete.' }
+$node = Join-Path $sourceRoot 'runtime\node.exe'
+if (!(Test-Path -LiteralPath $node) -or !(Test-Path -LiteralPath (Join-Path $sourceRoot 'launcher.js'))) {
+    throw 'The installer payload is incomplete. Download the complete package again.'
+}
+if ($sourceRoot.TrimEnd('\') -eq ([IO.Path]::GetFullPath($appRoot)).TrimEnd('\')) {
+    throw 'Run Setup from the downloaded package, outside the installed app folder.'
+}
 # Stop only a server whose PID and instance ID match this launcher's local state.
 & $node (Join-Path $sourceRoot 'launcher.js') --stop
 if ($LASTEXITCODE -ne 0) { throw 'Close the older app before updating. No files have been replaced.' }
 New-Item -ItemType Directory -Path $appRoot -Force | Out-Null
 Get-ChildItem -LiteralPath $sourceRoot -Force | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination $appRoot -Recurse -Force }
+$node = Join-Path $appRoot 'runtime\node.exe'
 $shell = New-Object -ComObject WScript.Shell
 function Quote-Literal([string]$value) { return "'" + $value.Replace("'", "''") + "'" }
 function Make-Shortcut([string]$path, [string]$flag) {

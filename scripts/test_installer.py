@@ -29,13 +29,29 @@ class InstallerTests(unittest.TestCase):
             self.assertIn('app/launcher.js',z.namelist())
             self.assertIn('app/public/catalogue.json',z.namelist())
             self.assertIn('install.ps1',z.namelist())
+            self.assertEqual(archive,(ROOT/'Forza-ingenium-Windows-x64.zip').read_bytes())
+            manifest=json.loads(z.read('app/runtime/node-runtime.json'))
+            exe=z.read('app/runtime/node.exe')
+            self.assertEqual(hashlib.sha256(exe).hexdigest(),manifest['nodeExeSha256'])
+            self.assertEqual(exe[:2],b'MZ')
+            offset=int.from_bytes(exe[60:64],'little')
+            self.assertEqual(exe[offset:offset+6],b'PE\0\0\x64\x86')
+            self.assertIn(b'Node.js',z.read('app/runtime/LICENSE'))
+            for command in ['Start','Stop']:
+                launcher=z.read(command+' Forza-ingenium.cmd').decode('ascii')
+                self.assertIn('%~dp0app\\runtime\\node.exe',launcher)
+                self.assertNotIn('npm',launcher)
+            setup=z.read('install.ps1').decode()
+            self.assertNotIn('Get-Command node',setup)
+            self.assertIn("$node = Join-Path $appRoot 'runtime\\node.exe'",setup)
+            files=_builder.payload_files()
             for name in z.namelist():
-                self.assertTrue(name.startswith('app/') or name=='install.ps1')
+                self.assertIn(name,files)
                 self.assertNotIn('..',Path(name).parts)
                 self.assertNotIn('.git',Path(name).parts)
                 self.assertNotIn('.env',Path(name).parts)
                 if name.startswith('app/'):
-                    self.assertEqual(z.read(name),(ROOT/name[4:]).read_bytes())
+                    self.assertEqual(z.read(name),files[name])
 
     def test_extracted_bundle_starts_and_serves_its_assets(self):
         installer=(ROOT/'Install Forza-ingenium.cmd').read_text()

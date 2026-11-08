@@ -1,20 +1,29 @@
 # Forza-ingenium — Paint & Tune
 
-Current build: **0.14.4**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.14.4.md) for checks and practical limits.
+Current build: **0.14.5**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.14.5.md) for checks and practical limits.
 
 ## Install and run on Windows
 
-Requires your existing **Node.js 22+** installation.
+**Node.js is included. No Node installation, npm commands, or administrator access required.** These packages support Windows 10/11 x64 (Intel/AMD).
 
-1. Open [Install Forza-ingenium.cmd](https://github.com/JDJ-516/forza-color-codes/blob/main/Install%20Forza-ingenium.cmd) while signed into GitHub.
-2. Select **Download raw file**, then double-click the downloaded installer. Close any older manually started Forza terminal once before switching.
-3. From then on, use the **Forza-ingenium desktop shortcut**. It starts the local background app and telemetry receiver, waits for readiness, and opens your default browser automatically. No ZIP extraction or npm commands are needed.
+**Portable ZIP — share this with friends:**
+
+1. Download [Forza-ingenium-Windows-x64.zip](https://github.com/JDJ-516/forza-color-codes/raw/refs/heads/main/Forza-ingenium-Windows-x64.zip) while signed into the private repository, or receive the complete ZIP from its owner.
+2. Right-click → **Extract All**, then double-click **Start Forza-ingenium.cmd** inside the extracted folder. The app opens your default browser automatically.
+3. Use **Stop Forza-ingenium.cmd** when finished. Optionally run **Setup Forza-ingenium.cmd** once for desktop/Start Menu shortcuts; after setup, you may delete the extracted download.
+
+**Single-file installer — no manual extraction:**
+
+1. Open [Install Forza-ingenium.cmd](https://github.com/JDJ-516/forza-color-codes/blob/main/Install%20Forza-ingenium.cmd), select **Download raw file**, and double-click the downloaded file.
+2. Use the **Forza-ingenium desktop shortcut** from then on. The installer also includes Node.js.
+
+Send friends the complete app ZIP or single-file installer. They do not need GitHub access to run a file you send. GitHub **Code → Download ZIP** is the source checkout; use the ready-to-run app ZIP above, or run the included single-file installer from the source checkout. Close any older manually started Forza terminal before switching.
 
 To update, download the same installer again and run it. To stop the app, use **Start Menu → Forza-ingenium → Stop Forza-ingenium**, or sign out of Windows. Closing the browser tab leaves the receiver running. Export in-memory telemetry before stopping or updating.
 
 The app installs in `%LOCALAPPDATA%\ForzaGarage\app`. Logs, managed-server state and the Rare Cars cache are in `%LOCALAPPDATA%\ForzaGarage\runtime`. The internal folder name is retained for existing installations. The installer removes old Forza Garage shortcuts only when their target, working directory, launcher path and description match this app; it removes an old Start Menu folder only if empty.
 
-Favorites, personal colors and saved tunes stay in the same browser/profile at `http://127.0.0.1:3000`. They do not transfer automatically to a different browser. Updating the installer does not delete browser data. This is a browser-backed desktop shortcut; Node is not bundled, updates are explicit, and it does not register a Windows service or startup-at-login task. GitHub repository privacy does not add an app login.
+Favorites, personal colors and saved tunes stay in the same browser/profile at `http://127.0.0.1:3000`. They do not transfer automatically to a different browser. Updating the installer does not delete browser data. This is a browser-backed desktop shortcut; Node is bundled privately for this app, updates are explicit, and it does not register a Windows service or startup-at-login task. GitHub repository privacy does not add an app login.
 
 To uninstall, stop the managed app and remove its shortcuts and `%LOCALAPPDATA%\ForzaGarage` folder. Browser data remains until cleared in that browser.
 
@@ -89,13 +98,13 @@ Keep `data/source.xlsx`, `data/rare-cars-source.xlsx` and the pinned `data/sourc
 Eleven Playwright suites live in `scripts/`: `browser-smoke.cjs`, `garage-smoke.cjs`, `drag-smoke.cjs`, `workspace-smoke.cjs`, `competitive-smoke.cjs`, `rare-cars-smoke.cjs`, `release-smoke.cjs`, `dashboard-smoke.cjs`, `seasonal-smoke.cjs`, `telemetry-status-smoke.cjs`, and `navigation-smoke.cjs`. Start the app with telemetry enabled for capture/reset checks. Set `TEST_BASE_URL`, `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` for the local environment, then run each suite with Node. Tests cover real localhost HTTP/UDP and synthetic captures; Google refresh tests use source fixtures.
 
 ```sh
-python3 -B scripts/build-windows-installer.py
+python3 -B scripts/build-windows-installer.py --fetch-runtime
 python3 -B scripts/test_installer.py
 ```
 
-The deterministic Windows installer includes app code, the generated catalogues and documentation, and excludes Git metadata, credentials, environment files, source workbooks, development dependencies and tests. It embeds its own archive with a SHA-256 corruption check; this is not a signing/authenticity claim. The installed version is checked by the launcher; a matching managed process is reused and unrelated applications are not stopped. Native PowerShell/shortcut activation still needs a Windows PC test.
+The deterministic Windows installer and portable ZIP include a pinned official Node.js Windows x64 runtime, its complete redistribution license, app code, the generated catalogues and documentation, and exclude Git metadata, credentials, environment files, source workbooks, development dependencies and tests. It embeds its own archive with a SHA-256 corruption check; this is not a signing/authenticity claim. The installed version is checked by the launcher; a matching managed process is reused and unrelated applications are not stopped. Native PowerShell/shortcut activation still needs a Windows PC test.
 
-The obsolete installer filename and source CMD wrapper have been removed. `Install Forza-ingenium.cmd` is the only installer; source users run `npm run launch`.
+Runtime provenance and pinned SHA-256 checksums are in `packaging/node-runtime.json`. The builder downloads only with `--fetch-runtime`, verifies the archive before use, and caches it under ignored `.cache/`. Subsequent builds work offline. The application does not need npm, so npm is not shipped. Rebuild both distribution files after app changes. Source developers still need Node.js 22+; end users do not.
 
 Build 0.14.1 removes the brand subtitle, adds an offline SVG browser-tab icon, and compacts the desktop Dashboard. Desktop layouts are verified at 1280×720, 1366×768, 1440×900 and 1920×1080; small screens retain normal vertical flow for readability. Dashboard and Telemetry headings/status text turn green only while fresh decoded telemetry is being received, including an inactive game; stale/missing/unverified data and app disconnection clear the green state.
 
@@ -106,3 +115,5 @@ Tuning fields and search bounds start empty, including benchmark context. Select
 Build 0.14.3 makes Dashboard/Telemetry headings and state text green for fresh decoded telemetry and orange otherwise. Packet arrival with rejected contents has an explicit orange “Packets arriving · data invalid” state. Detailed field checks and **Export packet diagnostics** explain rejections. Inactive zero-engine-limit frames are handled as connected/inactive data without creating driving samples; active data remains validated. See [telemetry troubleshooting](docs/telemetry.md#packets-arriving-but-data-invalid).
 
 Build 0.14.4 removes section-level scrolling when opening Color Library; workspace navigation starts at the page top. The car widget now combines explicitly dated **Car Pass DLC** releases in the last seven calendar days with newly detected Seasonal-sheet entries in the last seven days, labelling release dates and detection dates separately. For example, the uploaded workbook lists the 2025 Ford Mustang GTD for 2026-11-05; it is included for 2026-11-07 even though the row was already in the baseline. Date-only entries do not establish an exact unlock hour or complete Festival Playlist coverage. Missing spreadsheet additions are never labelled as no new game cars. Official news access returned HTTP 403 in this cloud; an actual dated weekly playlist source is still needed for complete Thursday reward listings.
+
+Build 0.14.5 bundles Node.js in both Windows distributions and adds portable Start/Stop launchers plus optional shortcut setup. No external Node installation or PATH configuration is needed.
