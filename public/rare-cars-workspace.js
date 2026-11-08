@@ -40,3 +40,5 @@ new MutationObserver(open).observe(document.body,{attributes:true,attributeFilte
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&data&&Date.now()-lastLoaded>=600000)load();});
 
 document.addEventListener('ingenium:show-seasonal',()=>{pendingCategory='Seasonal';newOnly=false;page=1;if(data){categories();render();}});
+
+document.addEventListener('ingenium:show-car-category',e=>{if(typeof e.detail!=='string')return;pendingCategory=e.detail;newOnly=false;page=1;if(data){categories();render();}});

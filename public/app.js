@@ -90,9 +90,9 @@ document.addEventListener('click', async e => {
 });
 for(const selector of ['#add-color','#add-bottom']) $(selector).addEventListener('click', () => $('#create').showModal());
 for(const selector of ['#search','#manufacturer','#finish','#category','#quality']) $(selector).addEventListener(selector === '#search' ? 'input' : 'change', () => render(true));
-function scrollLibrary() { document.dispatchEvent(new CustomEvent('garage:navigate',{detail:'library'})); $('#library').scrollIntoView({behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'}); }
-$('#explore').addEventListener('click', scrollLibrary);
-$('#library-nav').addEventListener('click',()=>{render(true);scrollLibrary();});
+function openLibrary() { document.dispatchEvent(new CustomEvent('garage:navigate',{detail:'library'})); }
+$('#explore').addEventListener('click', openLibrary);
+$('#library-nav').addEventListener('click',()=>{render(true);openLibrary();});
 $('#favorites-filter').addEventListener('change',()=>{onlyFavorites=$('#favorites-filter').value==='favorites';render(true);});
 $('#reset').addEventListener('click', () => { family = ''; $('#search').value = ''; $('#manufacturer').value = ''; $('#finish').value = ''; onlyFavorites=false;$('#favorites-filter').value='all';$('#category').value=''; $('#quality').value=''; render(true); });
 $('#color-form').addEventListener('submit', e => {
@@ -111,7 +111,7 @@ $('#detail').addEventListener('close',()=>{if(!$('#detail').open)clearRecipeURL(
 $('#detail').addEventListener('cancel',clearRecipeURL);
 
 for(const d of document.querySelectorAll('dialog')) d.addEventListener('click', e => { if(e.target === d) {const r=d.getBoundingClientRect(); if(e.clientX<r.left || e.clientX>r.right || e.clientY<r.top || e.clientY>r.bottom) {if(d.id==='detail')closeDetail();else d.close();}} });
-document.addEventListener('keydown', e => { if(e.key === '/' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName) && !document.querySelector('dialog[open]')) { e.preventDefault(); scrollLibrary(); $('#search').focus(); } });
+document.addEventListener('keydown', e => { if(e.key === '/' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName) && !document.querySelector('dialog[open]')) { e.preventDefault(); openLibrary(); $('#search').focus(); } });
 manufacturers(); render();
 
 function setTelemetryConnected(connected){for(const id of ['home-telemetry-title','telemetry-title','home-telemetry-state','telemetry-state'])$('#'+id).classList.toggle('is-connected',connected);}

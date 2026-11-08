@@ -1,6 +1,6 @@
 # Forza-ingenium — Paint & Tune
 
-Current build: **0.14.3**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.14.3.md) for checks and practical limits.
+Current build: **0.14.4**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.14.4.md) for checks and practical limits.
 
 ## Install and run on Windows
 
@@ -86,7 +86,7 @@ Keep `data/source.xlsx`, `data/rare-cars-source.xlsx` and the pinned `data/sourc
 
 ### Browser and installer checks
 
-Ten Playwright suites live in `scripts/`: `browser-smoke.cjs`, `garage-smoke.cjs`, `drag-smoke.cjs`, `workspace-smoke.cjs`, `competitive-smoke.cjs`, `rare-cars-smoke.cjs`, `release-smoke.cjs`, `dashboard-smoke.cjs`, `seasonal-smoke.cjs`, and `telemetry-status-smoke.cjs`. Start the app with telemetry enabled for capture/reset checks. Set `TEST_BASE_URL`, `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` for the local environment, then run each suite with Node. Tests cover real localhost HTTP/UDP and synthetic captures; Google refresh tests use source fixtures.
+Eleven Playwright suites live in `scripts/`: `browser-smoke.cjs`, `garage-smoke.cjs`, `drag-smoke.cjs`, `workspace-smoke.cjs`, `competitive-smoke.cjs`, `rare-cars-smoke.cjs`, `release-smoke.cjs`, `dashboard-smoke.cjs`, `seasonal-smoke.cjs`, `telemetry-status-smoke.cjs`, and `navigation-smoke.cjs`. Start the app with telemetry enabled for capture/reset checks. Set `TEST_BASE_URL`, `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` for the local environment, then run each suite with Node. Tests cover real localhost HTTP/UDP and synthetic captures; Google refresh tests use source fixtures.
 
 ```sh
 python3 -B scripts/build-windows-installer.py
@@ -104,3 +104,5 @@ Build 0.14.2 keeps the Dashboard grid and expands its spacing/fonts vertically w
 Tuning fields and search bounds start empty, including benchmark context. Selecting a gear count creates empty ratio inputs. Calculations wait for required specifications; saved setups/attempts remain available and load only through explicit actions. Drag presets supply distance internally. Only Custom strip shows distance; named-strip and grade entry controls have been removed. Level ground is assumed. Saved preset/custom selections and intentionally blank inactive launch-RPM inputs are retained on explicit build loading. LC comparisons require both RPM values rather than inventing an unentered mode’s launch RPM.
 
 Build 0.14.3 makes Dashboard/Telemetry headings and state text green for fresh decoded telemetry and orange otherwise. Packet arrival with rejected contents has an explicit orange “Packets arriving · data invalid” state. Detailed field checks and **Export packet diagnostics** explain rejections. Inactive zero-engine-limit frames are handled as connected/inactive data without creating driving samples; active data remains validated. See [telemetry troubleshooting](docs/telemetry.md#packets-arriving-but-data-invalid).
+
+Build 0.14.4 removes section-level scrolling when opening Color Library; workspace navigation starts at the page top. The car widget now combines explicitly dated **Car Pass DLC** releases in the last seven calendar days with newly detected Seasonal-sheet entries in the last seven days, labelling release dates and detection dates separately. For example, the uploaded workbook lists the 2025 Ford Mustang GTD for 2026-11-05; it is included for 2026-11-07 even though the row was already in the baseline. Date-only entries do not establish an exact unlock hour or complete Festival Playlist coverage. Missing spreadsheet additions are never labelled as no new game cars. Official news access returned HTTP 403 in this cloud; an actual dated weekly playlist source is still needed for complete Thursday reward listings.

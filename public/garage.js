@@ -10,6 +10,7 @@ function show(view){
   document.querySelectorAll('button[data-workspace]').forEach(el=>{el.classList.toggle('active',el.dataset.workspace===view);el.setAttribute('aria-current',el.dataset.workspace===view?'page':'false');});
   $('#library-nav').classList.toggle('active',view==='library');
   history.replaceState(null,'',`#${view}`);
+  window.scrollTo({top:0,left:0,behavior:'instant'});
 }
 document.addEventListener('click',e=>{const button=e.target.closest('button[data-workspace]');if(button){if(button.dataset.workspace==='library')$('#library-nav').click();else show(button.dataset.workspace);}});
 for(const selector of ['#library-nav','#explore'])$(selector).addEventListener('click',()=>show('library'));
