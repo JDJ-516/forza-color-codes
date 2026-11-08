@@ -1,18 +1,18 @@
 import dgram from 'node:dgram';
-import {decodeHorizonPacket,inspectHorizonPacket} from './fh6-decoder.js';
+import {decodeHorizonPacket,inspectHorizonPacket,readHorizonChannels} from './fh6-decoder.js';
 import {SESSION_SCHEMA} from './public/telemetry-analysis.js';
 
 // Bounded capture using a community-cross-checked decoder; local game validation is still required.
 export function createTelemetryReceiver({host = '127.0.0.1', port = 5300, now = Date.now} = {}) {
   const socket = dgram.createSocket('udp4');
   let packets = 0, lastPacket = null, lastReceivedAt = null, listening = false, error = null;
-  let rawPacket=null,lastInspection=null,lastRejected=null;
+  let rawPacket=null,lastInspection=null,lastRejected=null,readings=null;
   let decodedPackets=0, rejectedPackets=0, latest=null, decodedAt=null, decodeError=null, samples=[], lastStored=null;
   socket.on('message', message => {
     if (!message.length) return;
     packets += 1;
     lastPacket = { bytes: message.length, previewHex: message.subarray(0, 64).toString('hex').match(/.{2}/g).join(' ') };
-    lastReceivedAt = now();rawPacket=Buffer.from(message.subarray(0,1024));lastInspection=null;
+    lastReceivedAt = now();readings=readHorizonChannels(message);rawPacket=Buffer.from(message.subarray(0,1024));lastInspection=null;
     try {
       const decoded=decodeHorizonPacket(message);decodedPackets++;decodedAt=now();decodeError=null;latest=decoded;
       if(decoded.isRaceOn && decoded.carOrdinal>=0){
@@ -42,7 +42,7 @@ export function createTelemetryReceiver({host = '127.0.0.1', port = 5300, now = 
         packets, lastReceivedAt, lastPacket, error,
         receiver:{host,port:listening?socket.address().port:port},
         format: latest ? 'horizon324-community' : 'unverified',
-        decodedPackets,rejectedPackets,decodeError,decodeChecks:lastInspection?.checks||null,decodedAt,decodedAgeMs:decodedAt===null?null:Math.max(0,now()-decodedAt),latest,recordedSamples:samples.length,
+        decodedPackets,rejectedPackets,decodeError,decodeChecks:lastInspection?.checks||null,decodedAt,decodedAgeMs:decodedAt===null?null:Math.max(0,now()-decodedAt),latest,readings,recordedSamples:samples.length,
         decoderValidation:'Community layout cross-checked against independent implementations; actual FH6 validation pending on this PC.',
       };
     },

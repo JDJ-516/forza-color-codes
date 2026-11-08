@@ -1,6 +1,6 @@
 # Forza-ingenium — Paint & Tune
 
-Current build: **0.14.5**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.14.5.md) for checks and practical limits.
+Current build: **0.14.6**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.14.6.md) for checks and practical limits.
 
 ## Install and run on Windows
 
@@ -117,3 +117,11 @@ Build 0.14.3 makes Dashboard/Telemetry headings and state text green for fresh d
 Build 0.14.4 removes section-level scrolling when opening Color Library; workspace navigation starts at the page top. The car widget now combines explicitly dated **Car Pass DLC** releases in the last seven calendar days with newly detected Seasonal-sheet entries in the last seven days, labelling release dates and detection dates separately. For example, the uploaded workbook lists the 2025 Ford Mustang GTD for 2026-11-05; it is included for 2026-11-07 even though the row was already in the baseline. Date-only entries do not establish an exact unlock hour or complete Festival Playlist coverage. Missing spreadsheet additions are never labelled as no new game cars. Official news access returned HTTP 403 in this cloud; an actual dated weekly playlist source is still needed for complete Thursday reward listings.
 
 Build 0.14.5 bundles Node.js in both Windows distributions and adds portable Start/Stop launchers plus optional shortcut setup. No external Node installation or PATH configuration is needed.
+
+Build 0.14.6 expands Telemetry to 89 packet parameters in nine groups, with units,
+live/stale/unverified states and the in-game connection instructions. Diagnostic
+controls, packet hex and the footer have been removed from the page. All known
+fields are decoded from the supported 324-byte layout; the reserved final byte
+is displayed as a raw value with unknown meaning. Invalid packets are excluded
+from tuning and shown as unverified readings. The Windows packages still include
+Node.js. Actual gameplay on the user's PC has not been validated here.

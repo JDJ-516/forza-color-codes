@@ -21,6 +21,7 @@ test('receives UDP, exposes real packet metadata, detects lost signal, and bound
   assert.equal(received.lastPacket.bytes,324);
   assert.equal(received.lastPacket.previewHex.split(' ').length,64);
   assert.equal(received.format,'unverified');
+  assert.equal(received.readings.rpm,payload.readFloatLE(16));
   assert.equal(received.speed,undefined);
   const server = createServer({telemetry});
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -67,9 +68,9 @@ test('packet diagnostics expose exact rejection values, bound raw data and recov
  const sender=dgram.createSocket('udp4');t.after(()=>sender.close());const server=createServer({telemetry});await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(()=>new Promise(r=>server.close(r)));const base=`http://127.0.0.1:${server.address().port}`;
  assert.equal((await fetch(base+'/api/telemetry/diagnostics')).status,409);
  async function send(b){const count=telemetry.snapshot().packets;time+=100;await new Promise((r,reject)=>sender.send(b,telemetry.address().port,'127.0.0.1',e=>e?reject(e):r()));for(let i=0;i<50&&telemetry.snapshot().packets===count;i++)await delay(5);assert.equal(telemetry.snapshot().packets,count+1);}
- const bad=packet();bad.writeFloatLE(NaN,16);await send(bad);assert.equal(telemetry.snapshot().recordedSamples,0);assert.ok(telemetry.snapshot().decodeChecks.some(c=>c.offset===16&&!c.valid));
+ const bad=packet();bad.writeFloatLE(NaN,16);await send(bad);assert.equal(telemetry.snapshot().recordedSamples,0);assert.equal(telemetry.snapshot().readings.rpm,null);assert.equal(telemetry.snapshot().readings.speedKph,72);assert.ok(telemetry.snapshot().decodeChecks.some(c=>c.offset===16&&!c.valid));
  let response=await fetch(base+'/api/telemetry/diagnostics'),data=await response.json();assert.match(response.headers.get('content-disposition'),/packet-diagnostics.json/);assert.equal(data.latestPacket.hex,bad.toString('hex'));assert.equal(data.lastRejected.inspection.failures.find(c=>c.offset===16).value,'NaN');assert.equal(data.latestPacket.truncated,false);
  await send(Buffer.alloc(324));assert.equal(telemetry.snapshot().decodedPackets,1);assert.equal(telemetry.snapshot().latest.isRaceOn,false);assert.equal(telemetry.snapshot().decodeError,null);assert.equal(telemetry.snapshot().decodeChecks,null);assert.equal(telemetry.snapshot().recordedSamples,0);
  await send(packet());assert.equal(telemetry.snapshot().recordedSamples,1);assert.equal(telemetry.snapshot().latest.isRaceOn,true);
- await send(Buffer.alloc(2048,0xab));data=await (await fetch(base+'/api/telemetry/diagnostics')).json();assert.equal(data.latestPacket.bytes,2048);assert.equal(data.latestPacket.hex.length,2048);assert.equal(data.latestPacket.truncated,true);assert.equal(data.latestPacket.inspection.bytes,2048);assert.equal(telemetry.snapshot().recordedSamples,1);
+ await send(Buffer.alloc(2048,0xab));data=await (await fetch(base+'/api/telemetry/diagnostics')).json();assert.equal(data.latestPacket.bytes,2048);assert.equal(data.latestPacket.hex.length,2048);assert.equal(data.latestPacket.truncated,true);assert.equal(data.latestPacket.inspection.bytes,2048);assert.equal(telemetry.snapshot().recordedSamples,1);assert.equal(telemetry.snapshot().readings,null);
 });

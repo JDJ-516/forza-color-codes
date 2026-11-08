@@ -1,3 +1,4 @@
+import { renderTelemetryChannels } from './telemetry-view.js';
 import { FINISH_TYPES,needsSecondLayer,personalColor,nextFeaturedColor,FEATURE_INTERVAL_MS,paintTextColor } from './color-tools.js';
 import { hsvToHex,hexToHsv } from './calculators.js';
 import { catalogueMetadata } from './data.js';
@@ -128,6 +129,7 @@ async function pollTelemetry() {
     if(data.state==='receiving')$('#telemetry-state').textContent=state;
     $('#home-telemetry-state').textContent=state;$('#home-telemetry-state').classList.toggle('live',!!fresh&&data.latest.isRaceOn);
     $('#home-telemetry-count').textContent=`${data.packets??0} packets · ${data.recordedSamples??0} captured frames`;
+    renderTelemetryChannels(data,!!fresh);
     const failedCheck=data.decodeChecks?.find(check=>!check.valid);
     let message;
     if(fresh)message=data.latest.isRaceOn?`${data.latest.speedKph.toFixed(1)} km/h · ${Math.round(data.latest.rpm)} RPM · gear ${data.latest.gear}`:'Game connected. Enter driving to record telemetry.';
@@ -139,22 +141,21 @@ async function pollTelemetry() {
     $('#home-telemetry-message').textContent=message;
 
     $('#telemetry-state').classList.toggle('live',data.state==='receiving'&&!!fresh);
-    $('#decoded-telemetry').textContent = data.latest ? `${fresh ? (data.latest.isRaceOn ? 'Decoded driving data' : 'Decoded · game inactive') : 'Last decoded data (stale)'}: ${data.latest.speedKph.toFixed(1)} km/h · ${Math.round(data.latest.rpm)} RPM · gear ${data.latest.gear} · ${data.recordedSamples??0} captured samples. Decoder: community-cross-checked; validate against your game.` : `No usable driving data yet. ${data.decodeError ? 'Packets are arriving, but their values failed validation. '+data.decodeError+' Export packet diagnostics if this continues while driving.' : 'Waiting for Horizon 324-byte packets.'}`;
-    if(data.decodeError)$('#decoded-telemetry').textContent='UDP is reaching the app, but the latest packet could not be decoded. '+data.decodeError+' Check the fields below or export packet diagnostics.';else if(fresh&&!data.latest.isRaceOn)$('#decoded-telemetry').textContent='Connected to the game; gameplay is inactive. Enter driving to record telemetry.';
-    $('#export-telemetry-diagnostics').disabled=!(data.packets>0);
-    $('#packet-check-table').hidden=!data.decodeChecks?.length;
-    $('#packet-checks').innerHTML=(data.decodeChecks||[]).map(c=>`<tr><th>${escape(c.name)}</th><td>${c.offset??'—'}</td><td>${escape(c.value)}</td><td>${escape(c.expected)}</td><td class="${c.valid?'':'packet-check-failed'}">${c.valid?'Pass':'Failed'}</td></tr>`).join('');
+    $('#decoded-telemetry').textContent = data.decodeError
+      ? 'Packet values are unverified and excluded from tuning. '+data.decodeError
+      : fresh ? (data.latest.isRaceOn ? `Live driving data · ${data.recordedSamples??0} captured samples.` : 'Connected to the game. Enter driving to record telemetry.')
+      : data.state==='stale' ? 'Signal lost. Values below are from the last received packet.'
+      : data.state==='error' ? message : 'Waiting for game data. Enable Data Output using the settings above.';
     $('#packet-count').textContent = String(data.packets ?? 0);
     $('#packet-size').textContent = data.lastPacket ? `${data.lastPacket.bytes} bytes` : '—';
     $('#packet-age').textContent = data.lastReceivedAt != null ? new Date(data.lastReceivedAt).toLocaleTimeString() : '—';
-    $('#packet-preview').textContent = data.lastPacket?.previewHex || (data.error ? `Receiver error: ${data.error}. Check the configured UDP host and port.` : 'No packet received.');
   } catch {
-    setTelemetryConnected(false);$('#export-telemetry-diagnostics').disabled=true;$('#telemetry-state').textContent = 'App connection lost';$('#home-telemetry-state').textContent='App disconnected';$('#home-telemetry-state').classList.remove('live');$('#home-telemetry-message').textContent='Cannot reach the local app server. Connection readings are unavailable.';
-    $('#telemetry-state').classList.remove('live');
+    setTelemetryConnected(false);renderTelemetryChannels({state:'offline'},false);$('#telemetry-state').textContent = 'App connection lost';$('#home-telemetry-state').textContent='App disconnected';$('#home-telemetry-state').classList.remove('live');$('#home-telemetry-message').textContent='Cannot reach the local app server. Connection readings are unavailable.';
+    $('#telemetry-state').classList.remove('live');$('#decoded-telemetry').textContent='App connection lost. Live values are unavailable.';
   } finally { setTimeout(pollTelemetry, document.hidden ? 5000 : 1000); }
 }
 pollTelemetry();
-$('#export-telemetry-diagnostics').addEventListener('click',async()=>{try{const response=await fetch('/api/telemetry/diagnostics',{cache:'no-store'});if(!response.ok){const data=await response.json();throw new Error(data.error||'Packet diagnostics are unavailable.');}const url=URL.createObjectURL(await response.blob()),a=document.createElement('a');a.href=url;a.download='forza-ingenium-packet-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(error){toast(error.message);}});
+
 
 
 for (const [selector, step] of [['#previous-page',-1],['#next-page',1]]) $(selector).addEventListener('click', () => { page += step; render(); $('#grid').scrollIntoView({block:'start'}); });
