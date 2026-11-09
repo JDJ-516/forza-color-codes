@@ -1,39 +1,26 @@
-const {fillDrag,fillSearch}=require('./browser-inputs.cjs');
+const {fillDrag}=require('./browser-inputs.cjs');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const assert=require('node:assert/strict');
 (async()=>{
- const {dragSession}=await import('../test-support/telemetry-fixtures.js');
- const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true,args:['--no-sandbox']});
- const context=await browser.newContext({viewport:{width:1440,height:1000}}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
- const base=process.env.TEST_BASE_URL||'http://127.0.0.1:3000';await page.goto(base+'/#tuning');await page.locator('#tune-mode-picker [data-tune-mode=drag]').click();await fillDrag(page);await page.locator('#drag-summary strong').first().waitFor();
- const input=name=>page.locator(`#drag-form [name="${name}"]`);const distanceSI=()=>input('distanceM').evaluate(async el=>(await import('/units.js')).readSI(el));
- const seconds=async()=>Number((await page.locator('#drag-summary strong').first().textContent()).replace(' s',''));
- assert.ok(Math.abs((await distanceSI())-321.869)<1e-8);assert.equal(await page.locator('#drag-strip-info').count(),0);
- await page.locator('#drag-strip').selectOption('fh6:ito-airfield:804.672');assert.ok(Math.abs((await distanceSI())-804.672)<1e-8);
- await page.locator('#drag-strip').selectOption('fh6:horizon-festival:965.606');assert.ok(Math.abs((await distanceSI())-965.606)<1e-8);
- await page.locator('#drag-strip').selectOption('custom');await input('distanceM').fill('1320');
- const quarter=await seconds();assert.ok(quarter>0);
- await page.locator('#drag-strip').selectOption('custom');await input('distanceM').fill('660');assert.ok(await seconds()<quarter);
- await page.locator('#drag-strip').selectOption('custom');await input('distanceM').fill('5280');assert.ok(await seconds()>quarter);
- await page.locator('#drag-strip').selectOption('custom');await input('distanceM').fill('1320');await page.locator('#drag-launch-control').selectOption('disabled');assert.match(await page.locator('#drag-summary').textContent(),/Launch control OFF/);
- await input('ratios').fill('1, 2, 3, 4');assert.match(await page.locator('#drag-error').textContent(),/descending/);await input('ratios').fill('3.2, 2.4, 1.8, 1.4, 1.1, 0.9');
- await page.locator('#drag-strip').selectOption('custom');assert.equal(await input('distanceM').inputValue(),'');await input('distanceM').fill('1320');assert.equal(await page.locator('#drag-form [name=gradePercent]').count(),0);
- await input('name').fill('Drag <safe> build');await page.locator('#drag-form button[type=submit]').click();assert.equal(await page.locator('#drag-builds .saved-tune').count(),1);
- await page.reload();await page.locator('[data-drag-load]').click();await page.locator('#drag-form details').evaluateAll(ds=>ds.forEach(d=>d.open=true));assert.equal(await input('name').inputValue(),'Drag <safe> build');assert.equal(await page.locator('#drag-launch-control').inputValue(),'disabled');assert.ok(Math.abs((await distanceSI())-402.336)<1e-8);
- await fillSearch(page);await page.locator('#drag-optimize').click();await page.locator('#drag-apply-candidate').waitFor();assert.match(await page.locator('#drag-opt-status').textContent(),/Best of/);await page.locator('#drag-apply-candidate').click();
- await page.locator('#drag-strip').selectOption('custom');await input('distanceM').fill('1320');await page.locator('#drag-capture-details').evaluate(e=>e.open=true);await page.locator('#drag-run-lc').selectOption('enabled');
- await page.locator('#drag-session-file').setInputFiles({name:'synthetic-test-session.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(dragSession()))});
- await page.waitForFunction(()=>document.querySelector('#drag-run-status').textContent.includes('Completed measured run'));
- assert.equal(await page.locator('#drag-use-curve').isDisabled(),false);await page.locator('#drag-use-curve').check();assert.match(await page.locator('#drag-model-note').textContent(),/measured engine-power bins/);assert.match(await page.locator('#drag-shift-evidence').textContent(),/crossover/);await page.locator('[data-drag-load]').click();await page.locator('#drag-form details').evaluateAll(ds=>ds.forEach(d=>d.open=true));assert.equal(await page.locator('#drag-shift-evidence').textContent(),'');await page.locator('#drag-strip').selectOption('custom');await input('distanceM').fill('1320');await page.locator('#drag-session-file').setInputFiles({name:'synthetic-test-session.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(dragSession()))});await page.locator('#drag-use-curve').check();
- await page.locator('#drag-save-run').click();assert.equal(await page.locator('[data-run-compare]').count(),1);await page.locator('[data-run-compare]').click();assert.match(await page.locator('#drag-compare-note').textContent(),/ET \+0.000 s/);
- await page.locator('#drag-strip').selectOption('custom');await input('distanceM').fill('5280');assert.match(await page.locator('#drag-run-results').textContent(),/1 mile/);
- await page.locator('#drag-session-file').setInputFiles({name:'bad.json',mimeType:'application/json',buffer:Buffer.from('{"samples":[]}')});assert.equal(await page.locator('#drag-use-curve').isChecked(),false);assert.equal(await page.locator('#drag-use-curve').isDisabled(),true);
- await page.route('**/api/telemetry/drag/session',route=>route.fulfill({contentType:'application/json',body:JSON.stringify(dragSession())}));
- await page.locator('#drag-strip').selectOption('custom');await input('distanceM').fill('1320');await page.locator('#drag-analyze-live').click();await page.waitForFunction(()=>document.querySelector('#drag-run-status').textContent.includes('Completed measured run'));
- const captureDownload=page.waitForEvent('download');await page.locator('#drag-export-capture').click();assert.equal((await captureDownload).suggestedFilename(),'forza-telemetry-session.json');
- // Starting a live countdown is covered by drag-capture-smoke with a connected stationary car.
- const download=page.waitForEvent('download');await page.locator('[data-drag-export]').click();assert.equal((await download).suggestedFilename(),'forza-drag-build.json');
- await page.setViewportSize({width:390,height:844});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
- await page.locator('[data-drag-delete]').click();assert.equal(await page.locator('[data-drag-load]').count(),0);
- assert.deepEqual(errors,[]);console.log('PASS: four distances, LC modes, validation, custom distance, build persistence, bounded model search, telemetry import/live analysis, measured run comparisons, distance recomputation, malformed-file reset, export, and mobile layout. Synthetic fixtures only; no FH6 validation claim.');await browser.close();
+ const {dragSession}=await import('../test-support/telemetry-fixtures.js');const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true,args:['--no-sandbox']});
+ try{
+ const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.route('**/api/telemetry',r=>r.fulfill({contentType:'application/json',body:JSON.stringify({state:'waiting',dragCapture:{state:'idle',id:0}})}));
+ await page.goto((process.env.TEST_BASE_URL||'http://127.0.0.1:3017')+'/?tune=drag#tuning');await fillDrag(page);
+ const f=name=>page.locator(`#drag-form [name=${name}]`),distance=()=>f('distanceM').evaluate(async el=>(await import('/units.js')).readSI(el));
+ for(const [value,meters]of [['fh6:irakawa-space-centre:321.869',321.869],['fh6:ito-airfield:804.672',804.672],['fh6:horizon-festival:965.606',965.606]]){await page.locator('#drag-strip').selectOption(value);assert.ok(Math.abs(await distance()-meters)<1e-8);assert.equal(await f('distanceM').isHidden(),true);}
+ await page.locator('#drag-strip').selectOption('custom');await f('distanceM').fill('1320');assert.ok(Math.abs(await distance()-402.336)<1e-8);await f('name').fill('Drag <safe> build');await f('launchControl').selectOption('disabled');await page.locator('#drag-form button[type=submit]').click();assert.equal(await page.locator('[data-drag-load]').count(),1);
+ await page.reload();await page.locator('[data-drag-load]').click();assert.equal(await f('name').inputValue(),'Drag <safe> build');assert.equal(await f('launchControl').inputValue(),'disabled');assert.equal(await f('setupGearCount').inputValue(),'6');assert.ok(Math.abs(await distance()-402.336)<1e-8);
+ await page.locator('#drag-capture-details').evaluate(e=>e.open=true);await page.locator('#drag-run-lc').selectOption('enabled');
+ const file=()=>({name:'synthetic.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(dragSession()))});await page.locator('#drag-session-file').setInputFiles(file());await page.waitForFunction(()=>document.querySelector('#drag-run-status').textContent.includes('Completed measured run'));
+ assert.match(await page.locator('#drag-validation').textContent(),/Measured run/);await page.locator('#drag-setup-generate').click();assert.match(await page.locator('#drag-setup-feedback').textContent(),/Driven-wheel slip/);
+ await page.locator('#drag-save-run').click();await page.locator('[data-run-compare]').click();assert.match(await page.locator('#drag-compare-note').textContent(),/ET \+0.000 s/);
+ await f('distanceM').fill('5280');assert.match(await page.locator('#drag-run-results').textContent(),/1 mile/);
+ await page.locator('#drag-session-file').setInputFiles({name:'bad.json',mimeType:'application/json',buffer:Buffer.from('{}')});assert.equal(await page.locator('#drag-save-run').isDisabled(),true);assert.equal(await page.locator('#drag-validation').isHidden(),true);assert.equal(await page.locator('#drag-setup-export').isDisabled(),true);
+ const moving=dragSession();moving.samples=moving.samples.filter(s=>s.speedKph>30);await page.locator('#drag-session-file').setInputFiles({name:'moving.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(moving))});assert.match(await page.locator('#drag-run-status').textContent(),/no usable standing-start run/);assert.equal(await page.locator('#drag-validation').isHidden(),true);
+ await page.route('**/api/telemetry/drag/session',r=>r.fulfill({contentType:'application/json',body:JSON.stringify(dragSession())}));await f('distanceM').fill('1320');await page.locator('#drag-analyze-live').click();await page.waitForFunction(()=>document.querySelector('#drag-run-status').textContent.includes('Completed measured run'));
+ for(const [selector,filename]of [['#drag-export-capture','forza-telemetry-session.json'],['[data-drag-export]','forza-drag-build.json']]){const d=page.waitForEvent('download');await page.locator(selector).click();assert.equal((await d).suggestedFilename(),filename);}
+ await page.locator('[data-drag-delete]').click();assert.equal(await page.locator('[data-drag-load]').count(),0);assert.deepEqual(errors,[]);
+ console.log('PASS: FH6/custom distances, LC, saved builds/reload, measured run import/comparison, telemetry feedback, distance recomputation, malformed/rolling captures, live analysis and exports.');
+ }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});

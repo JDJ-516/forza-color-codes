@@ -18,23 +18,22 @@ function paint(){
  else setIndicator('idle','READY','Start now at any speed, or choose the optional countdown');
 }
 function supported(m,key){return Number.isFinite(m?.[key])&&(key==='peakPowerW'?(m.powerSamples??m.eligibleSamples):(m.torqueSamples??m.eligibleSamples))>=5;}
-function target(name,value){const c=$(`#drag-form [name=${name}]`);if(!c||!Number.isFinite(value)||c.dataset.telemetryManual==='1'||(c.value!==''&&c.dataset.telemetryValue!==c.value))return;if(value<Number(c.min)||value>Number(c.max))return;const next=String(Math.round(value));if(c.value===next)return;c.value=next;c.dataset.telemetryValue=next;c.dispatchEvent(new CustomEvent('input',{bubbles:true,detail:{telemetry:true}}));}
-function clearAutoTargets(){for(const name of ['torquePeakRpm','shiftRpm']){const c=$(`#drag-form [name=${name}]`);if(c.dataset.telemetryManual!=='1'&&c.dataset.telemetryValue===c.value){c.value='';delete c.dataset.telemetryValue;c.dispatchEvent(new CustomEvent('input',{bubbles:true,detail:{telemetry:true}}));}}}
 function showEngine(){
  if(!$('#drag-measured-power'))return;
  const power=supported(engine,'peakPowerW'),torque=supported(engine,'peakTorqueNm');
- $('#drag-measured-power').textContent=power?(engine.peakPowerW/1000*HP_PER_KW).toFixed(1)+' HP':'—';
- $('#drag-measured-torque').textContent=torque?(engine.peakTorqueNm*LBFT_PER_NM).toFixed(1)+' ft-lb':'—';
  const matching=source==='import'||!lastData.latest?.isRaceOn||!engine?.key||engine.key===engineKey(lastData.latest);
+ $('#drag-measured-power').textContent=matching&&power?(engine.peakPowerW/1000*HP_PER_KW).toFixed(1)+' HP':'—';
+ $('#drag-measured-torque').textContent=matching&&torque?(engine.peakTorqueNm*LBFT_PER_NM).toFixed(1)+' ft-lb':'—';
  $('#drag-apply-measured').disabled=!(power||torque)||!matching;
- if(matching){if(torque)target('torquePeakRpm',engine.torquePeakRpm);if(engine?.observedShifts)target('shiftRpm',engine.shiftRpm);}
- $('#drag-engine-source').textContent=engine?(matching?`${source==='import'?'Imported run':'Drag capture'} · ${engine.eligibleSamples??0} eligible engine samples · ${engine.observedShifts??0} observed upshifts. `+(engine.observedShifts?`Observed median shift: ${Math.round(engine.shiftRpm)} RPM.`:'No observed shift RPM yet.'): 'This captured run belongs to a different car/build. Start a new capture for the current car.'):'No captured engine measurements yet. Power and torque remain manual model inputs.';
+ $('#drag-measured-torque-rpm').textContent=matching&&torque&&Number.isFinite(engine?.torquePeakRpm)?Math.round(engine.torquePeakRpm)+' RPM':'—';
+ $('#drag-measured-shift').textContent=matching&&engine?.observedShifts&&Number.isFinite(engine.shiftRpm)?Math.round(engine.shiftRpm)+' RPM':'—';
+ $('#drag-engine-source').textContent=engine?(matching?`${source==='import'?'Imported run':'Drag capture'} · ${engine.eligibleSamples??0} eligible engine samples · ${engine.observedShifts??0} observed upshifts. `+(engine.observedShifts?`Observed median shift: ${Math.round(engine.shiftRpm)} RPM.`:'No observed shift RPM yet.'): 'This captured run belongs to a different car/build. Start a new capture for the current car.'):'No captured engine measurements yet. Power and torque remain manual build specifications.';
 }
 async function post(action){const response=await fetch('/api/telemetry/drag/'+action,{method:'POST',headers:{'X-Forza-Garage':'1'}});const data=await response.json();if(!response.ok)throw new Error(data.error||'Drag capture is unavailable.');return data;}
 async function analyzeStopped(capture){
  const token=`${capture.id}:${capture.stoppedAt}`;if(analyzed===token||capture.recordedSamples<2||['car-changed','early-launch'].includes(capture.reason))return;
  analyzed=token;
- try{const response=await fetch('/api/telemetry/drag/session',{cache:'no-store'}),session=await response.json();if(!response.ok)throw new Error(session.error);if(current?.id!==capture.id||current.state!=='stopped'||source==='import')return;callbacks?.renderRun(session,true);}
+ try{const response=await fetch('/api/telemetry/drag/session',{cache:'no-store'}),session=await response.json();if(!response.ok)throw new Error(session.error);if(current?.id!==capture.id||current.state!=='stopped'||['import','manual'].includes(source))return;callbacks?.renderRun(session,true);}
  catch(error){$('#drag-run-status').textContent=error.message;}
 }
 export function updateDragCapture(data){
@@ -52,6 +51,11 @@ export function updateDragCapture(data){
  }
  paint();if(current?.state==='stopped'&&callbacks)analyzeStopped(current);
 }
+export function clearCapturedEngine(){engine=null;source='manual';showEngine();}
+export function captureMatchesCurrent(session){
+ const live=lastData.latest;if(lastData.state!=='receiving'||!live?.isRaceOn||lastData.decodedAgeMs>=3000)return true;
+ return session.samples.every(s=>['carOrdinal','carPerformanceIndex','drivetrain','engineMaxRpm'].every(k=>s[k]==null||live[k]==null||s[k]===live[k]));
+}
 export function showImportedEngineData(session,live=false){source=live?'live':'import';engine=summarizeCapture(session.samples);showEngine();}
 function powerWeight(){const form=$('#drag-form');if(!form)return;const power=Number(form.elements.powerKw.value),mass=Number(form.elements.mass.value);$('#drag-pwr').textContent=power>0&&mass>0?(power/mass).toFixed(4)+' HP/lb':'—';}
 export function attachDragCapture(handlers){
@@ -59,7 +63,8 @@ export function attachDragCapture(handlers){
  async function begin(countdown){
   try{
    $('#drag-reset-capture').disabled=true;$('#drag-start-now').disabled=true;
-   const capture=await post(countdown?'start?countdown=1':'start');callbacks.clearRun();source='live';engine=null;clearAutoTargets();showEngine();analyzed=null;
+   const lc=$('#drag-launch-control').value;if(lc)$('#drag-run-lc').value=lc;
+   const capture=await post(countdown?'start?countdown=1':'start');callbacks.clearRun();source='live';engine=null;showEngine();analyzed=null;
    $('#drag-run-status').textContent=countdown?'Optional countdown started. A standing-start ET needs a captured stationary launch.':'Capture started. Moving captures provide engine evidence; a standing-start ET needs a captured stationary launch.';
    updateDragCapture({...lastData,dragCapture:capture});
   }catch(error){$('#drag-run-status').textContent=error.message;updateDragCapture(lastData);}
@@ -71,6 +76,6 @@ export function attachDragCapture(handlers){
   for(const [name,key,factor] of [['powerKw','peakPowerW',.001],['torqueNm','peakTorqueNm',1]])if(supported(engine,key)){const c=$(`#drag-form [name=${name}]`),value=engine[key]*factor;if(value>=readSI({value:c.min,dataset:c.dataset})&&value<=readSI({value:c.max,dataset:c.dataset})){writeSI(c,value);c.dispatchEvent(new Event('input',{bubbles:true}));}}
  });
  $('#drag-form').addEventListener('input',powerWeight);$('#drag-builds').addEventListener('click',()=>queueMicrotask(powerWeight));
- document.addEventListener('ingenium:car-changed',()=>{clearAutoTargets();showEngine();powerWeight();});
+ document.addEventListener('ingenium:car-changed',()=>{clearCapturedEngine();powerWeight();});
  setInterval(paint,100);powerWeight();showEngine();updateDragCapture(lastData);
 }

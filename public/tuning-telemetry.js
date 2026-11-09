@@ -1,6 +1,7 @@
 import {readSI,writeSI} from './units.js';
+import {rollingDiameterIn} from './fh6-setup.js';
 const $=s=>document.querySelector(s);
-let currentKey=null,writing=false;
+let currentKey=null,writing=false,diameters=[],lastDiameterTimestamp=null;
 const profiles=new Map();
 const forms=['drag-form','tune-form','drift-form'];
 function controls(){return forms.flatMap(id=>[...document.querySelectorAll(`#${id} input,#${id} select,#${id} textarea`)]).filter(c=>!['drag-strip','drag-strip-name'].includes(c.id)&&c.name!=='distanceM'&&c.type!=='file');}
@@ -59,7 +60,7 @@ export function updateTuningTelemetry(data,fresh){
  const key=[s.carOrdinal,s.carPerformanceIndex,s.drivetrain,s.engineMaxRpm].join(':');
  if(currentKey&&currentKey!==key){saveProfile();restoreProfile(key);}
  else if(!currentKey)document.dispatchEvent(new CustomEvent('ingenium:car-changed'));
- currentKey=key;
+ if(currentKey!==key){diameters=[];lastDiameterTimestamp=null;}currentKey=key;
  const identity=data.car?.ordinal===s.carOrdinal?data.car:null;
  title.textContent=identity?.name||`Car ID ${s.carOrdinal} · name unavailable`;
  for(const id of ['year','make','model'])$('#tuning-car-'+id).textContent=identity?.[id]??'—';
@@ -68,6 +69,11 @@ export function updateTuningTelemetry(data,fresh){
  for(const selector of ['#drag-form [name=car]','#tune-car','#drift-form [name=car]','#competition-form [name=car]'])fill(selector,identity?.name,'Current car identified from FH6 telemetry ID');
  fill('#competition-form [name=className]',className&&s.carPerformanceIndex?`${className} ${s.carPerformanceIndex}`:null,'Current reported car class / PI');
  fill('#drag-form [name=drive]',drive,'Reported drivetrain');
+ fill('#drag-form [name=engineLimitRpm]',s.engineMaxRpm==null?null:Math.round(s.engineMaxRpm),'Reported engine RPM limit');
+ const diameter=rollingDiameterIn(s);
+ if(diameter!==null&&s.timestampMs!==lastDiameterTimestamp){lastDiameterTimestamp=s.timestampMs;diameters.push(diameter);diameters=diameters.slice(-31);}
+ if(diameters.length>=5){const sorted=[...diameters].sort((a,b)=>a-b),middle=sorted[Math.floor(sorted.length/2)];const c=$('#drag-form [name=tireDiameterIn]');if(sorted.every(v=>Math.abs(v-middle)/middle<.03)&&(c.value===''||Math.abs(Number(c.value)-middle)/middle>.005))fill('#drag-form [name=tireDiameterIn]',Number(middle.toFixed(2)),'Effective rolling diameter measured from low-slip, straight coasting');}
+ $('#drag-gearing-source').textContent='Engine limit comes from telemetry. Tire diameter fills after five low-slip, straight coasting samples above 25 mph. Confirm tire package and installed gear count; Data Out does not identify them.';
  for(const selector of ['#shift-rpm','#drift-form [name=rpm]'])fill(selector,s.engineMaxRpm==null?null:Math.round(s.engineMaxRpm),'Starting RPM from reported engine limit; adjust for your shift/target RPM');
  evidence.textContent='Drivetrain and car labels come from live telemetry. Use a real drag run to fill the captured engine section. Manual power, torque, weight and other unreported build specifications stay under your control.';
 }

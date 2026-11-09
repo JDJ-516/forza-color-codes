@@ -31,29 +31,26 @@ drag buffer. A car/build switch stops instead of mixing drag builds.
    user-supplied launch-control label.
 2. Build Name / Car / Strip; preset distance is automatic and Custom reveals
    distance entry. FH6 and saved custom strips are grouped with shortened labels.
-3. Powertrain details: drivetrain (automatic while connected; manual fallback),
-   manual power (HP), torque (ft-lb), weight (lb), front weight distribution (%),
-   calculated power-to-weight (HP/lb), and optional displacement (cu in).
-4. Captured engine data: observed maximum power and torque, RPM at observed
-   torque maximum, and observed median upshift RPM. The RPM targets are editable
-   for manual tuning. Use captured power/torque in the model only via the explicit
-   copy button; existing manual model specifications remain untouched otherwise.
-5. Advanced required engine/traction assumptions, launch/gearing, predictions,
-   search and separate measured-run analysis/history.
+3. Powertrain details: drivetrain, HP, ft-lb, lb, front weight percentage, PWR,
+   displacement, top-speed goal, installed gear count, tire package and On/Off LC.
+   Gearing data has a collapsed engine-limit/overall-tire-diameter fallback.
+4. Captured engine data: read-only observed maximum power/torque, torque-peak
+   RPM and median observed upshift RPM. The explicit copy button can transfer
+   captured power/torque into the build specifications.
+5. Suggested tune: nine FH6 categories below the horizontal input fields.
+6. Measured run analysis, repeated-run comparison and saved build history.
 
-Displacement is saved as build context; it does not alter the simplified physics
-model. Displayed PWR is HP / lb. Saved physics units remain unchanged. The engine outputs require at least
-five eligible samples per provided channel (power and torque are independent).
-Eligibility requires full throttle, low braking/slip/steering, gear ≥2 and speed
-≥40 km/h, as documented in car-identities.md. Torque-peak RPM is tied to the
-largest eligible reported torque. Shift RPM is the median of actual eligible
-adjacent upshift observations with receiver sample gaps ≤250 ms; it is not an
-optimized shift recommendation. If a channel is absent, it stays unavailable.
-Measured peaks can be below rated peaks when a pull does not cover the full band.
+PWR is HP/lb; saved power/torque/mass fields retain canonical SI values. The
+engine outputs require five eligible samples per provided channel. Eligibility
+requires full throttle, low braking/slip/steering, gear ≥2 and speed ≥40 km/h.
+Torque-peak RPM belongs to the largest eligible reported torque. Observed shift
+RPM is the median of adjacent upshifts with sample gaps ≤250 ms, and does not
+claim an optimal shift. Missing channels remain unavailable. New captures clear
+prior measurements while keeping manual build specifications. Imported sessions
+remain separate from the live recorder. No data is uploaded.
 
-Manual edits and explicitly loaded builds take priority over automatic RPM targets.
-New captures clear prior automatic measurements while keeping manual inputs.
-Imported sessions remain separate from the live recorder. No data is uploaded.
+The setup worksheet's generated shift references, screenshot limits, offline
+requirements and telemetry feedback are documented in setup-baseline.md.
 
 ## API
 
@@ -70,7 +67,7 @@ capture. Sample timestamps remain receiver UTC ms; game timestamps are separate.
 The existing ET definition (interpolated 1 km/h crossing after a stationary phase)
 and game/event timing limitations in telemetry.md remain unchanged.
 
-## Capture controls and setup sheet (0.16.0)
+## Capture controls and setup sheet
 
 Start now, Start with countdown (five seconds), Stop, Analyze and Export remain
 visible. Supporting run details/import/LC labels are inside the closed-by-default

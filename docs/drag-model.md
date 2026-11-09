@@ -1,5 +1,7 @@
 # Drag model and strip profiles
 
+> Legacy simulator reference. Since build 0.17.0 the Drag page uses the FH6 setup worksheet and measured runs, documented in [setup-baseline.md](setup-baseline.md). The pure model remains for regression coverage, not live tune predictions.
+
 Tune Calculator → Drag works without telemetry, or with opted-in measured engine-power bins and measured-run analysis. It is a transparent simplified simulator and a test workflow, **not a validated FH6 physics emulator or a guarantee of the best possible tune**.
 
 ## Venues supplied by the user

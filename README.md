@@ -1,6 +1,6 @@
 # Forza-ingenium — Paint & Tune
 
-Current build: **0.16.0**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.16.0.md) for checks and practical limits.
+Current build: **0.17.0**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.17.0.md) for checks and practical limits.
 
 ## Install and run on Windows
 
@@ -55,7 +55,7 @@ Automatic refresh requires internet and a Google export accessible without sign-
 
 Select **Drag**, **Track**, or **Drift** to expand its calculator; select the same card again to collapse it without losing inputs. Direct links preserve the discipline in `?tune=drag|track|drift#tuning`.
 
-- **Drag:** user-confirmed FH6 venue distances, standard distances, launch control on/off, a bounded 1D simulator, final-drive/launch-RPM/shift-RPM/optional gear-spacing search, saved builds, and measured standing-start runs. Search candidates are model predictions; enter actual adjustment limits and validate on the strip. See [drag model and sources](docs/drag-model.md).
+- **Drag:** user-confirmed FH6 venues and custom distances, On/Off launch control, a simplified Powertrain form, nine in-game tuning categories, goal-based two-decimal gearing, saved builds and measured standing-start runs. Run feedback evaluates driven-wheel launch slip and suspension travel. See [FH6 setup calculations and screenshot references](docs/setup-baseline.md).
 - **Track:** theoretical gearing speeds, inverse final-drive calculation, suspension-frequency/motion-ratio baselines, and saved setup export/load/delete. Damper coefficients are physical units, not a verified conversion to game sliders.
 - **Drift:** working-RPM/gear/road-speed/wheel-overrun calculations and saved setups. This is a gearing worksheet rather than a lateral tire or drift-score model.
 
@@ -106,69 +106,47 @@ The deterministic Windows installer and portable ZIP include a pinned official N
 
 Runtime provenance and pinned SHA-256 checksums are in `packaging/node-runtime.json`. The builder downloads only with `--fetch-runtime`, verifies the archive before use, and caches it under ignored `.cache/`. Subsequent builds work offline. The application does not need npm, so npm is not shipped. Rebuild both distribution files after app changes. Source developers still need Node.js 22+; end users do not.
 
-Build 0.14.1 removes the brand subtitle, adds an offline SVG browser-tab icon, and compacts the desktop Dashboard. Desktop layouts are verified at 1280×720, 1366×768, 1440×900 and 1920×1080; small screens retain normal vertical flow for readability. Dashboard and Telemetry headings/status text turn green only while fresh decoded telemetry is being received, including an inactive game; stale/missing/unverified data and app disconnection clear the green state.
+## Current interface and capture behavior
 
-Build 0.14.2 keeps the Dashboard grid and expands its spacing/fonts vertically with viewport height. Its Seasonal arrivals carousel rotates every eight seconds with previous/next and pause controls (manual by default with reduced-motion preferences). It shows newly detected Seasonal entries from the previous seven days, excludes source-marked unreleased entries, and updates from the same cached/live Rare Cars source. First-seen dates do not establish a verified playlist schedule. An empty weekly list is displayed honestly, rather than substituting older cars.
+The Dashboard keeps the compact grid, weekly Seasonal detections and dated Car
+Pass arrivals. Color Library opens at the page top. Dark mode, the browser icon,
+and the version beneath the Forza-ingenium wordmark remain. Telemetry headings
+and connection text turn green for fresh decoded data and orange otherwise.
+Packet arrival with invalid contents is distinct from usable driving data.
 
-Tuning fields and search bounds start empty, including benchmark context. Selecting a gear count creates empty ratio inputs. Calculations wait for required specifications; saved setups/attempts remain available and load only through explicit actions. Drag presets supply distance internally. Only Custom strip shows distance; named-strip and grade entry controls have been removed. Level ground is assumed. Saved preset/custom selections and intentionally blank inactive launch-RPM inputs are retained on explicit build loading. LC comparisons require both RPM values rather than inventing an unentered mode’s launch RPM.
+Telemetry displays 89 packet parameters grouped by type. **Connect your game**
+contains collapsed vertical setup steps and links to an offline setup document.
+The current car's year, make and model use a bundled 551-entry FH6 ID catalogue;
+unknown IDs remain unnamed. Manual edits take priority over automatic prefills.
+Car/build switches isolate worksheets, clear old run evidence and retain per-car
+manual entries in memory for the browser session.
 
-Build 0.14.3 makes Dashboard/Telemetry headings and state text green for fresh decoded telemetry and orange otherwise. Packet arrival with rejected contents has an explicit orange “Packets arriving · data invalid” state. Detailed field checks and **Export packet diagnostics** explain rejections. Inactive zero-engine-limit frames are handled as connected/inactive data without creating driving samples; active data remains validated. See [telemetry troubleshooting](docs/telemetry.md#packets-arriving-but-data-invalid).
+Drag begins with **Use a real run**. Start now records at any speed or arms before
+driving data arrives. Start with countdown optionally provides five seconds and
+colored GO. Stop capture is always available during recording. After movement,
+a sustained return to zero stops only the drag recorder; braking alone does not.
+Moving captures supply engine evidence; standing-start ET needs a captured
+stationary launch. Supporting capture details and import start collapsed.
+See [capture workflow and API](docs/drag-capture.md).
 
-Build 0.14.4 removes section-level scrolling when opening Color Library; workspace navigation starts at the page top. The car widget now combines explicitly dated **Car Pass DLC** releases in the last seven calendar days with newly detected Seasonal-sheet entries in the last seven days, labelling release dates and detection dates separately. For example, the uploaded workbook lists the 2025 Ford Mustang GTD for 2026-11-05; it is included for 2026-11-07 even though the row was already in the baseline. Date-only entries do not establish an exact unlock hour or complete Festival Playlist coverage. Missing spreadsheet additions are never labelled as no new game cars. Official news access returned HTTP 403 in this cloud; an actual dated weekly playlist source is still needed for complete Thursday reward listings.
+Powertrain groups the speed goal, installed gear count, tire package and On/Off
+launch control with the basic car specifications. Captured maxima and observed
+shift RPM are read-only. An explicit button copies captured power/torque into
+the build; manual specifications are otherwise preserved. The former advanced
+traction, launch, ratio, and chassis-reference input sections have been removed.
 
-Build 0.14.5 bundles Node.js in both Windows distributions and adds portable Start/Stop launchers plus optional shortcut setup. No external Node installation or PATH configuration is needed.
+The bottom **Suggested tune** follows FH6's Tires / Gearing / Alignment / Antiroll
+bars / Springs / Damping / Aero / Brake / Differential tabs. It generates numeric
+starting settings where supported, including AWD center balance, and uses
+relative targets for unknown ride-height/aero limits. Gearing data has two
+collapsed offline fallbacks: engine RPM limit and driven tire overall diameter.
+Live engine limit and eligible coasting measurements can fill them automatically.
+Tire compound, installed gear count and launch-control mode still need selection;
+Data Out does not identify them. All original basic tuning entries start blank.
 
-Build 0.14.6 expands Telemetry to 89 packet parameters in nine groups, with units,
-live/stale/unverified states and the in-game connection instructions. Diagnostic
-controls, packet hex and the footer have been removed from the page. All known
-fields are decoded from the supported 324-byte layout; the reserved final byte
-is displayed as a raw value with unknown meaning. Invalid packets are excluded
-from tuning and shown as unverified readings. The Windows packages still include
-Node.js. Actual gameplay on the user's PC has not been validated here.
-
-Build 0.14.7 makes the connection guide collapsible with vertical steps and adds
-an offline setup document. Tune Calculator shows the active car's year, make and
-model from a bundled 551-entry FH6 catalogue, reports unknown IDs without guessing,
-and links to setup whenever usable telemetry is disconnected. It prefills car
-names, drivetrain, starting RPM values and eligible observed engine maxima. Manual
-edits take priority. Car/build changes isolate worksheets and clear old capture
-and curve evidence; per-car manual worksheets remain in memory for this browser
-session. Only the three named FH6 drag venues and Custom strip remain in the menu.
-Telemetry does not provide mass, tire sizes, gear ratios or launch-control mode.
-See [car identity sources and prefill behavior](docs/car-identities.md).
-
-Build 0.15.0 reorganizes Drag around **Use a real run**, with Start countdown,
-Stop capture, three-second 3–2–1 / green GO, and a separate drag buffer. After
-launch, coming to a complete stop ends and freezes that drag run automatically.
-Braking alone keeps it recording; general telemetry continues for other tools.
-The worksheet separates Build Name / Car / Strip, manual powertrain values,
-captured engine maxima/RPM, and advanced assumptions. Front weight distribution
-is a percentage; displacement is optional liters; PWR is derived kW/tonne.
-Manual power/torque are not overwritten by observed maxima; an explicit button
-copies captured values into the model. Drag RPM fields may be entered manually.
-The map-strip menu has shortened labels and separate FH6/saved-strip groups.
-See [drag capture workflow](docs/drag-capture.md).
-
-Build 0.15.1 defaults tuning and telemetry displays to US customary units: HP,
-ft-lb, lb, mph, feet/inches, square feet, cubic inches and °F where applicable.
-Unit conversion occurs at the UI boundary; physics, saved build fields and
-telemetry JSON retain their existing canonical units. Existing builds load with
-US values without changing their predicted results. Rounded display values keep
-the original calculation precision until edited. The removed strip notes no
-longer appear. **Start now** records at any speed and can arm before telemetry
-arrives, without a strip; the countdown remains optional. Moving captures provide
-engine evidence, and only an actually captured stationary launch can supply a
-standing-start ET. Top-speed goal (mph) offers reviewable/applicable power-band
-gearing suggestions and constrains the performance search's gearing ceiling.
-See [US units and gearing goals](docs/us-units-gearing.md).
-
-Build 0.16.0 keeps real-run controls visible with supporting capture details
-collapsed by default, changes the optional countdown to five seconds, and places
-the version beneath the wordmark. Car inputs span horizontal rows and calculated
-results sit below them. Drag adds **Generate tuning setup → Settings to enter
-in-game**, including complete gear ratios, spring rates, damper/tire references,
-alignment, anti-roll and driven-axle differential starting points. Editable
-reference targets are provided; supplied ranges flag infeasible settings rather
-than silently clamping them. The sheet is exportable and invalidates on input/car
-evidence changes. These are documented starting baselines for real-run testing,
-not verified FH6 optima. See [setup methods and source attribution](docs/setup-baseline.md).
+Displays use HP, ft-lb, lb, mph, feet/inches, cu in and °F. Saved SI fields and
+existing builds preserve their units and precision. The old simulator/search
+interface has been replaced with the FH6 worksheet and real-run comparisons;
+no invented ET or leaderboard rank is shown. Numeric chassis settings are
+starting test hypotheses, not confirmed optima for a particular upgraded car.
+See [setup methods](docs/setup-baseline.md) and [US units](docs/us-units-gearing.md).

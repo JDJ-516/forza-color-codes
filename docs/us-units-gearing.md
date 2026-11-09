@@ -1,7 +1,7 @@
 # US displays and top-speed gearing goals
 
 The interface uses mechanical horsepower (1 HP = 745.699871582 W), ft-lb torque,
-lb weight, mph, ft/in, ft², cu in and °F. Tire section width is entered in inches;
+lb weight, mph, ft/in, ft², cu in and °F. Track/Drift tire section width is entered in inches; Drag uses overall driven tire diameter in inches;
 rim diameter remains inches and aspect remains percent. Track springs/wheel rates
 are lb/in and damping is lbf·s/in. Telemetry temperatures, velocity/acceleration,
 position, angular values and power/torque are converted for display as well.
@@ -39,29 +39,21 @@ POST `/api/telemetry/drag/start` now defaults to immediate capture; add
 
 ## Top-speed goal
 
-Enter **Top-speed goal (mph)** and optionally **Power-peak RPM**. Suggest gearing
-uses the highest observed eligible power-curve bin at/below shift RPM when at
-least four bins are available. Otherwise it uses entered power-peak RPM, or the
-entered shift RPM with an explicit unknown-power-peak label. It never claims an
-unmeasured power peak or extrapolates one from missing RPM coverage.
+Enter **Top-speed goal (mph)** in Powertrain with the installed gear count and
+tire package. Open **Gearing data** only if engine RPM limit or driven tire
+overall diameter is missing. Live engine data or low-slip coasting measurements
+can supply them; both accept manual offline specifications. Shift RPM, power-peak
+RPM, individual ratios and final drive no longer need manual input in Drag.
 
-The suggestion:
-1. Solves the top-gear overall ratio for the requested mph at the chosen RPM,
-   using the entered tire circumference and existing top-gear ratio.
-2. Chooses a final drive while preserving the original first-gear overall ratio.
-3. Spaces the intermediate gears geometrically and reports actual post-upshift
-   RPM against the entered torque-peak RPM.
-4. Validates gear/final-drive bounds and descending ratios, rounds to three
-   decimals, and reports the achieved theoretical mph after rounding.
+Select **Generate tuning setup**, then **Gearing** in the bottom FH6 tab strip.
+The generator solves overall gearing at a supported measured power peak, or a
+clearly labeled engine-limit reference when the peak is unknown. Individual shift
+references use supported power crossovers without extrapolating missing bins.
+Ratios are rounded to hundredths and the achieved geometric mph is recomputed
+after rounding. Full formulas, design constraints, screenshot evidence and
+limitations are in [setup-baseline.md](setup-baseline.md).
 
-The user reviews the ratios, then explicitly applies them. Changed inputs/car,
-new evidence or a loaded build invalidates old suggestions. Power peak above
-shift RPM, impossible goals and out-of-range ratios are rejected. If shift RPM
-drops below torque peak, the result says so. This is a baseline to test, not a
-global optimum, and it does not prescribe differential/suspension settings.
-
-When a goal is present, model search filters out candidates whose RPM-limited
-gearing ceiling at shift RPM is below that mph goal. It still ranks qualifying
-candidates by simulated strip ET. Satisfying this geometric ceiling does not prove
-enough engine power, tire grip, aero or strip distance to reach that speed.
-The current 1D model and comparative real-run limitations still apply.
+Changed inputs, evidence or loaded builds invalidate results. Actual drag times
+come from measured stationary launches, rather than an uncalibrated ET model.
+A gearing speed ceiling does not prove the car has enough power or distance to
+reach it. Save/export retains canonical SI specifications and US output labels.
