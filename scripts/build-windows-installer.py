@@ -29,7 +29,7 @@ def runtime_files():
                 'app/runtime/node-runtime.json':(ROOT/'packaging/node-runtime.json').read_bytes()}
 
 def payload_files():
-    files=[ROOT/name for name in ['package.json','server.js','telemetry.js','fh6-decoder.js','car-identities.js','telemetry-engine.js','rare-cars.js','launcher.js','README.md']]
+    files=[ROOT/name for name in ['package.json','server.js','telemetry.js','fh6-decoder.js','car-identities.js','telemetry-engine.js','drag-capture.js','rare-cars.js','launcher.js','README.md']]
     files+=sorted((ROOT/'public').glob('*'))
     files+=sorted((ROOT/'docs').glob('*.md'))
     result={'app/'+file.relative_to(ROOT).as_posix():file.read_bytes() for file in files if file.is_file()}

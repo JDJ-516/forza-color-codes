@@ -126,3 +126,12 @@ maxima are separate from rated engine specifications. The Tune Calculator keeps
 manual values for all fields absent from the packet and respects manual edits.
 The connection instructions now collapse into a vertical list; the standalone
 `/telemetry-setup.html` guide works offline with the installed app.
+
+## Dedicated drag capture
+
+Build 0.15.0 adds a separate Drag recorder with a 3-second countdown, manual Stop
+and automatic completion at near-zero speed after launch. Braking alone does not
+stop it. General telemetry and the general capture keep running. Drag Analyze /
+Export use `/api/telemetry/drag/session`; other tools retain the general endpoint.
+See [Drag capture](drag-capture.md) for exact thresholds, states, UI fields,
+observed engine values and API details.

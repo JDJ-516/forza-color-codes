@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const files = new Map([
-  ...['tuning-telemetry','telemetry-view','telemetry-channels','drag-optimizer','competition','competition-workspace','rare-cars-workspace','dashboard-cars','seasonal-cars'].map(name=>['/'+name+'.js',[name+'.js','text/javascript; charset=utf-8']]),
+  ...['drag-capture-view','drag-capture-data','engine-observations','tuning-telemetry','telemetry-view','telemetry-channels','drag-optimizer','competition','competition-workspace','rare-cars-workspace','dashboard-cars','seasonal-cars'].map(name=>['/'+name+'.js',[name+'.js','text/javascript; charset=utf-8']]),
   ['/', ['index.html', 'text/html; charset=utf-8']],
   ['/telemetry-setup.html', ['telemetry-setup.html', 'text/html; charset=utf-8']],
   ['/favicon.svg', ['favicon.svg', 'image/svg+xml']],
@@ -36,6 +36,14 @@ export function createServer({telemetry,rareCars=createRareCarSource()} = {}) {
       try{const data=await rareCars.snapshot({force});res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});return res.end(req.method==='HEAD'?undefined:JSON.stringify(data));}
       catch{res.writeHead(503,{'Content-Type':'application/json','Cache-Control':'no-store'});return res.end(JSON.stringify({error:'Rare-car data is unavailable. Reload to retry.'}));}
     }
+    if(['/api/telemetry/drag/start','/api/telemetry/drag/stop'].includes(path)&&req.method==='POST'){
+      const origin=req.headers.origin;
+      if(req.headers['x-forza-garage']!=='1'||(origin&&origin!==`http://${req.headers.host}`&&origin!==`https://${req.headers.host}`)){res.writeHead(403);return res.end('Forbidden');}
+      res.setHeader('Content-Type','application/json');res.setHeader('Cache-Control','no-store');
+      if(!telemetry){res.writeHead(409);return res.end(JSON.stringify({error:'Enable the local telemetry receiver first.'}));}
+      try{const capture=path.endsWith('/start')?telemetry.startDrag():telemetry.stopDrag();res.writeHead(200);return res.end(JSON.stringify(capture));}
+      catch(error){res.writeHead(409);return res.end(JSON.stringify({error:error.message}));}
+    }
     if(path==='/api/telemetry/reset' && req.method==='POST'){
       const origin=req.headers.origin;
       if(req.headers['x-forza-garage']!=='1' || (origin && origin!==`http://${req.headers.host}` && origin!==`https://${req.headers.host}`)){res.writeHead(403);return res.end('Forbidden');}
@@ -53,6 +61,11 @@ export function createServer({telemetry,rareCars=createRareCarSource()} = {}) {
     if(path==='/api/telemetry/diagnostics'){
       const diagnostic=telemetry?.diagnostics();res.writeHead(diagnostic?200:409,{'Content-Type':'application/json','Cache-Control':'no-store','Content-Disposition':'attachment; filename="forza-ingenium-packet-diagnostics.json"'});
       return res.end(req.method==='HEAD'?undefined:JSON.stringify(diagnostic?{...diagnostic,appVersion:version}:{error:'No packet has arrived yet. Start the local receiver and game Data Out first.'}));
+    }
+    if(path==='/api/telemetry/drag/session'){
+      const session=telemetry?.dragSession(),ready=session?.samples?.length>=2;
+      res.writeHead(ready?200:409,{'Content-Type':'application/json','Cache-Control':'no-store','Content-Disposition':'attachment; filename="forza-drag-capture.json"'});
+      return res.end(req.method==='HEAD'?undefined:JSON.stringify(ready?session:{error:'No drag run recorded yet. Start a drag capture or import a session.'}));
     }
     if (path === '/api/telemetry/session') {
       const session=telemetry?.session();

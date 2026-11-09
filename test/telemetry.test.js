@@ -90,3 +90,22 @@ test('live car identity and eligible engine measurements follow the current buil
  await send({car:3928});assert.equal(telemetry.snapshot().car.name,'2021 Hyundai i20 N');assert.equal(telemetry.snapshot().recordedSamples,1);
  telemetry.reset();assert.equal(telemetry.snapshot().engineMeasurements.eligibleSamples,0);assert.equal(telemetry.snapshot().recordedSamples,0);
 });
+
+test('dedicated drag API counts down, keeps recording through braking, freezes at zero, and leaves general telemetry running',async t=>{
+ const {packet}=await import('../test-support/telemetry-fixtures.js');let time=10000;
+ const telemetry=createTelemetryReceiver({port:0,now:()=>time});assert.equal(await telemetry.start(),true);t.after(()=>telemetry.close());
+ const sender=dgram.createSocket('udp4');t.after(()=>sender.close());const server=createServer({telemetry});await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(()=>new Promise(r=>server.close(r)));const base=`http://127.0.0.1:${server.address().port}`;
+ async function send(speed=0,brake=0){const b=packet({speed});b[316]=brake;b.writeFloatLE(500,264);const count=telemetry.snapshot().packets;time+=50;await new Promise((r,reject)=>sender.send(b,telemetry.address().port,'127.0.0.1',e=>e?reject(e):r()));for(let i=0;i<50&&telemetry.snapshot().packets===count;i++)await delay(2);}
+ const post=(action,headers={'X-Forza-Garage':'1'})=>fetch(base+'/api/telemetry/drag/'+action,{method:'POST',headers});
+ assert.equal((await post('start')).status,409);await send();assert.equal((await post('start',{})).status,403);
+ assert.equal((await post('start')).status,200);
+ for(let i=0;i<60;i++)await send(0,255);
+ assert.equal(telemetry.snapshot().dragCapture.state,'recording');
+ for(let i=0;i<8;i++)await send(20+i);
+ await send(25,255);assert.equal(telemetry.snapshot().dragCapture.state,'recording');assert.equal((await post('stop',{'X-Forza-Garage':'1',Origin:'https://foreign.example'})).status,403);
+ for(let i=0;i<6;i++)await send(0,255);
+ assert.equal(telemetry.snapshot().dragCapture.reason,'stationary');const frozen=telemetry.dragSession(),count=telemetry.snapshot().recordedSamples;
+ await send(30);assert.deepEqual(telemetry.dragSession(),frozen);assert.ok(telemetry.snapshot().recordedSamples>count);assert.equal(telemetry.snapshot().latest.speedKph,108);
+ const response=await fetch(base+'/api/telemetry/drag/session');assert.equal(response.status,200);assert.equal((await response.json()).capture.state,'stopped');
+ await send();assert.equal((await post('start')).status,200);const stopped=await (await post('stop')).json();assert.equal(stopped.reason,'manual');
+});

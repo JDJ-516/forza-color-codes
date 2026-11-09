@@ -22,13 +22,13 @@ claims a current car. An offline setup HTML guide is linked when disconnected.
 Automatic inputs:
 - Car labels across Drag/Track/Drift and benchmark context; reported class/PI in
   benchmark context and drivetrain in Drag.
-- Drag shift RPM, Track shift RPM and Drift target RPM start at the reported
-  engine RPM limit. These are starting values, not recommended optimal shifts.
-- Drag engine power, torque and torque-peak RPM use observed maxima after at least
-  five eligible samples. Samples need full throttle (≥95%), brake ≤2%, gear ≥2,
-  speed ≥40 km/h, steering magnitude <0.15, all four slip-ratio magnitudes <0.15,
-  and finite positive power/torque/RPM. Observed maxima can be below rated peaks.
-  Readings outside a calculator field's range are left for manual entry.
+- Track shift RPM and Drift target RPM start at the reported engine RPM limit.
+  These are starting values, not recommended optimal shifts.
+- Drag manual power and torque remain user inputs. A dedicated real-run capture
+  fills the separate observed engine outputs, torque-peak RPM and actual median
+  upshift RPM. Its explicit copy button can transfer measured power/torque into
+  the model. See [drag capture](drag-capture.md) for eligibility and stop behavior.
+
 
 Mass, tires, exact gearing, total gear count, friction, drivetrain losses, weight
 distribution, launch-control mode and other unreported inputs remain manual.
@@ -46,6 +46,6 @@ remain the persistent option. Changes to a build that leave every key field
 unchanged cannot be detected automatically.
 
 The receiver also clears capture/observed-engine evidence on detected build
-changes. Fresh capture resets observed engine maxima and clears prior automatic engine inputs; manual overrides remain. Stopping the server clears
+changes. A fresh dedicated drag capture resets its own measurements and automatic RPM targets; manual overrides remain. General capture reset remains separate. Stopping the server clears
 all live evidence. Manual worksheets are retained when the connection drops,
 while the current-car identity is cleared and the setup link becomes available.

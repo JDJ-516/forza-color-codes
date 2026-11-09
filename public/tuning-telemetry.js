@@ -34,12 +34,8 @@ function fill(selector,value,source){
  if(c.tagName==='SELECT')c.dispatchEvent(new Event('change',{bubbles:true}));
  c.dispatchEvent(new Event('input',{bubbles:true}));writing=false;
 }
-function clearObservedInput(selector){
- const c=$(selector);if(!c||c.dataset.telemetryManual==='1'||c.dataset.telemetryValue!==c.value)return;
- writing=true;c.value='';delete c.dataset.telemetryValue;c.dispatchEvent(new Event('input',{bubbles:true}));writing=false;
-}
 document.addEventListener('input',e=>{
- if(writing||!e.target.matches('input,select,textarea'))return;
+ if(writing||e.detail?.telemetry||!e.target.matches('input,select,textarea'))return;
  if(forms.includes(e.target.form?.id)||e.target.form?.id==='competition-form'){
   e.target.dataset.telemetryManual='1';delete e.target.dataset.telemetryValue;
  }
@@ -71,13 +67,6 @@ export function updateTuningTelemetry(data,fresh){
  for(const selector of ['#drag-form [name=car]','#tune-car','#drift-form [name=car]','#competition-form [name=car]'])fill(selector,identity?.name,'Current car identified from FH6 telemetry ID');
  fill('#competition-form [name=className]',className&&s.carPerformanceIndex?`${className} ${s.carPerformanceIndex}`:null,'Current reported car class / PI');
  fill('#drag-form [name=drive]',drive,'Reported drivetrain');
- for(const selector of ['#drag-form [name=shiftRpm]','#shift-rpm','#drift-form [name=rpm]'])fill(selector,s.engineMaxRpm==null?null:Math.round(s.engineMaxRpm),'Starting RPM from reported engine limit; adjust for your shift/target RPM');
- const measured=data.engineMeasurements,eligible=measured?.key===key&&measured.eligibleSamples>=5;
- if(!eligible)for(const selector of ['#drag-form [name=powerKw]','#drag-form [name=torqueNm]','#drag-form [name=torquePeakRpm]'])clearObservedInput(selector);
- if(eligible){
-  fill('#drag-form [name=powerKw]',Math.round(measured.peakPowerW/1000),'Observed full-throttle maximum power; not a verified rated peak');
-  fill('#drag-form [name=torqueNm]',Math.round(measured.peakTorqueNm),'Observed full-throttle maximum torque; not a verified rated peak');
-  fill('#drag-form [name=torquePeakRpm]',Math.round(measured.torquePeakRpm),'RPM at observed maximum torque');
- }
- evidence.textContent=(eligible?`Observed engine maxima: ${(measured.peakPowerW/1000).toFixed(1)} kW · ${Math.round(measured.peakTorqueNm)} N·m at ${Math.round(measured.torquePeakRpm)} RPM. These may be below the rated peaks. `:'Drive a clean full-throttle pull in second gear or higher to prefill observed engine power and torque. ')+`RPM fields start at the reported engine limit; adjust before testing. Mass, tires, gearing and launch-control mode still need your inputs.`;
+ for(const selector of ['#shift-rpm','#drift-form [name=rpm]'])fill(selector,s.engineMaxRpm==null?null:Math.round(s.engineMaxRpm),'Starting RPM from reported engine limit; adjust for your shift/target RPM');
+ evidence.textContent='Drivetrain and car labels come from live telemetry. Use a real drag run to fill the captured engine section. Manual power, torque, weight and other unreported build specifications stay under your control.';
 }

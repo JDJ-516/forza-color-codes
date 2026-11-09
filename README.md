@@ -1,6 +1,6 @@
 # Forza-ingenium — Paint & Tune
 
-Current build: **0.14.7**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.14.7.md) for checks and practical limits.
+Current build: **0.15.0**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.15.0.md) for checks and practical limits.
 
 ## Install and run on Windows
 
@@ -95,7 +95,7 @@ Keep `data/source.xlsx`, `data/rare-cars-source.xlsx` and the pinned `data/sourc
 
 ### Browser and installer checks
 
-Twelve Playwright suites live in `scripts/`: `browser-smoke.cjs`, `garage-smoke.cjs`, `drag-smoke.cjs`, `workspace-smoke.cjs`, `competitive-smoke.cjs`, `rare-cars-smoke.cjs`, `release-smoke.cjs`, `dashboard-smoke.cjs`, `seasonal-smoke.cjs`, `telemetry-status-smoke.cjs`, `navigation-smoke.cjs`, and `tuning-telemetry-smoke.cjs`. Start the app with telemetry enabled for capture/reset checks. Set `TEST_BASE_URL`, `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` for the local environment, then run each suite with Node. Tests cover real localhost HTTP/UDP and synthetic captures; Google refresh tests use source fixtures.
+Thirteen Playwright suites live in `scripts/`: `browser-smoke.cjs`, `garage-smoke.cjs`, `drag-smoke.cjs`, `workspace-smoke.cjs`, `competitive-smoke.cjs`, `rare-cars-smoke.cjs`, `release-smoke.cjs`, `dashboard-smoke.cjs`, `seasonal-smoke.cjs`, `telemetry-status-smoke.cjs`, `navigation-smoke.cjs`, `tuning-telemetry-smoke.cjs`, and `drag-capture-smoke.cjs`. Start the app with telemetry enabled for capture/reset checks. Set `TEST_BASE_URL`, `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` for the local environment, then run each suite with Node. Tests cover real localhost HTTP/UDP and synthetic captures; Google refresh tests use source fixtures.
 
 ```sh
 python3 -B scripts/build-windows-installer.py --fetch-runtime
@@ -136,3 +136,15 @@ and curve evidence; per-car manual worksheets remain in memory for this browser
 session. Only the three named FH6 drag venues and Custom strip remain in the menu.
 Telemetry does not provide mass, tire sizes, gear ratios or launch-control mode.
 See [car identity sources and prefill behavior](docs/car-identities.md).
+
+Build 0.15.0 reorganizes Drag around **Use a real run**, with Start countdown,
+Stop capture, three-second 3–2–1 / green GO, and a separate drag buffer. After
+launch, coming to a complete stop ends and freezes that drag run automatically.
+Braking alone keeps it recording; general telemetry continues for other tools.
+The worksheet separates Build Name / Car / Strip, manual powertrain values,
+captured engine maxima/RPM, and advanced assumptions. Front weight distribution
+is a percentage; displacement is optional liters; PWR is derived kW/tonne.
+Manual power/torque are not overwritten by observed maxima; an explicit button
+copies captured values into the model. Drag RPM fields may be entered manually.
+The map-strip menu has shortened labels and separate FH6/saved-strip groups.
+See [drag capture workflow](docs/drag-capture.md).

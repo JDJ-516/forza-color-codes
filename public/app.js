@@ -1,3 +1,4 @@
+import {updateDragCapture} from './drag-capture-view.js';
 import { updateTuningTelemetry } from './tuning-telemetry.js';
 import { renderTelemetryChannels } from './telemetry-view.js';
 import { FINISH_TYPES,needsSecondLayer,personalColor,nextFeaturedColor,FEATURE_INTERVAL_MS,paintTextColor } from './color-tools.js';
@@ -125,7 +126,7 @@ async function pollTelemetry() {
     const labels = {disabled:'Receiver disabled', stopped:'Receiver stopped', waiting:'Waiting for packets', receiving:'Receiving UDP packets', stale:'Signal lost', error:'Receiver error'};
     $('#telemetry-state').textContent = labels[data.state] || 'Unknown receiver state';
     const fresh=data.state==='receiving'&&!data.decodeError&&data.latest&&(data.decodedAgeMs!=null?data.decodedAgeMs<3000:data.decodedAt&&Date.now()-data.decodedAt<3000);
-    setTelemetryConnected(!!fresh);updateTuningTelemetry(data,!!fresh);
+    setTelemetryConnected(!!fresh);updateDragCapture(data);updateTuningTelemetry(data,!!fresh);
     const state=fresh?(data.latest.isRaceOn?'Live driving data':'Connected · game inactive'):({disabled:'Receiver disabled',waiting:'Waiting for game',stopped:'Receiver stopped',stale:'Signal lost',error:'Receiver error',receiving:'Packets arriving · data invalid'}[data.state]||'Unknown connection');
     if(data.state==='receiving')$('#telemetry-state').textContent=state;
     $('#home-telemetry-state').textContent=state;$('#home-telemetry-state').classList.toggle('live',!!fresh&&data.latest.isRaceOn);
@@ -151,7 +152,7 @@ async function pollTelemetry() {
     $('#packet-size').textContent = data.lastPacket ? `${data.lastPacket.bytes} bytes` : '—';
     $('#packet-age').textContent = data.lastReceivedAt != null ? new Date(data.lastReceivedAt).toLocaleTimeString() : '—';
   } catch {
-    setTelemetryConnected(false);updateTuningTelemetry({state:'offline'},false);renderTelemetryChannels({state:'offline'},false);$('#telemetry-state').textContent = 'App connection lost';$('#home-telemetry-state').textContent='App disconnected';$('#home-telemetry-state').classList.remove('live');$('#home-telemetry-message').textContent='Cannot reach the local app server. Connection readings are unavailable.';
+    setTelemetryConnected(false);updateTuningTelemetry({state:'offline'},false);updateDragCapture({state:'offline'});renderTelemetryChannels({state:'offline'},false);$('#telemetry-state').textContent = 'App connection lost';$('#home-telemetry-state').textContent='App disconnected';$('#home-telemetry-state').classList.remove('live');$('#home-telemetry-message').textContent='Cannot reach the local app server. Connection readings are unavailable.';
     $('#telemetry-state').classList.remove('live');$('#decoded-telemetry').textContent='App connection lost. Live values are unavailable.';
   } finally { setTimeout(pollTelemetry, document.hidden ? 5000 : 1000); }
 }

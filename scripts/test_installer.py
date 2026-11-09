@@ -64,7 +64,7 @@ class InstallerTests(unittest.TestCase):
             env={**os.environ,'FORZA_GARAGE_PORT':str(port),'FORZA_GARAGE_UDP_PORT':'0','FORZA_GARAGE_STATE_DIR':str(Path(directory)/'runtime')}
             try:
                 subprocess.run(['node','launcher.js','--no-open'],cwd=app,env=env,check=True,capture_output=True,timeout=20)
-                for resource in ['/', '/favicon.svg', '/api/health', '/api/telemetry', '/app.js', '/telemetry-setup.html', '/tuning-telemetry.js', '/telemetry-view.js', '/telemetry-channels.js', '/garage.js', '/drag-workspace.js', '/color-tools.js', '/catalogue.json', '/rare-cars-workspace.js', '/rare-cars.json']:
+                for resource in ['/', '/favicon.svg', '/api/health', '/api/telemetry', '/app.js', '/telemetry-setup.html', '/engine-observations.js', '/drag-capture-data.js', '/drag-capture-view.js', '/tuning-telemetry.js', '/telemetry-view.js', '/telemetry-channels.js', '/garage.js', '/drag-workspace.js', '/color-tools.js', '/catalogue.json', '/rare-cars-workspace.js', '/rare-cars.json']:
                     with urllib.request.urlopen(f'http://127.0.0.1:{port}'+resource,timeout=3) as response:
                         self.assertEqual(response.status,200)
                         self.assertGreater(len(response.read()),0)

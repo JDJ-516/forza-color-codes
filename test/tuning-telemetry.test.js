@@ -12,7 +12,7 @@ test('FH6 identities prefer community-confirmed model/trim and leave unknown IDs
 });
 test('observed engine maxima only use eligible loaded samples and reset on car/build changes',()=>{
  const s={...decodeHorizonPacket(packet({car:3726})),torqueNm:500};let m=emptyEngineMeasurements();
- for(const change of [{throttle:.1},{brake:.1},{gear:1},{speedKph:10},{steer:.5},{tireSlipRatio:[.3,0,0,0]},{torqueNm:NaN}])m=observeEngine(m,{...s,...change});
+ for(const change of [{throttle:.1},{brake:.1},{gear:1},{speedKph:10},{steer:.5},{tireSlipRatio:[.3,0,0,0]},{torqueNm:NaN,powerW:NaN}])m=observeEngine(m,{...s,...change});
  assert.equal(m.eligibleSamples,0);
  for(let i=0;i<5;i++)m=observeEngine(m,{...s,powerW:200000+i*1000,torqueNm:500+i,rpm:4000+i*100});
  assert.equal(m.eligibleSamples,5);assert.equal(m.peakPowerW,204000);assert.equal(m.peakTorqueNm,504);assert.equal(m.torquePeakRpm,4400);assert.equal(m.key,engineKey(s));

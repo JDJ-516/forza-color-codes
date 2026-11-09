@@ -9,7 +9,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   await page.route('**/api/rare-cars',r=>r.fulfill({contentType:'application/json',body:JSON.stringify(rare)}));
   await page.goto(base);await page.locator('#featured-recipe').waitFor();
   assert.equal((await (await page.request.get(base+'/api/health')).json()).version,version);
-  assert.equal(version,'0.14.7');assert.equal(await page.locator('footer').count(),0);
+  assert.equal(version,'0.15.0');assert.equal(await page.locator('footer').count(),0);
   assert.doesNotMatch(await page.locator('h1').textContent(),/Your dashboard/);
   assert.doesNotMatch(await page.locator('#featured-refresh').textContent(),/Preview is approximate/);
   await page.locator('#library-nav').click();assert.equal(await page.locator('.card-bottom').filter({hasText:'SPREADSHEET'}).count(),0);

@@ -2,6 +2,7 @@
 const ratios='3.2, 2.4, 1.8, 1.4, 1.1, 0.9';
 async function fillSearch(page){for(const [id,value] of Object.entries({'fd-min':2,'fd-max':5,'launch-min':1500,'launch-max':6000,'shift-min':6000,'shift-max':8000}))await page.locator('#opt-'+id).fill(String(value));}
 async function fillDrag(page){
+ await page.locator('#drag-form details').evaluateAll(ds=>ds.forEach(d=>d.open=true));
  await page.locator('#drag-strip').selectOption('fh6:irakawa-space-centre:321.869');await page.locator('#drag-form [name=drive]').selectOption('RWD');await page.locator('#drag-launch-control').selectOption('enabled');
  const values={name:'Synthetic drag build',car:'Synthetic test car',mass:1400,powerKw:350,torqueNm:550,torquePeakRpm:5000,lowTorquePercent:60,lossPercent:15,mu:1.1,frontPercent:55,wheelbase:2.7,cgHeight:.5,cda:.65,rolling:.015,launchRpm:4500,manualRpm:1800,throttleRamp:.2,shiftRpm:8000,shiftSeconds:.15,finalDrive:3.7,ratios,width:265,aspect:35,rim:19};
  for(const [name,value] of Object.entries(values))await page.locator(`#drag-form [name=${name}]`).fill(String(value));await fillSearch(page);
