@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const files = new Map([
-  ...['units','drag-gearing','drag-capture-view','drag-capture-data','engine-observations','tuning-telemetry','telemetry-view','telemetry-channels','drag-optimizer','competition','competition-workspace','rare-cars-workspace','dashboard-cars','seasonal-cars'].map(name=>['/'+name+'.js',[name+'.js','text/javascript; charset=utf-8']]),
+  ...['setup-baseline','setup-sheet-view','units','drag-gearing','drag-capture-view','drag-capture-data','engine-observations','tuning-telemetry','telemetry-view','telemetry-channels','drag-optimizer','competition','competition-workspace','rare-cars-workspace','dashboard-cars','seasonal-cars'].map(name=>['/'+name+'.js',[name+'.js','text/javascript; charset=utf-8']]),
   ['/', ['index.html', 'text/html; charset=utf-8']],
   ['/telemetry-setup.html', ['telemetry-setup.html', 'text/html; charset=utf-8']],
   ['/favicon.svg', ['favicon.svg', 'image/svg+xml']],

@@ -3,7 +3,7 @@
 The Drag accordion begins with **Use a real run**. **Start now** records at any
 speed and arms before driving telemetry arrives when the receiver is enabled.
 No strip is required to collect data; choose it for subsequent ET analysis.
-**Start with countdown** remains an optional three-second amber countdown / green
+**Start with countdown** remains an optional five-second amber countdown / green
 GO. Moving during it no longer cancels recording. When the car stays still,
 the final countdown second provides a real stationary lead-in. The countdown is
 not included in ET. A moving-start capture supplies engine evidence, not an
@@ -69,3 +69,12 @@ check. No usable samples returns 409. Wrong-size or rejected packets never enter
 capture. Sample timestamps remain receiver UTC ms; game timestamps are separate.
 The existing ET definition (interpolated 1 km/h crossing after a stationary phase)
 and game/event timing limitations in telemetry.md remain unchanged.
+
+## Capture controls and setup sheet (0.16.0)
+
+Start now, Start with countdown (five seconds), Stop, Analyze and Export remain
+visible. Supporting run details/import/LC labels are inside the closed-by-default
+Use a real run disclosure. The colored countdown/status appears when active.
+Measured-run analysis is also collapsed initially and opens when a session loads.
+User data is laid out in horizontal rows; results are below it. Generate tuning
+setup produces the documented configuration sheet described in setup-baseline.md.

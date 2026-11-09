@@ -8,7 +8,7 @@ const assert=require('node:assert/strict');
   const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.clock.install();
   const latest={...decodeHorizonPacket(packet({speed:50,car:3726})),torqueNm:550};const key=engineKey(latest);let capture={id:0,state:'idle'},starts=0;
   await page.route('**/api/telemetry',r=>r.fulfill({contentType:'application/json',body:JSON.stringify({state:'receiving',decodedAgeMs:0,latest,car:resolveCar(3726),dragCapture:capture})}));
-  await page.route('**/api/telemetry/drag/start*',r=>{starts++;capture={id:starts,key,state:new URL(r.request().url()).searchParams.has('countdown')?'countdown':'recording',remainingMs:3000,launched:true,recordedSamples:0};return r.fulfill({contentType:'application/json',body:JSON.stringify(capture)});});
+  await page.route('**/api/telemetry/drag/start*',r=>{starts++;capture={id:starts,key,state:new URL(r.request().url()).searchParams.has('countdown')?'countdown':'recording',remainingMs:5000,launched:true,recordedSamples:0};return r.fulfill({contentType:'application/json',body:JSON.stringify(capture)});});
   await page.route('**/api/telemetry/drag/stop',r=>{capture={...capture,state:'stopped',reason:'manual',stoppedAt:Date.now()};return r.fulfill({contentType:'application/json',body:JSON.stringify(capture)});});
   const base=process.env.TEST_BASE_URL||'http://127.0.0.1:3017';await page.goto(base+'/?tune=drag#tuning');await page.locator('#drag-start-now').waitFor();
   assert.equal(await page.locator('#drag-strip').inputValue(),'');await page.locator('#drag-start-now').click();await page.waitForFunction(()=>document.querySelector('#drag-capture-countdown').textContent==='LIVE');assert.equal(starts,1);
@@ -18,7 +18,7 @@ const assert=require('node:assert/strict');
   assert.ok(Math.abs(Number(await f('powerKw').inputValue())-350*HP_PER_KW)<1e-8);assert.ok(Math.abs(Number(await f('torqueNm').inputValue())-550*LBFT_PER_NM)<1e-8);
   const et=await page.locator('#drag-summary strong').first().textContent();await f('name').fill('US migration check');await page.locator('#drag-form button[type=submit]').click();
   const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('fcc-drag-builds'))[0]);assert.ok(Math.abs(stored.input.powerKw-350)<1e-7);assert.ok(Math.abs(stored.input.mass-1400)<1e-7);assert.ok(Math.abs(stored.input.torqueNm-550)<1e-7);
-  await f('topSpeedGoalMph').fill('200');await f('powerPeakRpm').fill('7000');await page.locator('#drag-goal-suggest').click();assert.match(await page.locator('#drag-goal-result').textContent(),/200.*mph.*7000 RPM/);assert.match(await page.locator('#drag-goal-result').textContent(),/Post-shift RPM/);
+  await f('topSpeedGoalMph').fill('200');await f('powerPeakRpm').fill('7000');await page.locator('#drag-goal-suggest').click();assert.match(await page.locator('#drag-goal-result').textContent(),/200.*mph.*7000 RPM/);assert.match(await page.locator('#drag-goal-result').textContent(),/RPM after shift/);
   const oldFd=await f('finalDrive').inputValue();await page.locator('#drag-goal-apply').click();assert.notEqual(await f('finalDrive').inputValue(),oldFd);assert.equal(await page.locator('#drag-goal-apply').isHidden(),true);
   // Reload the SI-canonical saved build, then confirm displayed US values and unchanged prediction.
   await page.locator('[data-drag-load]').first().click();assert.equal(await page.locator('#drag-summary strong').first().textContent(),et);assert.equal(await f('mass').inputValue(),'3086.47');

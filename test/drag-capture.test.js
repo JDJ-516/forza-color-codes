@@ -4,19 +4,20 @@ import {createDragCapture} from '../drag-capture.js';
 import {decodeHorizonPacket} from '../fh6-decoder.js';
 import {packet} from '../test-support/telemetry-fixtures.js';
 const frame=(speedKph=0,extra={})=>({...decodeHorizonPacket(packet({speed:speedKph/3.6})),torqueNm:500,...extra});
+function finishCountdown({at}){at(11000,frame());at(12000,frame());at(13000,frame());at(14000,frame());at(14500,frame());return at(15000,frame());}
 function rig(){let time=10000;const capture=createDragCapture({now:()=>time});return {capture,at(t,s){time=t;if(s)capture.ingest(s);return capture.snapshot();}};}
 test('drag countdown permits staging brakes, records a stationary lead-in, and goes live on GO',()=>{
- const {capture,at}=rig();assert.equal(capture.start(frame(),{countdown:true}).remainingMs,3000);
+ const {capture,at}=rig();assert.equal(capture.start(frame(),{countdown:true}).remainingMs,5000);
  assert.equal(at(11000,frame(0,{brake:1})).state,'countdown');
- at(12000,frame(0,{brake:1}));at(12500,frame(0,{brake:1}));const go=at(13000,frame(0));
+ at(12000,frame(0,{brake:1}));at(13000,frame(0,{brake:1}));at(14000,frame(0,{brake:1}));at(14500,frame(0,{brake:1}));const go=at(15000,frame(0));
  assert.equal(go.state,'recording');assert.equal(go.recordedSamples,3);assert.equal(go.launched,false);
- assert.equal(capture.session().samples[0].timestampMs,12000);
+ assert.equal(capture.session().samples[0].timestampMs,14000);
 });
 test('braking after launch keeps recording; returning to zero stops and freezes only the drag run',()=>{
- const {capture,at}=rig();capture.start(frame(),{countdown:true});at(11000,frame());at(12000,frame());at(12500,frame());at(13000,frame());
- at(13100,frame(20));assert.equal(at(13200,frame(80,{brake:1})).state,'recording');
- assert.equal(at(13300,frame(0,{brake:1})).state,'recording');assert.equal(at(13550,frame(0,{brake:1})).reason,'stationary');
- const before=capture.session();at(14000,frame(100));assert.deepEqual(capture.session(),before);
+ const {capture,at}=rig();capture.start(frame(),{countdown:true});finishCountdown({at});
+ at(15100,frame(20));assert.equal(at(15200,frame(80,{brake:1})).state,'recording');
+ assert.equal(at(15300,frame(0,{brake:1})).state,'recording');assert.equal(at(15550,frame(0,{brake:1})).reason,'stationary');
+ const before=capture.session();at(16000,frame(100));assert.deepEqual(capture.session(),before);
  assert.equal(before.samples.at(-1).brake,1);
 });
 test('manual stop cancels countdown and a new start clears the old dedicated run',()=>{
@@ -32,9 +33,9 @@ test('capture can start while moving, be armed without data, and still guards ca
  const c=rig();c.capture.start(frame());assert.equal(c.at(13000).reason,'signal-lost');
 });
 test('capture measures power/torque separately and records actual upshift RPM',()=>{
- const {capture,at}=rig();capture.start(frame(),{countdown:true});at(11000,frame());at(12000,frame());at(12500,frame());at(13000,frame());
- for(let i=0;i<5;i++)at(13100+i*20,frame(80,{gear:2,rpm:5000+i*100}));
- const state=at(13200,frame(85,{gear:3,rpm:4000}));assert.equal(state.measurements.peakPowerW,200000);assert.equal(state.measurements.peakTorqueNm,500);assert.equal(state.measurements.shiftRpm,5400);
+ const {capture,at}=rig();capture.start(frame(),{countdown:true});finishCountdown({at});
+ for(let i=0;i<5;i++)at(15100+i*20,frame(80,{gear:2,rpm:5000+i*100}));
+ const state=at(15200,frame(85,{gear:3,rpm:4000}));assert.equal(state.measurements.peakPowerW,200000);assert.equal(state.measurements.peakTorqueNm,500);assert.equal(state.measurements.shiftRpm,5400);
 });
 
 test('imported power remains available when torque was not provided',async()=>{

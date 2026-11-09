@@ -99,7 +99,7 @@ test('dedicated drag API counts down, keeps recording through braking, freezes a
  const post=(action,headers={'X-Forza-Garage':'1'})=>fetch(base+'/api/telemetry/drag/'+action,{method:'POST',headers});
  assert.equal((await post('start')).status,200);assert.equal(telemetry.snapshot().dragCapture.waitingForTelemetry,true);await post('stop');await send();assert.equal((await post('start',{})).status,403);
  assert.equal((await post('start?countdown=1')).status,200);
- for(let i=0;i<60;i++)await send(0,255);
+ for(let i=0;i<100;i++)await send(0,255);
  assert.equal(telemetry.snapshot().dragCapture.state,'recording');
  for(let i=0;i<8;i++)await send(20+i);
  await send(25,255);assert.equal(telemetry.snapshot().dragCapture.state,'recording');assert.equal((await post('stop',{'X-Forza-Garage':'1',Origin:'https://foreign.example'})).status,403);

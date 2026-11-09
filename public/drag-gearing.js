@@ -22,3 +22,20 @@ export function suggestDragGearing(input,goalMph,curve=[]){
  const candidate={...input,finalDrive,gears},postShiftRpm=gears.slice(1).map((g,i)=>input.shiftRpm*g/gears[i]);
  return {goalMph,rpm,source,finalDrive,gears,theoreticalMph:gearingSpeedMph(candidate,rpm),postShiftRpm,staysAboveTorquePeak:postShiftRpm.every(r=>r>=input.torquePeakRpm),launchRatioChange:gears[0]*finalDrive-input.gears[0]*input.finalDrive};
 }
+
+// Create a complete ratio set when the user has not entered existing ratios.
+// First/top references are explicit assumptions, never inferred gearbox contents.
+export function generateDragGearset(input,goalMph,curve=[]){
+ const existing=Array.isArray(input.gears)&&input.gears.length>=4&&input.gears.every((g,i)=>Number.isFinite(g)&&g>=.1&&g<=10&&(!i||g<input.gears[i-1]))?input.gears:null;
+ const count=Number.isInteger(input.setupGearCount)&&input.setupGearCount>0?input.setupGearCount:existing?.length;
+ if(!Number.isInteger(count)||count<4||count>10)throw new Error('Choose the number of gears in your installed gearbox.');
+ const first=Number.isFinite(input.setupFirstGear)?input.setupFirstGear:existing?.[0]??3;
+ const top=Number.isFinite(input.setupTopGear)?input.setupTopGear:existing?.at(-1)??.9;
+ if(!Number.isFinite(first)||!Number.isFinite(top)||first>10||top<.1||first<=top)throw new Error('First-gear reference must exceed top gear; both must be within 0.1–10.');
+ const gears=Array.from({length:count},(_,i)=>round(first*Math.pow(top/first,i/(count-1))));
+ const peaks=curve.filter(p=>p.rpm<=input.shiftRpm&&Number.isFinite(p.powerW)&&p.powerW>0);
+ const rpm=peaks.length>=4?peaks.reduce((a,b)=>a.powerW>b.powerW?a:b).rpm:Number.isFinite(input.powerPeakRpm)&&input.powerPeakRpm>0?input.powerPeakRpm:input.shiftRpm;
+ const finalDrive=round(gearingSpeedMph({...input,gears,finalDrive:1},rpm)/goalMph);
+ const result=suggestDragGearing({...input,gears,finalDrive},goalMph,curve);
+ return {...result,firstReference:first,topReference:top,generatedFromReferences:true};
+}

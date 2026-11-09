@@ -19,7 +19,7 @@ export function createDragCapture({now=Date.now}={}){
  function start(sample,{countdown=false}={}){
   if(active())throw new Error('A drag capture is already in progress. Stop it before starting another.');
   const ready=sample?.isRaceOn&&Number.isInteger(sample.carOrdinal)&&sample.carOrdinal>=0&&Number.isFinite(sample.speedKph);
-  id++;state=countdown?'countdown':'recording';key=ready?engineKey(sample):null;startedAt=now();startsAt=countdown?now()+3000:now();stoppedAt=null;reason=null;lastFrameAt=ready?now():null;samples=[];lastStored=null;launched=ready&&sample.speedKph>=1;stationarySince=null;measurements=emptyEngineMeasurements(key);previous=null;shifts=[];
+  id++;state=countdown?'countdown':'recording';key=ready?engineKey(sample):null;startedAt=now();startsAt=countdown?now()+5000:now();stoppedAt=null;reason=null;lastFrameAt=ready?now():null;samples=[];lastStored=null;launched=ready&&sample.speedKph>=1;stationarySince=null;measurements=emptyEngineMeasurements(key);previous=null;shifts=[];
   return snapshot();
  }
  function ingest(sample){

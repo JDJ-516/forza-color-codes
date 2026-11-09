@@ -1,6 +1,6 @@
 # Forza-ingenium — Paint & Tune
 
-Current build: **0.15.1**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.15.1.md) for checks and practical limits.
+Current build: **0.16.0**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.16.0.md) for checks and practical limits.
 
 ## Install and run on Windows
 
@@ -95,7 +95,7 @@ Keep `data/source.xlsx`, `data/rare-cars-source.xlsx` and the pinned `data/sourc
 
 ### Browser and installer checks
 
-Fourteen Playwright suites live in `scripts/`: `browser-smoke.cjs`, `garage-smoke.cjs`, `drag-smoke.cjs`, `workspace-smoke.cjs`, `competitive-smoke.cjs`, `rare-cars-smoke.cjs`, `release-smoke.cjs`, `dashboard-smoke.cjs`, `seasonal-smoke.cjs`, `telemetry-status-smoke.cjs`, `navigation-smoke.cjs`, `tuning-telemetry-smoke.cjs`, `drag-capture-smoke.cjs`, and `us-goal-smoke.cjs`. Start the app with telemetry enabled for capture/reset checks. Set `TEST_BASE_URL`, `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` for the local environment, then run each suite with Node. Tests cover real localhost HTTP/UDP and synthetic captures; Google refresh tests use source fixtures.
+Fifteen Playwright suites live in `scripts/`: `browser-smoke.cjs`, `garage-smoke.cjs`, `drag-smoke.cjs`, `workspace-smoke.cjs`, `competitive-smoke.cjs`, `rare-cars-smoke.cjs`, `release-smoke.cjs`, `dashboard-smoke.cjs`, `seasonal-smoke.cjs`, `telemetry-status-smoke.cjs`, `navigation-smoke.cjs`, `tuning-telemetry-smoke.cjs`, `drag-capture-smoke.cjs`, `us-goal-smoke.cjs`, and `setup-sheet-smoke.cjs`. Start the app with telemetry enabled for capture/reset checks. Set `TEST_BASE_URL`, `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` for the local environment, then run each suite with Node. Tests cover real localhost HTTP/UDP and synthetic captures; Google refresh tests use source fixtures.
 
 ```sh
 python3 -B scripts/build-windows-installer.py --fetch-runtime
@@ -161,3 +161,14 @@ engine evidence, and only an actually captured stationary launch can supply a
 standing-start ET. Top-speed goal (mph) offers reviewable/applicable power-band
 gearing suggestions and constrains the performance search's gearing ceiling.
 See [US units and gearing goals](docs/us-units-gearing.md).
+
+Build 0.16.0 keeps real-run controls visible with supporting capture details
+collapsed by default, changes the optional countdown to five seconds, and places
+the version beneath the wordmark. Car inputs span horizontal rows and calculated
+results sit below them. Drag adds **Generate tuning setup → Settings to enter
+in-game**, including complete gear ratios, spring rates, damper/tire references,
+alignment, anti-roll and driven-axle differential starting points. Editable
+reference targets are provided; supplied ranges flag infeasible settings rather
+than silently clamping them. The sheet is exportable and invalidates on input/car
+evidence changes. These are documented starting baselines for real-run testing,
+not verified FH6 optima. See [setup methods and source attribution](docs/setup-baseline.md).

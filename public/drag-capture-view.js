@@ -5,7 +5,7 @@ const $=s=>document.querySelector(s);
 let lastData={},current=null,updatedAt=0,callbacks=null,source=null,seenId=null,analyzed=null,engine=null,statusKey=null;
 const reasons={stationary:'Car stopped · drag capture complete',manual:'Capture stopped manually','early-launch':'Moved before GO · start again','car-changed':'Car/build changed · capture stopped','signal-lost':'Telemetry signal lost · capture stopped','game-inactive':'Game inactive · capture stopped','sample-limit':'Capture limit reached · recording stopped'};
 function active(){return current&&['countdown','recording'].includes(current.state);}
-function setIndicator(state,text,description){const box=$('#drag-capture-indicator');if(!box)return;if(box.dataset.state!==state)box.dataset.state=state;if($('#drag-capture-countdown').textContent!==text)$('#drag-capture-countdown').textContent=text;if($('#drag-capture-state').textContent!==description)$('#drag-capture-state').textContent=description;}
+function setIndicator(state,text,description){const box=$('#drag-capture-indicator');if(!box)return;box.hidden=state==='idle';if(box.dataset.state!==state)box.dataset.state=state;if($('#drag-capture-countdown').textContent!==text)$('#drag-capture-countdown').textContent=text;if($('#drag-capture-state').textContent!==description)$('#drag-capture-state').textContent=description;}
 function paint(){
  if(!$('#drag-capture-indicator'))return;
  if(lastData.state==='offline'){setIndicator('offline','OFFLINE','App disconnected · capture status unavailable');return;}
