@@ -15,7 +15,7 @@ function saveProfile(){
 function restoreProfile(key){
  const profile=profiles.get(key)||[];
  writing=true;
- for(const c of controls()){c.value='';if(c.type==='checkbox')c.checked=false;delete c.dataset.telemetryValue;delete c.dataset.telemetryManual;delete c.dataset.siText;delete c.dataset.siValue;}
+ for(const c of controls()){c.value='';if(c.type==='checkbox')c.checked=false;delete c.dataset.telemetryValue;delete c.dataset.telemetryManual;delete c.dataset.siText;delete c.dataset.siValue;delete c.dataset.tireSizeSource;if(c.name==='tireSize'){c.setCustomValidity('');c.removeAttribute('aria-invalid');}}
  const count=$('#gear-count'),countValue=profile.find(p=>p.key==='gear-count');
  if(count){count.value=countValue?.value||'';count.dispatchEvent(new Event('change',{bubbles:true}));}
  for(const c of controls()){
@@ -38,7 +38,7 @@ function fill(selector,value,source){
 }
 document.addEventListener('input',e=>{
  if(writing||e.detail?.telemetry||!e.target.matches('input,select,textarea'))return;
- if(forms.includes(e.target.form?.id)||e.target.form?.id==='competition-form'){
+ if(forms.includes(e.target.form?.id)){
   e.target.dataset.telemetryManual='1';delete e.target.dataset.telemetryValue;
  }
 });
@@ -66,14 +66,13 @@ export function updateTuningTelemetry(data,fresh){
  for(const id of ['year','make','model'])$('#tuning-car-'+id).textContent=identity?.[id]??'—';
  const drive=['FWD','RWD','AWD'][s.drivetrain],className=['D','C','B','A','S1','S2','X'][s.carClass];
  status.textContent=[`Live · car ID ${s.carOrdinal}`,className&&Number.isFinite(s.carPerformanceIndex)?`${className} ${s.carPerformanceIndex} PI`:null,drive,identity?.name?'Supported inputs fill automatically; your edits take priority.':'This ID is absent from the FH6 catalogue. Enter the name manually.'].filter(Boolean).join(' · ');
- for(const selector of ['#drag-form [name=car]','#tune-car','#drift-form [name=car]','#competition-form [name=car]'])fill(selector,identity?.name,'Current car identified from FH6 telemetry ID');
- fill('#competition-form [name=className]',className&&s.carPerformanceIndex?`${className} ${s.carPerformanceIndex}`:null,'Current reported car class / PI');
+ for(const selector of ['#drag-form [name=car]','#tune-car','#drift-form [name=car]'])fill(selector,identity?.name,'Current car identified from FH6 telemetry ID');
  fill('#drag-form [name=drive]',drive,'Reported drivetrain');
  fill('#drag-form [name=engineLimitRpm]',s.engineMaxRpm==null?null:Math.round(s.engineMaxRpm),'Reported engine RPM limit');
  const diameter=rollingDiameterIn(s);
  if(diameter!==null&&s.timestampMs!==lastDiameterTimestamp){lastDiameterTimestamp=s.timestampMs;diameters.push(diameter);diameters=diameters.slice(-31);}
  if(diameters.length>=5){const sorted=[...diameters].sort((a,b)=>a-b),middle=sorted[Math.floor(sorted.length/2)];const c=$('#drag-form [name=tireDiameterIn]');if(sorted.every(v=>Math.abs(v-middle)/middle<.03)&&(c.value===''||Math.abs(Number(c.value)-middle)/middle>.005))fill('#drag-form [name=tireDiameterIn]',Number(middle.toFixed(2)),'Effective rolling diameter measured from low-slip, straight coasting');}
- $('#drag-gearing-source').textContent='Engine limit comes from telemetry. Tire diameter fills after five low-slip, straight coasting samples above 25 mph. Confirm tire package and installed gear count; Data Out does not identify them.';
+ if(!$('#drag-tire-size').value)$('#drag-gearing-source').textContent='Engine limit comes from telemetry. Tire diameter fills after five low-slip, straight coasting samples above 25 mph, or enter your tire size above for automatic conversion.';
  for(const selector of ['#shift-rpm','#drift-form [name=rpm]'])fill(selector,s.engineMaxRpm==null?null:Math.round(s.engineMaxRpm),'Starting RPM from reported engine limit; adjust for your shift/target RPM');
  evidence.textContent='Drivetrain and car labels come from live telemetry. Use a real drag run to fill the captured engine section. Manual power, torque, weight and other unreported build specifications stay under your control.';
 }

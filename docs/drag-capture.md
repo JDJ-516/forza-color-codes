@@ -33,7 +33,7 @@ drag buffer. A car/build switch stops instead of mixing drag builds.
    distance entry. FH6 and saved custom strips are grouped with shortened labels.
 3. Powertrain details: drivetrain, HP, ft-lb, lb, front weight percentage, PWR,
    displacement, top-speed goal, installed gear count, tire package and On/Off LC.
-   Gearing data has a collapsed engine-limit/overall-tire-diameter fallback.
+   Engine limit, driven tire size and auto-calculated diameter stay visible.
 4. Captured engine data: read-only observed maximum power/torque, torque-peak
    RPM and median observed upshift RPM. The explicit copy button can transfer
    captured power/torque into the build specifications.

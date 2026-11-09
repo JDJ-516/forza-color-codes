@@ -1,4 +1,4 @@
-# FH6 tuning worksheet · build 0.17.0
+# FH6 tuning worksheet · build 0.18.0
 
 Tune Calculator → Drag keeps the manual build data in horizontal Powertrain
 fields. Top-speed goal, installed gear count, tire package and launch control
@@ -23,8 +23,9 @@ gear count or launch-control state. Highest observed gear is only a lower bound,
 so the calculator does not silently use it as the gearbox count.
 
 Gearing needs a speed goal, gear count, engine RPM limit and driven tire overall
-diameter. The last two live in the collapsed **Gearing data** section and have
-manual offline fallbacks. The engine limit fills from the decoded packet. Effective
+diameter. Engine RPM limit, driven tire size and overall diameter are visible in Powertrain.
+Enter a tire designation such as 295/45R20 or 28x10.5R15 and the app calculates
+the outside diameter. Direct diameter entry remains available. The engine limit fills from the decoded packet. Effective
 rolling diameter fills after five distinct low-slip, straight coasting samples
 above 40 km/h (about 25 mph), using `diameter = 2 × speed / |wheel angular speed|`.
 The median must be coherent across the driven wheels and collected samples.
@@ -43,12 +44,45 @@ starting constraints, not asserted universal FH6 slider limits. A recognized
 2018 Trackhawk may use the pictured 6.10 maximum final drive and 0.48 minimum
 individual gear; other unknown endpoints are not extrapolated from the picture.
 
-With sufficient measured power coverage on both sides, top gear targets the
-interior observed power peak. Spacing uses the measured 85%-power band with a
-0.60–0.88 RPM-retention reference. With incomplete power coverage it uses a
-72% retention starting reference, compressed to fit the ratio design window,
-and 98% of engine limit as a clearly labeled RPM reference. An endpoint maximum
-in a truncated power curve is not declared a confirmed power peak.
+With measured power coverage on both sides, top gear targets the interior
+observed power peak. With incomplete coverage, it uses 98% of engine limit as a
+clearly labeled reference. The launch reference is seeded with a 72% retention
+span independently of the measured high-power band; the previous linkage could
+produce excessively tall first gears.
+
+A stable, low-slip, loaded capture can retain the current first-gear overall
+reduction. It requires eight interior samples above about 15.5 mph, consistent
+adjacent gears and timestamps, driven-wheel slip below 0.05, median absolute
+relative deviation ≤1.5% and at least 90% of samples within 3% of the median.
+Mixed-build captures are excluded. This infers overall reduction from RPM and
+road speed, not a separately decoded final drive.
+
+The power fit evaluates 33 nonuniform spacing profiles plus neutral spacing,
+with the first and top overall ratios fixed. Stable captured later gears are
+also evaluated as a retained prefix, filling unused tall gears to the goal.
+Dynamic programming compares staying in gear versus sequential upshifts over
+a common rolling speed window. Kinetic work uses engine power and vehicle mass;
+each shift adds a documented 0.15 s reference interruption. This reference is not
+a measured FH6 shift constant. Missing measured power regions are not extrapolated.
+
+If no usable measured curve exists, rated HP and torque can define an optimistic
+power envelope: `min(rated_power_W, rated_torque_Nm × RPM × 2π/60)`. This does not
+identify the actual peak RPM or model high-RPM falloff. Without either power source,
+the generator explicitly falls back to RPM-reference gearing.
+
+The rolling window ends near the selected strip's clean captured finish speed
+when available. Otherwise a constant-peak-power, zero-loss distance reference
+bounds the window. This is not predicted finish speed. Ratios are rounded to
+hundredths; the rounded candidate is evaluated again against rounded neutral
+spacing, retaining neutral if its modeled work cost is lower. Actual first-gear
+reduction is preserved within 1% rounding where feasible.
+
+The result reports the model mode, rolling range, shift count, modeled power
+utilization, per-gear shift speed and a separate rev-limit gearing ceiling. Power
+utilization is kinetic work divided by modeled elapsed time and peak engine
+power; it includes reference shift interruption. The ranking excludes launch grip,
+drag, rolling resistance and drivetrain loss. It is not a whole-run ET or a claim
+that the generated chassis settings improve a working in-game tune.
 
 Individual shift references use supported engine-power crossovers where both
 pre/post-shift RPMs have measured support, without crossing gaps over 500 RPM.

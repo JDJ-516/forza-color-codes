@@ -1,6 +1,6 @@
 # Forza-ingenium — Paint & Tune
 
-Current build: **0.17.0**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.17.0.md) for checks and practical limits.
+Current build: **0.18.0**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.18.0.md) for checks and practical limits.
 
 ## Install and run on Windows
 
@@ -59,7 +59,9 @@ Select **Drag**, **Track**, or **Drift** to expand its calculator; select the sa
 - **Track:** theoretical gearing speeds, inverse final-drive calculation, suspension-frequency/motion-ratio baselines, and saved setup export/load/delete. Damper coefficients are physical units, not a verified conversion to game sliders.
 - **Drift:** working-RPM/gear/road-speed/wheel-overrun calculations and saved setups. This is a gearing worksheet rather than a lateral tire or drift-score model.
 
-Competitive development records clean attempts, manually entered leaderboard targets and matching event/car/class/conditions/assists context. Drag also matches distance and launch-control state. Comparisons need three clean attempts per revision and show median, best and spread. Identical telemetry evidence cannot be counted repeatedly as independent attempts. Drift scoring is manual; track imports select completed captured laps. Results stay in browser storage, with JSON export. Observed improvements do not certify leaderboard ranks or guarantee a top-10 result.
+The former Competitive Development / Chase your benchmark section has been
+removed. Measured drag-run analysis, saved build history and direct run comparisons
+remain inside Drag. Existing historical attempt storage is not erased.
 
 The Windows shortcut enables a localhost UDP receiver on port **5300**. Enable the game's Data Out feature, if available, with destination `127.0.0.1:5300`. Compare decoded readings with the game before relying on tuning evidence. The decoder is community-cross-checked, but actual FH6 gameplay has not been validated here. Unit/browser data is synthetic. See [telemetry schema, sources and capture instructions](docs/telemetry.md) for setup, export/import units, decoder offsets and limitations.
 
@@ -95,7 +97,7 @@ Keep `data/source.xlsx`, `data/rare-cars-source.xlsx` and the pinned `data/sourc
 
 ### Browser and installer checks
 
-Fifteen Playwright suites live in `scripts/`: `browser-smoke.cjs`, `garage-smoke.cjs`, `drag-smoke.cjs`, `workspace-smoke.cjs`, `competitive-smoke.cjs`, `rare-cars-smoke.cjs`, `release-smoke.cjs`, `dashboard-smoke.cjs`, `seasonal-smoke.cjs`, `telemetry-status-smoke.cjs`, `navigation-smoke.cjs`, `tuning-telemetry-smoke.cjs`, `drag-capture-smoke.cjs`, `us-goal-smoke.cjs`, and `setup-sheet-smoke.cjs`. Start the app with telemetry enabled for capture/reset checks. Set `TEST_BASE_URL`, `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` for the local environment, then run each suite with Node. Tests cover real localhost HTTP/UDP and synthetic captures; Google refresh tests use source fixtures.
+Fifteen Playwright suites live in `scripts/`: `browser-smoke.cjs`, `garage-smoke.cjs`, `drag-smoke.cjs`, `workspace-smoke.cjs`, `gearing-fit-smoke.cjs`, `rare-cars-smoke.cjs`, `release-smoke.cjs`, `dashboard-smoke.cjs`, `seasonal-smoke.cjs`, `telemetry-status-smoke.cjs`, `navigation-smoke.cjs`, `tuning-telemetry-smoke.cjs`, `drag-capture-smoke.cjs`, `us-goal-smoke.cjs`, and `setup-sheet-smoke.cjs`. Start the app with telemetry enabled for capture/reset checks. Set `TEST_BASE_URL`, `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` for the local environment, then run each suite with Node. Tests cover real localhost HTTP/UDP and synthetic captures; Google refresh tests use source fixtures.
 
 ```sh
 python3 -B scripts/build-windows-installer.py --fetch-runtime
@@ -138,9 +140,10 @@ traction, launch, ratio, and chassis-reference input sections have been removed.
 The bottom **Suggested tune** follows FH6's Tires / Gearing / Alignment / Antiroll
 bars / Springs / Damping / Aero / Brake / Differential tabs. It generates numeric
 starting settings where supported, including AWD center balance, and uses
-relative targets for unknown ride-height/aero limits. Gearing data has two
-collapsed offline fallbacks: engine RPM limit and driven tire overall diameter.
-Live engine limit and eligible coasting measurements can fill them automatically.
+relative targets for unknown ride-height/aero limits. Engine RPM limit, driven tire size and diameter are always visible in Powertrain.
+Enter a tire designation such as `295/45R20` or `28x10.5R15`; the app calculates
+the diameter automatically. Live engine limit and eligible coasting measurements
+can fill the specifications too. Imported captures can fill missing values.
 Tire compound, installed gear count and launch-control mode still need selection;
 Data Out does not identify them. All original basic tuning entries start blank.
 
@@ -150,3 +153,12 @@ interface has been replaced with the FH6 worksheet and real-run comparisons;
 no invented ET or leaderboard rank is shown. Numeric chassis settings are
 starting test hypotheses, not confirmed optima for a particular upgraded car.
 See [setup methods](docs/setup-baseline.md) and [US units](docs/us-units-gearing.md).
+
+Build 0.18.0 fits intermediate gear spacing with a rolling engine-power work
+comparison and an explicit shift interruption reference. Captured stable first-gear
+reduction is retained; observed later-gear reductions are evaluated as another
+candidate. Offline fits use a labeled rated HP/torque envelope. Separate launch
+spacing avoids excessively tall first gears caused by using a narrow high-power
+band. The output includes speed at each shift and a separate rev-limit ceiling.
+This ranking excludes launch grip and resistance and does not predict drag ET;
+actual repeated runs decide whether a proposed change is faster.

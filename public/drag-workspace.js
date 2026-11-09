@@ -1,5 +1,6 @@
 import {attachSetupSheet} from './setup-sheet-view.js';
 import {readSI,writeSI,mph,usError} from './units.js';
+import {tireDiameterFromSize} from './drag-power-fit.js';
 import {sessionGearingEvidence} from './fh6-setup.js';
 import {attachDragCapture,showImportedEngineData,clearCapturedEngine,captureMatchesCurrent} from './drag-capture-view.js';
 import {captureKey} from './competition.js';
@@ -18,6 +19,16 @@ function inputs(){
  if(!Number.isFinite(i.tireDiameterIn)&&captured?.tireDiameterIn)i.tireDiameterIn=captured.tireDiameterIn;
  return i;
 }
+function syncTireSize(){
+ const c=field('tireSize'),target=field('tireDiameterIn');
+ try{
+  const diameter=tireDiameterFromSize(c.value);c.setCustomValidity('');c.removeAttribute('aria-invalid');$('#drag-tire-error').textContent='';
+  if(diameter!==null){writeSI(target,diameter);target.dataset.tireSizeSource='1';target.dataset.telemetryManual='1';delete target.dataset.telemetryValue;$('#drag-gearing-source').textContent='Diameter calculated automatically from your installed tire size.';}
+  else if(target.dataset.tireSizeSource==='1'){writeSI(target,null);delete target.dataset.tireSizeSource;}
+ }catch(e){writeSI(target,null);c.setCustomValidity(e.message);c.setAttribute('aria-invalid','true');$('#drag-tire-error').textContent=e.message;}
+}
+field('tireSize').addEventListener('input',syncTireSize);
+field('tireDiameterIn').addEventListener('input',e=>{if(e.isTrusted){field('tireSize').value='';field('tireSize').setCustomValidity('');field('tireSize').removeAttribute('aria-invalid');$('#drag-tire-error').textContent='';delete field('tireDiameterIn').dataset.tireSizeSource;}});
 const stripSelect=$('#drag-strip');
 const venueGroup=document.createElement('optgroup');venueGroup.label='FH6 drag strips';
 for(const strip of FH6_STRIPS){
@@ -50,16 +61,17 @@ let builds=read('fcc-drag-builds').filter(b=>b&&typeof b.id==='string'&&typeof b
 function renderBuilds(){$('#drag-builds').innerHTML=builds.length?builds.map(b=>`<article class="saved-tune"><div><strong>${esc(b.name)}</strong><span>${esc(b.car)} · ${esc(b.strip)} · LC ${b.input.launchControl==='enabled'?'On':b.input.launchControl==='disabled'?'Off':'Unknown'}</span></div><div><button class="button outline" data-drag-load="${esc(b.id)}">Load</button><button class="button outline" data-drag-export="${esc(b.id)}">Export</button><button class="delete-button" data-drag-delete="${esc(b.id)}">Delete</button></div></article>`).join(''):'<p class="muted">No saved drag builds yet.</p>';}
 function download(value,name){const url=URL.createObjectURL(new Blob([JSON.stringify(value,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 form.addEventListener('submit',e=>{e.preventDefault();const data=calculate();if(!data||!form.reportValidity()||!data.input.name||!data.input.car)return;builds.unshift({id:crypto.randomUUID(),name:data.input.name,car:data.input.car,strip:$('#drag-strip-name').value,stripId:stripSelect.selectedOptions[0]?.dataset.fh6Id||null,stripValue:stripSelect.value,input:data.input,powerCurve:structuredClone(curve()),telemetryEvidence:loadedSession?{source:typeof loadedSession.source==='string'?loadedSession.source:'Imported session',samples:loadedSession.samples.length,carOrdinal:loadedSession.samples[0]?.carOrdinal??null,launchControl:$('#drag-run-lc').value,measuredEtS:run?.seconds??null,distanceM:run?.distanceM??null}:null});if(store('fcc-drag-builds',builds))notice('Drag build saved.');renderBuilds();});
-$('#drag-builds').addEventListener('click',e=>{const load=e.target.closest('[data-drag-load]'),exp=e.target.closest('[data-drag-export]'),del=e.target.closest('[data-drag-delete]'),id=load?.dataset.dragLoad||exp?.dataset.dragExport||del?.dataset.dragDelete,b=builds.find(b=>b.id===id);if(!b)return;if(del){builds=builds.filter(x=>x.id!==id);store('fcc-drag-builds',builds);renderBuilds();return;}if(exp){download({schema:'forza-ingenium-drag-build/v2',...b},'forza-drag-build.json');return;}for(const c of form.elements){if(c.name){c.value='';delete c.dataset.siText;delete c.dataset.siValue;}}
+$('#drag-builds').addEventListener('click',e=>{const load=e.target.closest('[data-drag-load]'),exp=e.target.closest('[data-drag-export]'),del=e.target.closest('[data-drag-delete]'),id=load?.dataset.dragLoad||exp?.dataset.dragExport||del?.dataset.dragDelete,b=builds.find(b=>b.id===id);if(!b)return;if(del){builds=builds.filter(x=>x.id!==id);store('fcc-drag-builds',builds);renderBuilds();return;}if(exp){download({schema:'forza-ingenium-drag-build/v2',...b},'forza-drag-build.json');return;}for(const c of form.elements){if(c.name){c.value='';delete c.dataset.siText;delete c.dataset.siValue;delete c.dataset.tireSizeSource;if(c.name==='tireSize'){c.setCustomValidity('');c.removeAttribute('aria-invalid');}}}
  for(const [key,v] of Object.entries(b.input)){if(field(key)){if(field(key).type==='number')writeSI(field(key),v);else field(key).value=v??'';}}
  if(!field('setupGearCount').value&&Array.isArray(b.input.gears))field('setupGearCount').value=b.input.gears.length;
- if(!field('tireDiameterIn').value&&b.input.rim&&b.input.width&&b.input.aspect)field('tireDiameterIn').value=String(b.input.rim+2*b.input.width*b.input.aspect/100/25.4);
+ syncTireSize();if(!field('tireDiameterIn').value&&b.input.rim&&b.input.width&&b.input.aspect)field('tireDiameterIn').value=String(b.input.rim+2*b.input.width*b.input.aspect/100/25.4);
  $('#drag-strip-name').value=b.strip;const previousOption=[...stripSelect.options].find(o=>o.value&&o.value!=='custom'&&(o.value===b.stripValue||(o.textContent===b.strip&&Number(o.value.split(':').at(-1))===b.input.distanceM)));stripSelect.value=previousOption?.value||(b.stripId?`fh6:${b.stripId}:${b.input.distanceM}`:'custom');if(!stripSelect.value)stripSelect.value='custom';syncStrip(false);$('#drag-strip-name').value=b.strip;clearCapturedEngine();activeCurve=b.powerCurve||[];run=null;loadedSession=null;document.dispatchEvent(new CustomEvent('ingenium:drag-run',{detail:null}));$('#drag-run-status').textContent=activeCurve.length?'Saved measured power-curve snapshot loaded. No raw session is loaded.':'Manual build loaded without a power curve.';$('#drag-run-results').innerHTML='';$('#drag-save-run').disabled=true;calculate();});
 function renderRun(session,live=session===loadedSession&&loadedSessionLive){
  document.dispatchEvent(new CustomEvent('ingenium:drag-evidence-changed'));
 
  document.dispatchEvent(new CustomEvent('ingenium:drag-run',{detail:null}));
  const base=analyzeSession(session);if(!captureMatchesCurrent(session))throw new Error('Capture belongs to a different car/build. Switch to that car or disconnect telemetry before using this run.');$('#drag-measured-details').open=true;showImportedEngineData(session,live);loadedSessionLive=live;loadedSession=session;activeCurve=base.powerCurve;
+ const specs=sessionGearingEvidence(session);for(const name of ['engineLimitRpm','tireDiameterIn'])if(!field(name).value&&Number.isFinite(specs[name])){writeSI(field(name),specs[name]);field(name).dataset.telemetryValue=field(name).value;field(name).title='From imported/captured telemetry';}
  if(['enabled','disabled','unknown'].includes(session.context?.launchControl))$('#drag-run-lc').value=session.context.launchControl;
  try{run=analyzeDragSession(session,readSI(field('distanceM')));}
  catch(error){run=null;$('#drag-save-run').disabled=true;$('#drag-run-results').innerHTML='';$('#drag-run-status').textContent=`Driving session loaded, but no usable standing-start run: ${usError(error.message)} ${activeCurve.length} eligible power bins available.`;calculate();return;}
@@ -81,6 +93,6 @@ $('#drag-save-run').addEventListener('click',()=>{if(!run?.completed){notice('A 
 $('#drag-run-history').addEventListener('click',e=>{const compare=e.target.closest('[data-run-compare]'),del=e.target.closest('[data-run-delete]');if(del){history=history.filter(r=>r.id!==del.dataset.runDelete);store('fcc-drag-runs',history);renderHistory();return;}if(!compare)return;const prior=history.find(r=>r.id===compare.dataset.runCompare);if(!run?.completed||run.carOrdinal===null||run.carOrdinal!==prior.carOrdinal||Math.abs(run.distanceM-prior.distanceM)>.001){$('#drag-compare-note').textContent='Compare completed runs with the same known car ordinal and distance.';return;}$('#drag-compare-note').textContent=`Current vs saved: ET ${(run.seconds-prior.seconds)>=0?'+':''}${(run.seconds-prior.seconds).toFixed(3)} s, trap ${mph(run.trapKph-prior.trapKph).toFixed(1)} mph. LC ${$('#drag-run-lc').value} vs ${prior.launchControl}. ${run.splits.find(s=>s.name==='60 ft')&&prior.splits?.find(s=>s.name==='60 ft')?'60-ft delta '+(run.splits.find(s=>s.name==='60 ft').seconds-prior.splits.find(s=>s.name==='60 ft').seconds).toFixed(3)+' s. ':''}Confirm the same strip, build, weather and assists; this difference alone does not prove the tune caused it.`;});
 renderStrips();renderBuilds();renderHistory();stripSelect.value='';syncStrip();calculate();
 
-document.addEventListener('ingenium:car-changed',clearRun);
+document.addEventListener('ingenium:car-changed',()=>{clearRun();syncTireSize();});
 attachDragCapture({clearRun,renderRun});
-attachSetupSheet({inputs,curve,session:()=>loadedSession,evidence:()=>loadedSession?`${loadedSession.samples.length} captured samples, ${activeCurve.length} eligible power bins. ${run?.completed?'Measured finish '+run.seconds.toFixed(3)+' s.':'No completed standing-start finish.'}`:activeCurve.length?`${activeCurve.length} saved power bins; raw capture is not loaded.`:'No measured run loaded.'});
+attachSetupSheet({inputs,curve,session:()=>loadedSession,run:()=>run,evidence:()=>loadedSession?`${loadedSession.samples.length} captured samples, ${activeCurve.length} eligible power bins. ${run?.completed?'Measured finish '+run.seconds.toFixed(3)+' s.':'No completed standing-start finish.'}`:activeCurve.length?`${activeCurve.length} saved power bins; raw capture is not loaded.`:'No measured run loaded.'});

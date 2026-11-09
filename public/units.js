@@ -1,6 +1,6 @@
 // Canonical physics/session units stay SI. UI defaults to US customary units.
 export const HP_PER_KW=1.3410220895950277,LBFT_PER_NM=.7375621492772656,LB_PER_KG=2.2046226218487757,MPH_PER_KPH=1/1.609344,FT_PER_M=1/.3048,IN_PER_M=1/.0254;
-export const DISPLAY_FACTORS={hp:HP_PER_KW,lbft:LBFT_PER_NM,lb:LB_PER_KG,ft:FT_PER_M,in:IN_PER_M,inchWidth:1/25.4,sqft:1/.09290304,cuin:61.0237440947323,mph:MPH_PER_KPH};
+export const DISPLAY_FACTORS={diameter:1,hp:HP_PER_KW,lbft:LBFT_PER_NM,lb:LB_PER_KG,ft:FT_PER_M,in:IN_PER_M,inchWidth:1/25.4,sqft:1/.09290304,cuin:61.0237440947323,mph:MPH_PER_KPH};
 export const toDisplay=(value,kind)=>value*(DISPLAY_FACTORS[kind]??1);
 export const fromDisplay=(value,kind)=>value/(DISPLAY_FACTORS[kind]??1);
 export function readSI(control){

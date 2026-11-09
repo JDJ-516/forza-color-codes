@@ -8,7 +8,7 @@ test('serves the application and assets, rejects unknown routes and write method
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   t.after(() => new Promise(resolve => server.close(resolve)));
   const base = `http://127.0.0.1:${server.address().port}`;
-  for (const path of ['/', '/favicon.svg', '/app.js', '/styles.css', '/data.js', '/recipe.js', '/color-tools.js', '/garage.js', '/calculators.js', '/drag.js', '/drag-workspace.js', '/telemetry-analysis.js', '/telemetry-setup.html', '/fh6-setup.js', '/setup-baseline.js', '/setup-sheet-view.js', '/units.js', '/drag-gearing.js', '/engine-observations.js', '/drag-capture-data.js', '/drag-capture-view.js', '/tuning-telemetry.js', '/telemetry-view.js', '/telemetry-channels.js', '/drag-optimizer.js', '/competition.js', '/competition-workspace.js', '/rare-cars-workspace.js', '/dashboard-cars.js', '/seasonal-cars.js', '/rare-cars.json', '/catalogue.json', '/import-report.json']) {
+  for (const path of ['/', '/favicon.svg', '/app.js', '/styles.css', '/data.js', '/recipe.js', '/color-tools.js', '/garage.js', '/calculators.js', '/drag.js', '/drag-workspace.js', '/telemetry-analysis.js', '/telemetry-setup.html', '/drag-power-fit.js', '/fh6-setup.js', '/setup-baseline.js', '/setup-sheet-view.js', '/units.js', '/drag-gearing.js', '/engine-observations.js', '/drag-capture-data.js', '/drag-capture-view.js', '/tuning-telemetry.js', '/telemetry-view.js', '/telemetry-channels.js', '/drag-optimizer.js', '/competition.js', '/rare-cars-workspace.js', '/dashboard-cars.js', '/seasonal-cars.js', '/rare-cars.json', '/catalogue.json', '/import-report.json']) {
     const response = await fetch(base + path);
     assert.equal(response.status, 200);
     assert.ok((await response.text()).length > 100);

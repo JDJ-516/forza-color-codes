@@ -34,7 +34,7 @@ test('US gearing geometry is correct after hundredth rounding for 2–10 gears a
   assert.match(g.source,/power peak unknown/);assert.ok(g.shifts.every(s=>s.source==='engine-limit reference'));
  }
  assert.throws(()=>generateFH6Gearing({...car,engineLimitRpm:NaN}),/Engine RPM limit/);
- assert.throws(()=>generateFH6Gearing({...car,tireDiameterIn:NaN}),/tire diameter/);
+ assert.throws(()=>generateFH6Gearing({...car,tireDiameterIn:NaN}),/tire size/);
  assert.throws(()=>generateFH6Gearing({...car,setupGearCount:NaN}),/number of gears/);
 });
 test('gearing only calls an interior measured peak a power peak, and does not extrapolate shift support',()=>{

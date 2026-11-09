@@ -6,9 +6,14 @@ const row=(name,value)=>`<div><dt>${esc(name)}</dt><dd>${esc(value)}</dd></div>`
 const card=(title,body,note)=>`<article class="generated-setting-card"><h4>${esc(title)}</h4><dl>${body}</dl><p>${esc(note)}</p></article>`;
 const pair=(f,r,unit='')=>row('Front',f+unit)+row('Rear',r+unit);
 const n=(value,d=1)=>value.toFixed(d);
+function fitBody(fit){
+ if(!fit)return '';
+ if(!Number.isFinite(fit.candidateCost))return `<p class="notes">${esc(fit.message||'RPM reference gearing. Capture a loaded pull to fit the power delivery.')}</p>`;
+ return `<div class="notes"><strong>${esc(fit.mode==='measured power curve'?'Power-curve gearing fit':'Offline power-envelope gearing fit')}</strong><p>${fit.launch?'Captured first-gear reduction retained.':'Launch reduction uses a reference; capture your working tune to retain its launch.'} ${fit.capturedGearsEvaluated?`${fit.capturedGearsEvaluated} captured gear reductions evaluated. `:''}Rolling range ${n(fit.startMph)}–${n(fit.endMph)} mph · ${fit.shifts} shift(s) in this range · ${(fit.powerUtilization*100).toFixed(1)}% of peak engine power retained in the rolling work model.</p><p class="muted small">Spacing accounts for power delivery and a 0.15 s reference shift interruption. This excludes launch grip and resistance and does not predict drag ET.${fit.mode==='rated power/torque envelope'?' Rated HP/torque define an optimistic envelope; capture a pull to measure high-RPM power falloff.':''}</p></div>`;
+}
 function gearingBody(g,error){
  if(!g)return `<p class="notes">${esc(error)}</p>`;
- return `<div id="drag-goal-result"><p><strong>Final drive: ${n(g.finalDrive,2)}</strong> · ${n(g.theoreticalMph)} mph gearing ceiling at ${Math.round(g.rpm)} RPM.</p><p class="muted small">${esc(g.source)}. Actual speed depends on available power and resistance.</p><div class="table-scroll"><table class="gear-table"><thead><tr><th>Setting</th><th>Ratio to enter</th><th>Shift reference</th><th>RPM after shift</th></tr></thead><tbody><tr><th>Final drive</th><td>${n(g.finalDrive,2)}</td><td>—</td><td>—</td></tr>${g.gears.map((ratio,j)=>`<tr><th>Gear ${j+1}</th><td>${n(ratio,2)}</td><td>${g.shifts[j]?`${g.shifts[j].rpm} RPM · ${esc(g.shifts[j].source)}`:'Top gear'}</td><td>${g.shifts[j]?.afterRpm??'—'}</td></tr>`).join('')}</tbody></table></div></div>`;
+ return `<div id="drag-goal-result">${fitBody(g.fit)}<p><strong>Final drive: ${n(g.finalDrive,2)}</strong> · ${n(g.theoreticalMph)} mph at ${Math.round(g.rpm)} RPM · goal reference.</p><p class="muted small">${esc(g.source)}. Theoretical rev-limit ceiling: ${n(g.revLimitMph)} mph at ${Math.round(g.engineLimitRpm)} RPM. Actual speed depends on available power and resistance.</p><div class="table-scroll"><table class="gear-table"><thead><tr><th>Setting</th><th>Ratio to enter</th><th>Shift reference</th><th>Speed at shift (mph)</th><th>RPM after shift</th></tr></thead><tbody><tr><th>Final drive</th><td>${n(g.finalDrive,2)}</td><td>—</td><td>—</td><td>—</td></tr>${g.gears.map((ratio,j)=>`<tr><th>Gear ${j+1}</th><td>${n(ratio,2)}</td><td>${g.shifts[j]?`${g.shifts[j].rpm} RPM · ${esc(g.shifts[j].source)}`:'Top gear'}</td><td>${(g.theoreticalMph*(g.shifts[j]?.rpm??g.engineLimitRpm)/g.rpm*g.gears.at(-1)/ratio).toFixed(1)}</td><td>${g.shifts[j]?.afterRpm??'—'}</td></tr>`).join('')}</tbody></table></div></div>`;
 }
 function bodies(c,g,errors){
  const missing=`<p class="notes">${esc(errors.chassis)}</p>`,a=c?.alignment,d=c?.dampers;
@@ -33,7 +38,7 @@ export function attachSetupSheet(callbacks){
  $('#drag-setup-generate').addEventListener('click',()=>{
   const i=callbacks.inputs();let gearing=null,chassis=null;const errors={};
   try{chassis=generateFH6Chassis(i);}catch(e){errors.chassis=e.message;}
-  try{gearing=generateFH6Gearing(i,callbacks.curve());}catch(e){errors.gearing=e.message;}
+  try{const size=document.querySelector('#drag-tire-size');if(!size.checkValidity())throw new Error(size.validationMessage);gearing=generateFH6Gearing(i,callbacks.curve(),callbacks.session?.(),callbacks.run?.());}catch(e){errors.gearing=e.message;}
   const first=$('#drag-setup-tabs').hidden?0:Number($('#drag-setup-tabs [aria-selected=true]')?.dataset.tab||0);
   $('#drag-setup-tabs').innerHTML=tabs.map((name,j)=>`<button type="button" id="setup-tab-${j}" role="tab" data-tab="${j}" aria-controls="setup-panel-${j}" aria-selected="false" tabindex="-1">${name}</button>`).join('');$('#drag-setup-tabs').hidden=false;
   const feedback=dragSetupFeedback(callbacks.session?.(),i);

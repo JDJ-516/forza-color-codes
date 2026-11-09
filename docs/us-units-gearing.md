@@ -40,9 +40,9 @@ POST `/api/telemetry/drag/start` now defaults to immediate capture; add
 ## Top-speed goal
 
 Enter **Top-speed goal (mph)** in Powertrain with the installed gear count and
-tire package. Open **Gearing data** only if engine RPM limit or driven tire
-overall diameter is missing. Live engine data or low-slip coasting measurements
-can supply them; both accept manual offline specifications. Shift RPM, power-peak
+tire package. Engine RPM limit, tire size and overall diameter are always visible in Powertrain.
+Enter your tire size and the app calculates diameter; live data or low-slip
+coasting measurements can supply the specifications too. Shift RPM, power-peak
 RPM, individual ratios and final drive no longer need manual input in Drag.
 
 Select **Generate tuning setup**, then **Gearing** in the bottom FH6 tab strip.

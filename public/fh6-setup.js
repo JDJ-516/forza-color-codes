@@ -1,3 +1,4 @@
+import {fitPowerSpacing,rollingWorkCost} from './drag-power-fit.js';
 import {LB_PER_KG} from './units.js';
 import {estimateShiftPoints,validateSession} from './telemetry-analysis.js';
 
@@ -89,18 +90,19 @@ export function generateFH6Chassis(i){
  };
 }
 
-export function generateFH6Gearing(i,curve=[]){
+export function generateFH6Gearing(i,curve=[],session=null,measuredRun=null){
  if(!finite(i.topSpeedGoalMph,1,600))throw new Error('Enter a top-speed goal in Powertrain details.');
  if(!Number.isInteger(i.setupGearCount)||i.setupGearCount<2||i.setupGearCount>10)throw new Error('Choose the number of gears in your installed gearbox.');
- if(!finite(i.engineLimitRpm,1000,25000))throw new Error('Engine RPM limit is needed. Connect telemetry or open Gearing data for offline entry.');
- if(!finite(i.tireDiameterIn,14,50))throw new Error('Driven tire diameter is needed. Coast straight with telemetry, or enter the overall diameter under Gearing data.');
+ if(!finite(i.engineLimitRpm,1000,25000))throw new Error('Engine RPM limit is needed. Enter it in Powertrain details or connect telemetry.');
+ if(!finite(i.tireDiameterIn,14,50))throw new Error('Enter your driven tire size in Powertrain details; the app calculates the diameter. Telemetry can also measure it.');
  const limit=i.engineLimitRpm,usable=curve.filter(p=>finite(p.rpm,1000,limit)&&finite(p.powerW,1,5000000)).sort((a,b)=>a.rpm-b.rpm);
  const peak=usable.length>=4?usable.reduce((a,b)=>a.powerW>=b.powerW?a:b):null;
  const k=peak?usable.indexOf(peak):-1;
  const interior=peak&&k>0&&k<usable.length-1&&usable[k-1].rpm>=peak.rpm-500&&usable[k+1].rpm<=peak.rpm+500;
  const targetRpm=interior?peak.rpm:Math.round(limit*.98),source=interior?'measured power-curve peak':'98% of engine limit · reference, power peak unknown';
- const lower=peak?usable.find(p=>p.powerW>=peak.powerW*.85)?.rpm:null;
- const drop=lower&&interior?clamp(lower/targetRpm,.6,.88):.72;
+ // Launch span must not shrink to the narrow high-power band: doing so made
+ // first gear excessively tall on broad/late-peaking measured curves.
+ const drop=.72;
  const overall=targetRpm*Math.PI*i.tireDiameterIn*60/(i.topSpeedGoalMph*63360);
  const count=i.setupGearCount,pictured=isTrackhawk(i.car),minGear=pictured ? .48 : .5;
  // Search an explicitly conservative design window, not alleged universal FH6
@@ -118,13 +120,42 @@ export function generateFH6Gearing(i,curve=[]){
   if(!best||score<best.score)best={score,finalDrive,gears,theoreticalMph};
  }
  if(!best||Math.abs(best.theoreticalMph/i.topSpeedGoalMph-1)>.02)throw new Error('This goal cannot be represented within the conservative ratio design window. Review speed, engine limit, tire diameter and gear count.');
+ const referenceOverall=best.gears.map(g=>g*best.finalDrive),fitted=fitPowerSpacing(i,referenceOverall,usable,session,measuredRun);
+ const quantize=overall=>{
+  let result=null;
+  for(let hundredths=200;hundredths<=(pictured?610:500);hundredths++){
+   const fd=hundredths/100,gears=overall.map(r=>round(r/fd,2));
+   if(gears.some((g,n)=>g<minGear||g>5||n&&g>=gears[n-1]))continue;
+   const mph=targetRpm*Math.PI*i.tireDiameterIn*60/(gears.at(-1)*fd*63360);
+   const firstError=Math.abs(gears[0]*fd/overall[0]-1);
+   if(Math.abs(mph/i.topSpeedGoalMph-1)>.02||firstError>.01)continue;
+   const error=gears.reduce((sum,g,n)=>sum+Math.log(g*fd/overall[n])**2,0)+Math.log(mph/i.topSpeedGoalMph)**2*5+firstError**2*5;
+   if(!result||error<result.error)result={error,finalDrive:fd,gears,theoreticalMph:mph};
+  }
+  return result;
+ };
+ const fittedRounded=quantize(fitted.overall),neutral=fitted.overall.map((_,n)=>fitted.overall[0]*(fitted.overall.at(-1)/fitted.overall[0])**(n/(count-1))),neutralRounded=quantize(neutral);
+ let fit={...fitted.fit};
+ if(fittedRounded){
+  let selected=fittedRounded;
+  if(fitted.model&&fitted.options){
+   let cost=rollingWorkCost(selected.gears.map(g=>g*selected.finalDrive),fitted.model,fitted.options);
+   const ref=neutralRounded&&rollingWorkCost(neutralRounded.gears.map(g=>g*neutralRounded.finalDrive),fitted.model,fitted.options);
+   if(ref&&(!cost||ref.seconds<cost.seconds)){selected=neutralRounded;cost=ref;fit={...fit,capturedPrefixRetained:0,shape:1};}
+   if(cost)fit={...fit,referenceCost:ref?.seconds??null,candidateCost:cost.seconds,shifts:cost.shifts,endGear:cost.endGear,powerUtilization:cost.powerUtilization};
+   else fit={mode:'RPM reference',launch:fit.launch,message:'Rounded ratios lack continuous power coverage. No rolling improvement is claimed.'};
+  }
+  best={score:0,...selected};
+ }else fit={mode:'RPM reference',message:'The captured launch ratio does not fit the ratio design window. Original reference gearing retained.'};
  const supported=estimateShiftPoints(usable,best.gears,limit);
  const shifts=best.gears.slice(1).map((g,n)=>({from:n+1,to:n+2,rpm:supported[n]?.rpm??Math.round(limit*.98),source:supported[n]?.rpm?'supported power crossover':'engine-limit reference',afterRpm:Math.round((supported[n]?.rpm??limit*.98)*g/best.gears[n])}));
  const {score,...result}=best;
- return {...result,rpm:targetRpm,source,goalMph:i.topSpeedGoalMph,shifts,launchControl:i.launchControl,assumptions:[
+ return {...result,rpm:targetRpm,source,engineLimitRpm:limit,revLimitMph:best.theoreticalMph*limit/targetRpm,goalMph:i.topSpeedGoalMph,shifts,launchControl:i.launchControl,fit,assumptions:[
   'Speed = RPM × π × driven tire diameter (in) × 60 / (ratio × final drive × 63,360). This is a gearing ceiling, not an attainable-speed prediction.',
   'Two-decimal ratios. Conservative design window: final drive 2.00–5.00, individual ratios 0.50–5.00; this is not a universal FH6 adjustment range.'+(pictured?' For the pictured Trackhawk only, final drive may reach 6.10 and individual gears may reach 0.48.':''),
-  interior?'Top gear targets the supported measured power peak. Spacing uses the observed 85%-power band, constrained to a 0.60–0.88 RPM retention reference.':'Power-band coverage is insufficient. Spacing starts from a 72% RPM-retention reference, compressed when necessary to fit the design window. Shift references use 98% of engine limit.',
+  interior?'Top gear targets the supported measured power peak. Power delivery and shift costs select intermediate spacing; launch reduction is fitted independently.':'Power peak is unknown. A 72% reference RPM-retention span seeds launch reduction, then available rated power/torque or measured power coverage is used to fit intermediate spacing.',
+  ...(fit.assumptions||[]),
+  fit.launch?'First-gear overall reduction is retained from a stable, low-slip capture within 1% rounding. This keeps the captured launch configuration as a starting point.':'First-gear launch reduction is a reference until a stable first-gear capture is provided; the rolling fit does not optimize launch grip.',
   'Shift crossover recommendations require power coverage in both gears. Observed driver shifts alone are not optimal-shift evidence. No missing power bins are extrapolated.',
  ]};
 }
