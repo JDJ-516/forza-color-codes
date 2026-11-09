@@ -1,3 +1,4 @@
+import {HP_PER_KW,LBFT_PER_NM,readSI,writeSI} from './units.js';
 import {summarizeCapture} from './drag-capture-data.js';
 import {engineKey} from './engine-observations.js';
 const $=s=>document.querySelector(s);
@@ -12,9 +13,9 @@ function paint(){
  if(current?.state==='countdown'){
   const remaining=Math.max(0,current.remainingMs-(performance.now()-updatedAt));
   setIndicator(remaining>0?'countdown':'recording',remaining>0?String(Math.ceil(remaining/1000)):'GO',remaining>0?'Hold still · launch on green GO':'GO · launch now');
- }else if(current?.state==='recording')setIndicator('recording',current.launched?'LIVE':'GO',current.launched?`Recording · ${current.recordedSamples} frames · stops when the car returns to 0 mph`:'GO · launch now');
+ }else if(current?.state==='recording')setIndicator('recording',current.waitingForTelemetry?'ARMED':current.launched?'LIVE':'GO',current.waitingForTelemetry?'Waiting for driving telemetry; capture will begin when data arrives.':current.launched?`Recording · ${current.recordedSamples} frames · stops when the car returns to 0 mph`:'GO · launch now');
  else if(current?.state==='stopped')setIndicator(['signal-lost','early-launch','car-changed','game-inactive'].includes(current.reason)?'error':'stopped','STOPPED',reasons[current.reason]||'Capture stopped');
- else setIndicator('idle','READY','Stop the car and start the countdown');
+ else setIndicator('idle','READY','Start now at any speed, or choose the optional countdown');
 }
 function supported(m,key){return Number.isFinite(m?.[key])&&(key==='peakPowerW'?(m.powerSamples??m.eligibleSamples):(m.torqueSamples??m.eligibleSamples))>=5;}
 function target(name,value){const c=$(`#drag-form [name=${name}]`);if(!c||!Number.isFinite(value)||c.dataset.telemetryManual==='1'||(c.value!==''&&c.dataset.telemetryValue!==c.value))return;if(value<Number(c.min)||value>Number(c.max))return;const next=String(Math.round(value));if(c.value===next)return;c.value=next;c.dataset.telemetryValue=next;c.dispatchEvent(new CustomEvent('input',{bubbles:true,detail:{telemetry:true}}));}
@@ -22,8 +23,8 @@ function clearAutoTargets(){for(const name of ['torquePeakRpm','shiftRpm']){cons
 function showEngine(){
  if(!$('#drag-measured-power'))return;
  const power=supported(engine,'peakPowerW'),torque=supported(engine,'peakTorqueNm');
- $('#drag-measured-power').textContent=power?(engine.peakPowerW/1000).toFixed(1)+' kW':'—';
- $('#drag-measured-torque').textContent=torque?engine.peakTorqueNm.toFixed(1)+' N·m':'—';
+ $('#drag-measured-power').textContent=power?(engine.peakPowerW/1000*HP_PER_KW).toFixed(1)+' HP':'—';
+ $('#drag-measured-torque').textContent=torque?(engine.peakTorqueNm*LBFT_PER_NM).toFixed(1)+' ft-lb':'—';
  const matching=source==='import'||!lastData.latest?.isRaceOn||!engine?.key||engine.key===engineKey(lastData.latest);
  $('#drag-apply-measured').disabled=!(power||torque)||!matching;
  if(matching){if(torque)target('torquePeakRpm',engine.torquePeakRpm);if(engine?.observedShifts)target('shiftRpm',engine.shiftRpm);}
@@ -42,7 +43,7 @@ export function updateDragCapture(data){
  if(current&&source==='live'){engine=current.measurements;showEngine();}
  if(!current&&source==='live'){engine=null;showEngine();}
  if($('#drag-reset-capture')){
-  $('#drag-reset-capture').disabled=!!active()||data.state!=='receiving'||!!data.decodeError||!data.latest?.isRaceOn;
+  const unavailable=['disabled','stopped','error','offline'].includes(data.state);$('#drag-reset-capture').disabled=!!active()||unavailable;$('#drag-start-now').disabled=!!active()||unavailable;
   $('#drag-stop-capture').disabled=!active()||data.state==='offline';
  }
  if(current?.id>0&&source!=='import'){
@@ -52,21 +53,22 @@ export function updateDragCapture(data){
  paint();if(current?.state==='stopped'&&callbacks)analyzeStopped(current);
 }
 export function showImportedEngineData(session,live=false){source=live?'live':'import';engine=summarizeCapture(session.samples);showEngine();}
-function powerWeight(){const form=$('#drag-form');if(!form)return;const power=Number(form.elements.powerKw.value),mass=Number(form.elements.mass.value);$('#drag-pwr').textContent=power>0&&mass>0?(power*1000/mass).toFixed(1)+' kW/tonne':'—';}
+function powerWeight(){const form=$('#drag-form');if(!form)return;const power=Number(form.elements.powerKw.value),mass=Number(form.elements.mass.value);$('#drag-pwr').textContent=power>0&&mass>0?(power/mass).toFixed(4)+' HP/lb':'—';}
 export function attachDragCapture(handlers){
  callbacks=handlers;
- $('#drag-reset-capture').addEventListener('click',async()=>{
+ async function begin(countdown){
   try{
-   if(!$('#drag-strip').value)throw new Error('Choose your strip before starting the countdown.');
-   const distance=Number($('#drag-form [name=distanceM]').value);if(!Number.isFinite(distance)||distance<18.288||distance>5000)throw new Error('Enter a valid custom strip distance first.');
-   $('#drag-reset-capture').disabled=true;const capture=await post('start');callbacks.clearRun();source='live';engine=null;clearAutoTargets();showEngine();analyzed=null;
-   $('#drag-run-status').textContent='Countdown started. Hold still until GO, then launch. Capture stops when you return to 0 mph.';
+   $('#drag-reset-capture').disabled=true;$('#drag-start-now').disabled=true;
+   const capture=await post(countdown?'start?countdown=1':'start');callbacks.clearRun();source='live';engine=null;clearAutoTargets();showEngine();analyzed=null;
+   $('#drag-run-status').textContent=countdown?'Optional countdown started. A standing-start ET needs a captured stationary launch.':'Capture started. Moving captures provide engine evidence; a standing-start ET needs a captured stationary launch.';
    updateDragCapture({...lastData,dragCapture:capture});
   }catch(error){$('#drag-run-status').textContent=error.message;updateDragCapture(lastData);}
- });
+ }
+ $('#drag-reset-capture').addEventListener('click',()=>begin(true));
+ $('#drag-start-now').addEventListener('click',()=>begin(false));
  $('#drag-stop-capture').addEventListener('click',async()=>{try{updateDragCapture({...lastData,dragCapture:await post('stop')});}catch(error){$('#drag-run-status').textContent=error.message;}});
  $('#drag-apply-measured').addEventListener('click',()=>{
-  for(const [name,key,factor] of [['powerKw','peakPowerW',.001],['torqueNm','peakTorqueNm',1]])if(supported(engine,key)){const c=$(`#drag-form [name=${name}]`),value=Math.round(engine[key]*factor);if(value>=Number(c.min)&&value<=Number(c.max)){c.value=value;c.dispatchEvent(new Event('input',{bubbles:true}));}}
+  for(const [name,key,factor] of [['powerKw','peakPowerW',.001],['torqueNm','peakTorqueNm',1]])if(supported(engine,key)){const c=$(`#drag-form [name=${name}]`),value=engine[key]*factor;if(value>=readSI({value:c.min,dataset:c.dataset})&&value<=readSI({value:c.max,dataset:c.dataset})){writeSI(c,value);c.dispatchEvent(new Event('input',{bubbles:true}));}}
  });
  $('#drag-form').addEventListener('input',powerWeight);$('#drag-builds').addEventListener('click',()=>queueMicrotask(powerWeight));
  document.addEventListener('ingenium:car-changed',()=>{clearAutoTargets();showEngine();powerWeight();});

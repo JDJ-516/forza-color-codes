@@ -26,7 +26,7 @@ const fs=require('node:fs');
  await page.locator('.topbar [data-workspace=garage]').click();assert.match(await page.locator('#home-telemetry-state').textContent(),/Waiting for game/);
  telemetry={state:'receiving',packets:50,recordedSamples:12,decodedAt:await page.evaluate(()=>Date.now()),latest:{isRaceOn:true,speedKph:123.4,rpm:6000,gear:3},receiver:{port:5305}};
  await page.clock.fastForward(1001);await page.locator('#home-telemetry-state').filter({hasText:'Live driving data'}).waitFor();
- assert.match(await page.locator('#home-telemetry-message').textContent(),/123.4 km\/h/);
+ assert.match(await page.locator('#home-telemetry-message').textContent(),/76.7 mph/);
  telemetry={state:'stale',packets:50,recordedSamples:12};await page.clock.fastForward(1001);await page.locator('#home-telemetry-state').filter({hasText:'Signal lost'}).waitFor();
  await page.locator('#library-nav').click();await page.locator('.favorite').first().click();await page.locator('#favorites-filter').selectOption('favorites');assert.equal(await page.locator('.card').count(),1);
  await page.locator('#favorites-filter').selectOption('all');await page.locator('#add-color').click();

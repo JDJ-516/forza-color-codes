@@ -1,3 +1,4 @@
+import {readSI,writeSI} from './units.js';
 const $=s=>document.querySelector(s);
 let currentKey=null,writing=false;
 const profiles=new Map();
@@ -7,18 +8,18 @@ const controlKey=c=>c.id||`${c.form.id}:${c.name||'gear-'+c.dataset.gear}`;
 function changed(form){form?.dispatchEvent(new Event('input',{bubbles:true}));}
 function saveProfile(){
  if(!currentKey)return;
- profiles.set(currentKey,controls().map(c=>({key:controlKey(c),value:c.value,checked:c.checked,manual:c.dataset.telemetryManual==='1',auto:c.dataset.telemetryValue===c.value})));
+ profiles.set(currentKey,controls().map(c=>({key:controlKey(c),value:c.value,si:c.type==='number'&&c.dataset.siDisplay?readSI(c):null,checked:c.checked,manual:c.dataset.telemetryManual==='1',auto:c.dataset.telemetryValue===c.value})));
  if(profiles.size>20)profiles.delete(profiles.keys().next().value);
 }
 function restoreProfile(key){
  const profile=profiles.get(key)||[];
  writing=true;
- for(const c of controls()){c.value='';if(c.type==='checkbox')c.checked=false;delete c.dataset.telemetryValue;delete c.dataset.telemetryManual;}
+ for(const c of controls()){c.value='';if(c.type==='checkbox')c.checked=false;delete c.dataset.telemetryValue;delete c.dataset.telemetryManual;delete c.dataset.siText;delete c.dataset.siValue;}
  const count=$('#gear-count'),countValue=profile.find(p=>p.key==='gear-count');
  if(count){count.value=countValue?.value||'';count.dispatchEvent(new Event('change',{bubbles:true}));}
  for(const c of controls()){
   const saved=profile.find(p=>p.key===controlKey(c));
-  if(saved&&!saved.auto){c.value=saved.value;if(c.type==='checkbox')c.checked=saved.checked;if(saved.manual)c.dataset.telemetryManual='1';}
+  if(saved&&!saved.auto){if(c.type==='number'&&c.dataset.siDisplay&&Number.isFinite(saved.si))writeSI(c,saved.si);else c.value=saved.value;if(c.type==='checkbox')c.checked=saved.checked;if(saved.manual)c.dataset.telemetryManual='1';}
  }
  for(const id of forms)changed($('#'+id));
  writing=false;

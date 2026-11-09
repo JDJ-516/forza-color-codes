@@ -1,3 +1,4 @@
+import {mph} from './units.js';
 import {updateDragCapture} from './drag-capture-view.js';
 import { updateTuningTelemetry } from './tuning-telemetry.js';
 import { renderTelemetryChannels } from './telemetry-view.js';
@@ -134,7 +135,7 @@ async function pollTelemetry() {
     renderTelemetryChannels(data,!!fresh);
     const failedCheck=data.decodeChecks?.find(check=>!check.valid);
     let message;
-    if(fresh)message=data.latest.isRaceOn?`${data.latest.speedKph.toFixed(1)} km/h · ${Math.round(data.latest.rpm)} RPM · gear ${data.latest.gear}`:'Game connected. Enter driving to record telemetry.';
+    if(fresh)message=data.latest.isRaceOn?`${mph(data.latest.speedKph).toFixed(1)} mph · ${Math.round(data.latest.rpm)} RPM · gear ${data.latest.gear}`:'Game connected. Enter driving to record telemetry.';
     else if(data.state==='disabled')message='Start the app with telemetry enabled, then direct game Data Out to this PC.';
     else if(data.state==='error')message=`Receiver error: ${data.error||'unknown error'}`;
     else if(data.state==='stale')message='No telemetry packets have arrived for at least 3 seconds.';

@@ -1,11 +1,13 @@
 # Drag capture and worksheet
 
-The Drag accordion begins with **Use a real run**. Choose an FH6 venue or custom
-strip below, stop the car, and select **Start countdown**. Fresh validated active
-telemetry is required. A three-second amber countdown becomes green GO; launch
-in first gear on GO. The final stationary second is included as a lead-in for
-the standing-start analysis, without adding countdown time to measured ET.
-Staging brakes are allowed. Moving at ≥1 km/h before GO cancels the start.
+The Drag accordion begins with **Use a real run**. **Start now** records at any
+speed and arms before driving telemetry arrives when the receiver is enabled.
+No strip is required to collect data; choose it for subsequent ET analysis.
+**Start with countdown** remains an optional three-second amber countdown / green
+GO. Moving during it no longer cancels recording. When the car stays still,
+the final countdown second provides a real stationary lead-in. The countdown is
+not included in ET. A moving-start capture supplies engine evidence, not an
+invented standing-start result. See us-units-gearing.md for the updated controls.
 
 Once the car has moved at ≥1 km/h, capture stops when reported speed returns to
 ≤0.1 km/h for at least 250 ms. This near-zero threshold and debounce avoid float
@@ -30,8 +32,8 @@ drag buffer. A car/build switch stops instead of mixing drag builds.
 2. Build Name / Car / Strip; preset distance is automatic and Custom reveals
    distance entry. FH6 and saved custom strips are grouped with shortened labels.
 3. Powertrain details: drivetrain (automatic while connected; manual fallback),
-   manual power (kW), torque (N·m), weight (kg), front weight distribution (%),
-   calculated power-to-weight (kW/tonne), and optional displacement (liters).
+   manual power (HP), torque (ft-lb), weight (lb), front weight distribution (%),
+   calculated power-to-weight (HP/lb), and optional displacement (cu in).
 4. Captured engine data: observed maximum power and torque, RPM at observed
    torque maximum, and observed median upshift RPM. The RPM targets are editable
    for manual tuning. Use captured power/torque in the model only via the explicit
@@ -40,7 +42,7 @@ drag buffer. A car/build switch stops instead of mixing drag builds.
    search and separate measured-run analysis/history.
 
 Displacement is saved as build context; it does not alter the simplified physics
-model. PWR is power_kW × 1000 / weight_kg. The engine outputs require at least
+model. Displayed PWR is HP / lb. Saved physics units remain unchanged. The engine outputs require at least
 five eligible samples per provided channel (power and torque are independent).
 Eligibility requires full throttle, low braking/slip/steering, gear ≥2 and speed
 ≥40 km/h, as documented in car-identities.md. Torque-peak RPM is tied to the
@@ -57,7 +59,7 @@ Imported sessions remain separate from the live recorder. No data is uploaded.
 
 - GET `/api/telemetry` includes `dragCapture` status, countdown remaining time,
   state/reason, frame count, build key, and observed engine/shift summaries.
-- POST `/api/telemetry/drag/start` starts a new stationary countdown.
+- POST `/api/telemetry/drag/start` starts immediate capture, or an optional countdown via ?countdown=1.
 - POST `/api/telemetry/drag/stop` stops only the dedicated drag recorder.
 - GET `/api/telemetry/drag/session` exports the retained dedicated session with
   the existing `forza-garage-telemetry/v1` schema and capture metadata.

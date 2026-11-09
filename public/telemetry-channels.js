@@ -1,3 +1,4 @@
+import {HP_PER_KW,LBFT_PER_NM,MPH_PER_KPH,FT_PER_M} from './units.js';
 // Display schema for the 324-byte Horizon packet. Offsets/provenance: docs/telemetry.md.
 const field=(key,label,unit='',precision=2,format)=>({key,label,unit,precision,format});
 const vector=(key,label,unit)=>['X','Y','Z'].map((axis,index)=>({...field(key,`${label} ${axis}`,unit,3),index}));
@@ -13,11 +14,16 @@ export const TELEMETRY_GROUPS=[
  {title:'Surface & wheel contact',fields:[...wheels('onRumbleStrip','on rumble strip'),...wheels('puddleDepth','puddle depth','normalized',3),...wheels('surfaceRumble','surface rumble','normalized',3)]},
  {title:'Vehicle & session',fields:[field('raceOnRaw','Driving active','',0,'active'),field('timestampMs','Game timestamp','ms',0),field('carOrdinal','Car ID','',0),field('carClass','Car class','',0,'class'),field('carPerformanceIndex','Performance index','PI',0),field('drivetrain','Drivetrain','',0,'drivetrain'),field('cylinders','Cylinders','',0),field('carGroup','Car group ID','',0),field('smashableVelocityDifference','Smashable velocity difference','reported',3),field('smashableMass','Smashable mass','reported',3),field('reservedByte','Reserved byte (meaning unknown)','raw',0)]},
 ];
+for(const group of TELEMETRY_GROUPS)for(const f of group.fields){
+ const conversions={'km/h':[MPH_PER_KPH,'mph'],'W':[HP_PER_KW/1000,'HP'],'N·m':[LBFT_PER_NM,'ft-lb'],'m/s²':[FT_PER_M,'ft/s²'],'m/s':[FT_PER_M,'ft/s'],'rad':[180/Math.PI,'°'],'rad/s':[f.key==='wheelRotationSpeed'?60/(2*Math.PI):180/Math.PI,f.key==='wheelRotationSpeed'?'RPM':'°/s'],'m':[f.key==='suspensionTravelM'?1/.0254:FT_PER_M,f.key==='suspensionTravelM'?'in':'ft'],'°C':[9/5,'°F',32]};
+ if(conversions[f.unit]){const [scale,unit,offset=0]=conversions[f.unit];f.scale=scale;f.unit=unit;f.offset=offset;}
+}
 export function telemetryValue(readings,descriptor){
  let value=readings?.[descriptor.key];
  if(descriptor.index!==undefined)value=Array.isArray(value)?value[descriptor.index]:null;
  if(typeof value==='boolean')return value?'Yes':'No';
  if(typeof value!=='number'||!Number.isFinite(value))return '—';
+ value=value*(descriptor.scale??1)+(descriptor.offset??0);
  if(descriptor.format==='percent')value*=100;
  if(descriptor.format==='gear')return value===0?'R':value===11?'N':String(value);
  if(descriptor.format==='class')return ['D','C','B','A','S1','S2','X'][value]??String(value);

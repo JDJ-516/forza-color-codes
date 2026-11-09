@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const files = new Map([
-  ...['drag-capture-view','drag-capture-data','engine-observations','tuning-telemetry','telemetry-view','telemetry-channels','drag-optimizer','competition','competition-workspace','rare-cars-workspace','dashboard-cars','seasonal-cars'].map(name=>['/'+name+'.js',[name+'.js','text/javascript; charset=utf-8']]),
+  ...['units','drag-gearing','drag-capture-view','drag-capture-data','engine-observations','tuning-telemetry','telemetry-view','telemetry-channels','drag-optimizer','competition','competition-workspace','rare-cars-workspace','dashboard-cars','seasonal-cars'].map(name=>['/'+name+'.js',[name+'.js','text/javascript; charset=utf-8']]),
   ['/', ['index.html', 'text/html; charset=utf-8']],
   ['/telemetry-setup.html', ['telemetry-setup.html', 'text/html; charset=utf-8']],
   ['/favicon.svg', ['favicon.svg', 'image/svg+xml']],
@@ -41,7 +41,7 @@ export function createServer({telemetry,rareCars=createRareCarSource()} = {}) {
       if(req.headers['x-forza-garage']!=='1'||(origin&&origin!==`http://${req.headers.host}`&&origin!==`https://${req.headers.host}`)){res.writeHead(403);return res.end('Forbidden');}
       res.setHeader('Content-Type','application/json');res.setHeader('Cache-Control','no-store');
       if(!telemetry){res.writeHead(409);return res.end(JSON.stringify({error:'Enable the local telemetry receiver first.'}));}
-      try{const capture=path.endsWith('/start')?telemetry.startDrag():telemetry.stopDrag();res.writeHead(200);return res.end(JSON.stringify(capture));}
+      try{const capture=path.endsWith('/start')?telemetry.startDrag({countdown:new URL(req.url,'http://localhost').searchParams.get('countdown')==='1'}):telemetry.stopDrag();res.writeHead(200);return res.end(JSON.stringify(capture));}
       catch(error){res.writeHead(409);return res.end(JSON.stringify({error:error.message}));}
     }
     if(path==='/api/telemetry/reset' && req.method==='POST'){

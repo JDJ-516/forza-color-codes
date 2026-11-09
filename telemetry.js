@@ -53,7 +53,7 @@ export function createTelemetryReceiver({host = '127.0.0.1', port = 5300, now = 
       };
     },
     diagnostics(){if(!rawPacket)return null;return {schema:'forza-ingenium-packet-diagnostics/v1',snapshot:this.snapshot(),latestPacket:{receivedAt:lastReceivedAt,bytes:lastPacket.bytes,truncated:lastPacket.bytes>rawPacket.length,hex:rawPacket.toString('hex'),inspection:lastInspection||inspectHorizonPacket(rawPacket)},lastRejected};},
-    startDrag(){const s=this.snapshot();if(s.state!=='receiving'||s.decodeError||s.decodedAgeMs===null||s.decodedAgeMs>=3000)throw new Error('Connect fresh, valid driving telemetry before starting a drag capture.');return dragCapture.start(s.latest);},
+    startDrag(options={}){const s=this.snapshot();if(!listening||error)throw new Error('Enable the local telemetry receiver first.');const fresh=s.state==='receiving'&&!s.decodeError&&s.decodedAgeMs!==null&&s.decodedAgeMs<3000&&s.latest?.isRaceOn;return dragCapture.start(fresh?s.latest:null,options);},
     stopDrag(){return dragCapture.stop();},
     dragSession(){return dragCapture.session();},
     reset() {samples=[];lastStored=null;engineMeasurements=emptyEngineMeasurements();},

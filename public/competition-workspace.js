@@ -1,3 +1,4 @@
+import {readSI} from './units.js';
 import {validateAttempt,summarizeAttempts,compareAttempts,captureKey} from './competition.js';
 import {analyzeSession} from './telemetry-analysis.js';
 const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -6,7 +7,7 @@ panel.innerHTML=`<span class="eyebrow">COMPETITIVE DEVELOPMENT</span><h3>Chase y
 $('[data-view="tuning"]').append(panel);
 const form=$('#competition-form'),f=name=>form.elements.namedItem(name);let rows=[],drag=null,evidence='manual',laps=[],evidenceKey=null,lapKeys=[];
 try{const saved=JSON.parse(localStorage.getItem('ingenium-attempts')||'[]');if(Array.isArray(saved))rows=saved.filter(r=>{try{validateAttempt(r);return true;}catch{return false;}}).slice(0,300);}catch{}
-function context(){return {mode:f('mode').value,event:f('event').value.trim(),car:f('car').value.trim(),className:f('className').value.trim(),conditions:f('conditions').value.trim(),assists:f('assists').value.trim(),distance:f('mode').value==='drag'?Number($('#drag-form [name=distanceM]').value):null,launchControl:f('mode').value==='drag'?f('launchControl').value:null};}
+function context(){return {mode:f('mode').value,event:f('event').value.trim(),car:f('car').value.trim(),className:f('className').value.trim(),conditions:f('conditions').value.trim(),assists:f('assists').value.trim(),distance:f('mode').value==='drag'?readSI($('#drag-form [name=distanceM]')):null,launchControl:f('mode').value==='drag'?f('launchControl').value:null};}
 function persist(){try{localStorage.setItem('ingenium-attempts',JSON.stringify(rows));return true;}catch{$('#competition-status').textContent='Browser storage unavailable. Export results before closing.';return false;}}
 function render(){
  const c=context(),groups=summarizeAttempts(rows,c,Number(f('target').value)),unit=c.mode==='drift'?'pts':'s',format=v=>c.mode==='drift'?v.toFixed(0):v.toFixed(3);

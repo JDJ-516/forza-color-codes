@@ -135,3 +135,10 @@ stop it. General telemetry and the general capture keep running. Drag Analyze /
 Export use `/api/telemetry/drag/session`; other tools retain the general endpoint.
 See [Drag capture](drag-capture.md) for exact thresholds, states, UI fields,
 observed engine values and API details.
+
+## US interface units
+
+Build 0.15.1 converts tuning/telemetry displays to US customary units while
+preserving the canonical fields and units in this packet/session documentation.
+See [US units and gearing](us-units-gearing.md) for conversions, saved-value
+precision, immediate/rolling capture and mph-based top-speed goals.

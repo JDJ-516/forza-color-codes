@@ -97,8 +97,8 @@ test('dedicated drag API counts down, keeps recording through braking, freezes a
  const sender=dgram.createSocket('udp4');t.after(()=>sender.close());const server=createServer({telemetry});await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(()=>new Promise(r=>server.close(r)));const base=`http://127.0.0.1:${server.address().port}`;
  async function send(speed=0,brake=0){const b=packet({speed});b[316]=brake;b.writeFloatLE(500,264);const count=telemetry.snapshot().packets;time+=50;await new Promise((r,reject)=>sender.send(b,telemetry.address().port,'127.0.0.1',e=>e?reject(e):r()));for(let i=0;i<50&&telemetry.snapshot().packets===count;i++)await delay(2);}
  const post=(action,headers={'X-Forza-Garage':'1'})=>fetch(base+'/api/telemetry/drag/'+action,{method:'POST',headers});
- assert.equal((await post('start')).status,409);await send();assert.equal((await post('start',{})).status,403);
- assert.equal((await post('start')).status,200);
+ assert.equal((await post('start')).status,200);assert.equal(telemetry.snapshot().dragCapture.waitingForTelemetry,true);await post('stop');await send();assert.equal((await post('start',{})).status,403);
+ assert.equal((await post('start?countdown=1')).status,200);
  for(let i=0;i<60;i++)await send(0,255);
  assert.equal(telemetry.snapshot().dragCapture.state,'recording');
  for(let i=0;i<8;i++)await send(20+i);
