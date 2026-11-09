@@ -1,6 +1,6 @@
 # Forza-ingenium — Paint & Tune
 
-Current build: **0.14.6**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.14.6.md) for checks and practical limits.
+Current build: **0.14.7**. A private, local Forza companion with a paint library, Color Lab, Rare Cars acquisition guide, Drag/Track/Drift calculators, and optional live telemetry. See the [release QA report](docs/qa-0.14.7.md) for checks and practical limits.
 
 ## Install and run on Windows
 
@@ -95,7 +95,7 @@ Keep `data/source.xlsx`, `data/rare-cars-source.xlsx` and the pinned `data/sourc
 
 ### Browser and installer checks
 
-Eleven Playwright suites live in `scripts/`: `browser-smoke.cjs`, `garage-smoke.cjs`, `drag-smoke.cjs`, `workspace-smoke.cjs`, `competitive-smoke.cjs`, `rare-cars-smoke.cjs`, `release-smoke.cjs`, `dashboard-smoke.cjs`, `seasonal-smoke.cjs`, `telemetry-status-smoke.cjs`, and `navigation-smoke.cjs`. Start the app with telemetry enabled for capture/reset checks. Set `TEST_BASE_URL`, `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` for the local environment, then run each suite with Node. Tests cover real localhost HTTP/UDP and synthetic captures; Google refresh tests use source fixtures.
+Twelve Playwright suites live in `scripts/`: `browser-smoke.cjs`, `garage-smoke.cjs`, `drag-smoke.cjs`, `workspace-smoke.cjs`, `competitive-smoke.cjs`, `rare-cars-smoke.cjs`, `release-smoke.cjs`, `dashboard-smoke.cjs`, `seasonal-smoke.cjs`, `telemetry-status-smoke.cjs`, `navigation-smoke.cjs`, and `tuning-telemetry-smoke.cjs`. Start the app with telemetry enabled for capture/reset checks. Set `TEST_BASE_URL`, `PLAYWRIGHT_MODULE` and `CHROMIUM_PATH` for the local environment, then run each suite with Node. Tests cover real localhost HTTP/UDP and synthetic captures; Google refresh tests use source fixtures.
 
 ```sh
 python3 -B scripts/build-windows-installer.py --fetch-runtime
@@ -125,3 +125,14 @@ fields are decoded from the supported 324-byte layout; the reserved final byte
 is displayed as a raw value with unknown meaning. Invalid packets are excluded
 from tuning and shown as unverified readings. The Windows packages still include
 Node.js. Actual gameplay on the user's PC has not been validated here.
+
+Build 0.14.7 makes the connection guide collapsible with vertical steps and adds
+an offline setup document. Tune Calculator shows the active car's year, make and
+model from a bundled 551-entry FH6 catalogue, reports unknown IDs without guessing,
+and links to setup whenever usable telemetry is disconnected. It prefills car
+names, drivetrain, starting RPM values and eligible observed engine maxima. Manual
+edits take priority. Car/build changes isolate worksheets and clear old capture
+and curve evidence; per-car manual worksheets remain in memory for this browser
+session. Only the three named FH6 drag venues and Custom strip remain in the menu.
+Telemetry does not provide mass, tire sizes, gear ratios or launch-control mode.
+See [car identity sources and prefill behavior](docs/car-identities.md).

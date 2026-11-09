@@ -74,3 +74,19 @@ test('packet diagnostics expose exact rejection values, bound raw data and recov
  await send(packet());assert.equal(telemetry.snapshot().recordedSamples,1);assert.equal(telemetry.snapshot().latest.isRaceOn,true);
  await send(Buffer.alloc(2048,0xab));data=await (await fetch(base+'/api/telemetry/diagnostics')).json();assert.equal(data.latestPacket.bytes,2048);assert.equal(data.latestPacket.hex.length,2048);assert.equal(data.latestPacket.truncated,true);assert.equal(data.latestPacket.inspection.bytes,2048);assert.equal(telemetry.snapshot().recordedSamples,1);assert.equal(telemetry.snapshot().readings,null);
 });
+
+test('live car identity and eligible engine measurements follow the current build and reset together',async t=>{
+ const {packet}=await import('../test-support/telemetry-fixtures.js');let time=300000;
+ const telemetry=createTelemetryReceiver({port:0,now:()=>time});assert.equal(await telemetry.start(),true);t.after(()=>telemetry.close());
+ const sender=dgram.createSocket('udp4');t.after(()=>sender.close());
+ async function send({car=3726,pi=800,power=350000}={}){
+  const b=packet({car});b.writeInt32LE(pi,220);b.writeFloatLE(power,260);b.writeFloatLE(550,264);
+  const count=telemetry.snapshot().packets;time+=100;await new Promise((resolve,reject)=>sender.send(b,telemetry.address().port,'127.0.0.1',error=>error?reject(error):resolve()));
+  for(let i=0;i<50&&telemetry.snapshot().packets===count;i++)await delay(5);
+ }
+ for(let i=0;i<5;i++)await send();
+ assert.equal(telemetry.snapshot().car.name,'2023 Acura Integra A-Spec');assert.equal(telemetry.snapshot().engineMeasurements.eligibleSamples,5);assert.equal(telemetry.snapshot().engineMeasurements.peakPowerW,350000);
+ await send({pi:900,power:300000});assert.equal(telemetry.snapshot().recordedSamples,1);assert.equal(telemetry.snapshot().engineMeasurements.eligibleSamples,1);assert.equal(telemetry.snapshot().engineMeasurements.peakPowerW,300000);
+ await send({car:3928});assert.equal(telemetry.snapshot().car.name,'2021 Hyundai i20 N');assert.equal(telemetry.snapshot().recordedSamples,1);
+ telemetry.reset();assert.equal(telemetry.snapshot().engineMeasurements.eligibleSamples,0);assert.equal(telemetry.snapshot().recordedSamples,0);
+});

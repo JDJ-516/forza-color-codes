@@ -65,7 +65,7 @@ No launch-control-enabled flag, current tuning sliders, vehicle mass, gear ratio
 4. Stay stationary for at least 0.5 seconds, launch in first gear, and drive through the selected distance. Record launch-control mode using the manual selector.
 5. Click **Analyze live capture**. Use **Export capture JSON** to keep the original decoded session. Saved run summaries retain measured ET/finish speed; exports retain samples and user-supplied distance/LC labels.
 
-Captured samples stay in server memory only: at most 18,000 active samples with a minimum 15 ms interval, roughly five minutes at 60 Hz. Receiver UTC timestamps are used for integration and `gameTimestampMs` is preserved separately. Car changes clear the buffer. Fresh capture explicitly clears it. The analysis uses the **first** qualifying launch in a capture, so reset before each run. The normal page no longer shows raw packets or diagnostic controls. For developer
+Captured samples stay in server memory only: at most 18,000 active samples with a minimum 15 ms interval, roughly five minutes at 60 Hz. Receiver UTC timestamps are used for integration and `gameTimestampMs` is preserved separately. Car changes and detected build changes clear the buffer. Fresh capture explicitly clears it. The analysis uses the **first** qualifying launch in a capture, so reset before each run. The normal page no longer shows raw packets or diagnostic controls. For developer
 troubleshooting, the receiver retains the most recent packet and rejected packet
 in memory, capped at 1,024 bytes each, through `/api/telemetry/diagnostics`. Session exports still contain decoded fields rather than raw datagrams. Server restart removes the capture. Export before stopping if you want it retained.
 
@@ -117,3 +117,12 @@ The screenshots from build 0.14.2 showed packet receipt and a basic plausibility
 Settings → HUD/Display → Telemetry → Data Output = ON → IP = 127.0.0.1 → Port = 5300.
 The normal Windows launcher enables the receiver on the same PC using those
 values. No router forwarding is needed for this same-PC setup.
+
+## Current-car tuning inputs
+
+See [car identities and observed prefills](car-identities.md). The active packet's
+ID resolves to a name through the bundled FH6 catalogue. Eligible observed engine
+maxima are separate from rated engine specifications. The Tune Calculator keeps
+manual values for all fields absent from the packet and respects manual edits.
+The connection instructions now collapse into a vertical list; the standalone
+`/telemetry-setup.html` guide works offline with the installed app.

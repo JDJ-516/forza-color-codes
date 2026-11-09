@@ -1,0 +1,3314 @@
+{
+  "source": "https://github.com/ClickClickMedia/Forza-6-telemetry/tree/523e8ba188d0f7c0a5540139174db286198e851c/app/data",
+  "license": "MIT",
+  "catalogueSha256": "b156cc542c4dc8cdb9c8010c8e25d78a71c8c71964f35df94f31ed47fff2bf3c",
+  "communitySha256": "d1c8fdb43b2cfe1c050b166da823176759f6f2a4854368f409db003ecc9d3db1",
+  "cars": {
+    "368": {
+      "year": 2001,
+      "make": "Acura",
+      "model": "Integra R",
+      "source": "game-file catalogue"
+    },
+    "3726": {
+      "year": 2023,
+      "make": "Acura",
+      "model": "Integra A-Spec",
+      "source": "community-confirmed"
+    },
+    "3767": {
+      "year": 2022,
+      "make": "Acura",
+      "model": "NSX Type S",
+      "source": "game-file catalogue"
+    },
+    "422": {
+      "year": 2002,
+      "make": "Acura",
+      "model": "RSX Type S",
+      "source": "game-file catalogue"
+    },
+    "1481": {
+      "year": 1965,
+      "make": "Austin-Healey",
+      "model": "3000",
+      "source": "game-file catalogue"
+    },
+    "1393": {
+      "year": 1992,
+      "make": "Alfa Romeo",
+      "model": "155",
+      "source": "game-file catalogue"
+    },
+    "1549": {
+      "year": 1968,
+      "make": "Alfa Romeo",
+      "model": "33 Stradale",
+      "source": "game-file catalogue"
+    },
+    "2038": {
+      "year": 2014,
+      "make": "Alfa Romeo",
+      "model": "4 C",
+      "source": "game-file catalogue"
+    },
+    "1032": {
+      "year": 2008,
+      "make": "Alfa Romeo",
+      "model": "8 C",
+      "source": "game-file catalogue"
+    },
+    "1150": {
+      "year": 1965,
+      "make": "Alfa Romeo",
+      "model": "GTA",
+      "source": "game-file catalogue"
+    },
+    "4147": {
+      "year": 2021,
+      "make": "Alfa Romeo",
+      "model": "Giulia GT Am",
+      "source": "game-file catalogue"
+    },
+    "2161": {
+      "year": 1965,
+      "make": "Alfa Romeo",
+      "model": "Giulia TZ 2",
+      "source": "game-file catalogue"
+    },
+    "2542": {
+      "year": 2017,
+      "make": "Alfa Romeo",
+      "model": "Giulia Quadrifoglio",
+      "source": "community-confirmed"
+    },
+    "3141": {
+      "year": 2018,
+      "make": "Apollo",
+      "model": "Intensa",
+      "source": "game-file catalogue"
+    },
+    "1651": {
+      "year": 2013,
+      "make": "Ariel",
+      "model": "Atom",
+      "source": "game-file catalogue"
+    },
+    "2430": {
+      "year": 2016,
+      "make": "Ariel",
+      "model": "Nomad",
+      "source": "game-file catalogue"
+    },
+    "2527": {
+      "year": 2017,
+      "make": "Aston Martin",
+      "model": "DB 11",
+      "source": "game-file catalogue"
+    },
+    "1105": {
+      "year": 1964,
+      "make": "Aston Martin",
+      "model": "DB 5 Vantage",
+      "source": "game-file catalogue"
+    },
+    "3325": {
+      "year": 2003,
+      "make": "Aston Martin",
+      "model": "DB 7 GT",
+      "source": "game-file catalogue"
+    },
+    "3185": {
+      "year": 2019,
+      "make": "Aston Martin",
+      "model": "DBS Superleggera",
+      "source": "game-file catalogue"
+    },
+    "3580": {
+      "year": 2019,
+      "make": "Aston Martin",
+      "model": "DBX",
+      "source": "game-file catalogue"
+    },
+    "3091": {
+      "year": 2018,
+      "make": "Aston Martin",
+      "model": "Vantage",
+      "source": "game-file catalogue"
+    },
+    "1478": {
+      "year": 1986,
+      "make": "Audi",
+      "model": "2 Sport Quattro",
+      "source": "game-file catalogue"
+    },
+    "3359": {
+      "year": 2018,
+      "make": "Audi",
+      "model": "Etron",
+      "source": "game-file catalogue"
+    },
+    "3917": {
+      "year": 2023,
+      "make": "Audi",
+      "model": "R 8 GT",
+      "source": "game-file catalogue"
+    },
+    "2010": {
+      "year": 2013,
+      "make": "Audi",
+      "model": "R 8 Plus",
+      "source": "game-file catalogue"
+    },
+    "3745": {
+      "year": 2020,
+      "make": "Audi",
+      "model": "R 8",
+      "source": "game-file catalogue"
+    },
+    "3454": {
+      "year": 2020,
+      "make": "Audi",
+      "model": "RS 3 Sedan",
+      "source": "game-file catalogue"
+    },
+    "1216": {
+      "year": 2011,
+      "make": "Audi",
+      "model": "RS 3",
+      "source": "game-file catalogue"
+    },
+    "1607": {
+      "year": 2013,
+      "make": "Audi",
+      "model": "RS 4 Avant",
+      "source": "game-file catalogue"
+    },
+    "3318": {
+      "year": 2018,
+      "make": "Audi",
+      "model": "RS 4 Avant",
+      "source": "game-file catalogue"
+    },
+    "2178": {
+      "year": 2001,
+      "make": "Audi",
+      "model": "RS 4",
+      "source": "game-file catalogue"
+    },
+    "419": {
+      "year": 2006,
+      "make": "Audi",
+      "model": "RS 4",
+      "source": "game-file catalogue"
+    },
+    "1417": {
+      "year": 2011,
+      "make": "Audi",
+      "model": "RS 5",
+      "source": "game-file catalogue"
+    },
+    "3583": {
+      "year": 2021,
+      "make": "Audi",
+      "model": "RS 6 Avant",
+      "source": "game-file catalogue"
+    },
+    "420": {
+      "year": 2003,
+      "make": "Audi",
+      "model": "RS 6",
+      "source": "game-file catalogue"
+    },
+    "1184": {
+      "year": 2009,
+      "make": "Audi",
+      "model": "RS 6",
+      "source": "game-file catalogue"
+    },
+    "2180": {
+      "year": 2015,
+      "make": "Audi",
+      "model": "RS 6",
+      "source": "game-file catalogue"
+    },
+    "2009": {
+      "year": 2013,
+      "make": "Audi",
+      "model": "RS 7",
+      "source": "game-file catalogue"
+    },
+    "3584": {
+      "year": 2021,
+      "make": "Audi",
+      "model": "RS 7",
+      "source": "game-file catalogue"
+    },
+    "2179": {
+      "year": 2015,
+      "make": "Audi",
+      "model": "S 1",
+      "source": "game-file catalogue"
+    },
+    "633": {
+      "year": 1983,
+      "make": "Audi",
+      "model": "Sport Quattro",
+      "source": "game-file catalogue"
+    },
+    "1220": {
+      "year": 2010,
+      "make": "Audi",
+      "model": "TTRS",
+      "source": "game-file catalogue"
+    },
+    "3854": {
+      "year": 1993,
+      "make": "Azm",
+      "model": "AZ 1",
+      "source": "game-file catalogue"
+    },
+    "3728": {
+      "year": 2021,
+      "make": "Bentley",
+      "model": "Continental GTC",
+      "source": "game-file catalogue"
+    },
+    "1269": {
+      "year": 1973,
+      "make": "BMW",
+      "model": "2002 Turbo",
+      "source": "game-file catalogue"
+    },
+    "1493": {
+      "year": 1996,
+      "make": "BMW",
+      "model": "850 C Si",
+      "source": "game-file catalogue"
+    },
+    "382": {
+      "year": 1997,
+      "make": "BMW",
+      "model": "E 36 M 3",
+      "source": "game-file catalogue"
+    },
+    "383": {
+      "year": 2005,
+      "make": "BMW",
+      "model": "E 46 M 3",
+      "source": "game-file catalogue"
+    },
+    "1040": {
+      "year": 1981,
+      "make": "BMW",
+      "model": "M 1",
+      "source": "game-file catalogue"
+    },
+    "3434": {
+      "year": 2020,
+      "make": "BMW",
+      "model": "M 2 Comp",
+      "source": "game-file catalogue"
+    },
+    "4166": {
+      "year": 2023,
+      "make": "BMW",
+      "model": "M 2 FE",
+      "source": "game-file catalogue"
+    },
+    "3763": {
+      "year": 2023,
+      "make": "BMW",
+      "model": "M 2",
+      "source": "game-file catalogue"
+    },
+    "1011": {
+      "year": 2008,
+      "make": "BMW",
+      "model": "M 3 E 92",
+      "source": "game-file catalogue"
+    },
+    "1598": {
+      "year": 2010,
+      "make": "BMW",
+      "model": "M 3 GTS",
+      "source": "game-file catalogue"
+    },
+    "4069": {
+      "year": 1988,
+      "make": "BMW",
+      "model": "M 3",
+      "source": "game-file catalogue"
+    },
+    "2628": {
+      "year": 2016,
+      "make": "BMW",
+      "model": "M 4 GTS",
+      "source": "game-file catalogue"
+    },
+    "4266": {
+      "year": 2021,
+      "make": "BMW",
+      "model": "M 4 WP",
+      "source": "game-file catalogue"
+    },
+    "2154": {
+      "year": 2014,
+      "make": "BMW",
+      "model": "M 4",
+      "source": "game-file catalogue"
+    },
+    "3645": {
+      "year": 2021,
+      "make": "BMW",
+      "model": "M 4",
+      "source": "game-file catalogue"
+    },
+    "3764": {
+      "year": 2022,
+      "make": "BMW",
+      "model": "M 5 CS",
+      "source": "game-file catalogue"
+    },
+    "1368": {
+      "year": 1988,
+      "make": "BMW",
+      "model": "M 5 E 28",
+      "source": "game-file catalogue"
+    },
+    "1367": {
+      "year": 2003,
+      "make": "BMW",
+      "model": "M 5 E 39",
+      "source": "game-file catalogue"
+    },
+    "1126": {
+      "year": 2009,
+      "make": "BMW",
+      "model": "M 5",
+      "source": "game-file catalogue"
+    },
+    "1388": {
+      "year": 2012,
+      "make": "BMW",
+      "model": "M 5",
+      "source": "game-file catalogue"
+    },
+    "1418": {
+      "year": 1995,
+      "make": "BMW",
+      "model": "M 5",
+      "source": "game-file catalogue"
+    },
+    "3518": {
+      "year": 2020,
+      "make": "BMW",
+      "model": "M 8",
+      "source": "game-file catalogue"
+    },
+    "1350": {
+      "year": 2011,
+      "make": "BMW",
+      "model": "X 5 M",
+      "source": "game-file catalogue"
+    },
+    "3983": {
+      "year": 2024,
+      "make": "BMW",
+      "model": "X 6 M",
+      "source": "game-file catalogue"
+    },
+    "1059": {
+      "year": 2008,
+      "make": "BMW",
+      "model": "Z 4 M Coupe",
+      "source": "game-file catalogue"
+    },
+    "3173": {
+      "year": 2019,
+      "make": "BMW",
+      "model": "Z 4",
+      "source": "game-file catalogue"
+    },
+    "2133": {
+      "year": 2015,
+      "make": "BMW",
+      "model": "I 8",
+      "source": "game-file catalogue"
+    },
+    "3737": {
+      "year": 2022,
+      "make": "BMW",
+      "model": "i X",
+      "source": "game-file catalogue"
+    },
+    "417": {
+      "year": 1987,
+      "make": "Buick",
+      "model": "Regal GNX",
+      "source": "game-file catalogue"
+    },
+    "2262": {
+      "year": 2016,
+      "make": "Cadillac",
+      "model": "ATSV",
+      "source": "game-file catalogue"
+    },
+    "3719": {
+      "year": 2022,
+      "make": "Cadillac",
+      "model": "CT 4 V Blackwing",
+      "source": "game-file catalogue"
+    },
+    "3720": {
+      "year": 2022,
+      "make": "Cadillac",
+      "model": "CT 5 V Blackwing",
+      "source": "game-file catalogue"
+    },
+    "2421": {
+      "year": 2016,
+      "make": "Cadillac",
+      "model": "CTSV Sedan",
+      "source": "game-file catalogue"
+    },
+    "2128": {
+      "year": 2013,
+      "make": "Cadillac",
+      "model": "XTS Limo",
+      "source": "game-file catalogue"
+    },
+    "2871": {
+      "year": 2018,
+      "make": "Can",
+      "model": "Maverick",
+      "source": "game-file catalogue"
+    },
+    "2507": {
+      "year": 1955,
+      "make": "Chevrolet",
+      "model": "150 Utility Sedan",
+      "source": "game-file catalogue"
+    },
+    "1459": {
+      "year": 1957,
+      "make": "Chevrolet",
+      "model": "Bel Air",
+      "source": "game-file catalogue"
+    },
+    "3590": {
+      "year": 1973,
+      "make": "Chevrolet",
+      "model": "CK Pickup",
+      "source": "game-file catalogue"
+    },
+    "3149": {
+      "year": 2018,
+      "make": "Chevrolet",
+      "model": "Camaro 1 LE",
+      "source": "game-file catalogue"
+    },
+    "289": {
+      "year": 1969,
+      "make": "Chevrolet",
+      "model": "Camaro SS",
+      "source": "game-file catalogue"
+    },
+    "2183": {
+      "year": 2015,
+      "make": "Chevrolet",
+      "model": "Camaro Z 28",
+      "source": "game-file catalogue"
+    },
+    "1330": {
+      "year": 1970,
+      "make": "Chevrolet",
+      "model": "Camaro Z 28",
+      "source": "game-file catalogue"
+    },
+    "1064": {
+      "year": 1979,
+      "make": "Chevrolet",
+      "model": "Camaro Z 28",
+      "source": "game-file catalogue"
+    },
+    "299": {
+      "year": 1970,
+      "make": "Chevrolet",
+      "model": "Chevelle",
+      "source": "game-file catalogue"
+    },
+    "3771": {
+      "year": 2023,
+      "make": "Chevrolet",
+      "model": "Corvette E Ray",
+      "source": "game-file catalogue"
+    },
+    "312": {
+      "year": 1967,
+      "make": "Chevrolet",
+      "model": "Corvette Stingray",
+      "source": "game-file catalogue"
+    },
+    "314": {
+      "year": 2002,
+      "make": "Chevrolet",
+      "model": "Corvette Z 06",
+      "source": "game-file catalogue"
+    },
+    "2177": {
+      "year": 2015,
+      "make": "Chevrolet",
+      "model": "Corvette Z 06",
+      "source": "game-file catalogue"
+    },
+    "3766": {
+      "year": 2023,
+      "make": "Chevrolet",
+      "model": "Corvette Z 06",
+      "source": "game-file catalogue"
+    },
+    "1069": {
+      "year": 2009,
+      "make": "Chevrolet",
+      "model": "Corvette ZR 1",
+      "source": "game-file catalogue"
+    },
+    "3118": {
+      "year": 2019,
+      "make": "Chevrolet",
+      "model": "Corvette ZR 1",
+      "source": "game-file catalogue"
+    },
+    "315": {
+      "year": 1970,
+      "make": "Chevrolet",
+      "model": "Corvette ZR 1",
+      "source": "game-file catalogue"
+    },
+    "2006": {
+      "year": 1995,
+      "make": "Chevrolet",
+      "model": "Corvette ZR 1",
+      "source": "game-file catalogue"
+    },
+    "3369": {
+      "year": 2020,
+      "make": "Chevrolet",
+      "model": "Corvette",
+      "source": "game-file catalogue"
+    },
+    "1564": {
+      "year": 1953,
+      "make": "Chevrolet",
+      "model": "Corvette",
+      "source": "game-file catalogue"
+    },
+    "1093": {
+      "year": 1960,
+      "make": "Chevrolet",
+      "model": "Corvette",
+      "source": "game-file catalogue"
+    },
+    "3088": {
+      "year": 2018,
+      "make": "Chevrolet",
+      "model": "Deberti Drift Truck",
+      "source": "game-file catalogue"
+    },
+    "1291": {
+      "year": 1970,
+      "make": "Chevrolet",
+      "model": "El Camino SS",
+      "source": "game-file catalogue"
+    },
+    "1300": {
+      "year": 1964,
+      "make": "Chevrolet",
+      "model": "Impala SS",
+      "source": "game-file catalogue"
+    },
+    "1379": {
+      "year": 1996,
+      "make": "Chevrolet",
+      "model": "Impala SS",
+      "source": "game-file catalogue"
+    },
+    "1575": {
+      "year": 1988,
+      "make": "Chevrolet",
+      "model": "Monte Carlo",
+      "source": "game-file catalogue"
+    },
+    "1429": {
+      "year": 1969,
+      "make": "Chevrolet",
+      "model": "Nova SS",
+      "source": "game-file catalogue"
+    },
+    "3477": {
+      "year": 2020,
+      "make": "Chevrolet",
+      "model": "Silverado LTZ 71",
+      "source": "game-file catalogue"
+    },
+    "1277": {
+      "year": 1971,
+      "make": "Chrysler",
+      "model": "Cuda 426",
+      "source": "game-file catalogue"
+    },
+    "2272": {
+      "year": 1969,
+      "make": "Datsun",
+      "model": "2000",
+      "source": "game-file catalogue"
+    },
+    "1270": {
+      "year": 1982,
+      "make": "DeLorean",
+      "model": "DMC 12",
+      "source": "game-file catalogue"
+    },
+    "3198": {
+      "year": 1984,
+      "make": "De Tomaso",
+      "model": "Pantera GT 5",
+      "source": "game-file catalogue"
+    },
+    "2263": {
+      "year": 2015,
+      "make": "Dodge",
+      "model": "Challenger Hellcat",
+      "source": "game-file catalogue"
+    },
+    "639": {
+      "year": 1970,
+      "make": "Dodge",
+      "model": "Challenger Hemi",
+      "source": "game-file catalogue"
+    },
+    "3959": {
+      "year": 2022,
+      "make": "Dodge",
+      "model": "Challenger SRT",
+      "source": "game-file catalogue"
+    },
+    "1063": {
+      "year": 1969,
+      "make": "Dodge",
+      "model": "Charger Daytona",
+      "source": "game-file catalogue"
+    },
+    "513": {
+      "year": 1969,
+      "make": "Dodge",
+      "model": "Charger RT",
+      "source": "game-file catalogue"
+    },
+    "1332": {
+      "year": 1968,
+      "make": "Dodge",
+      "model": "Dart",
+      "source": "game-file catalogue"
+    },
+    "2909": {
+      "year": 2018,
+      "make": "Dodge",
+      "model": "Demon",
+      "source": "game-file catalogue"
+    },
+    "3850": {
+      "year": 2021,
+      "make": "Dodge",
+      "model": "Durango Hellcat",
+      "source": "game-file catalogue"
+    },
+    "1052": {
+      "year": 2006,
+      "make": "Dodge",
+      "model": "Ram SRT 10",
+      "source": "game-file catalogue"
+    },
+    "2544": {
+      "year": 2016,
+      "make": "Dodge",
+      "model": "Viper ACR",
+      "source": "game-file catalogue"
+    },
+    "483": {
+      "year": 1999,
+      "make": "Dodge",
+      "model": "Viper GTSACR",
+      "source": "game-file catalogue"
+    },
+    "1046": {
+      "year": 2008,
+      "make": "Dodge",
+      "model": "Viper SRT 10 ACR",
+      "source": "game-file catalogue"
+    },
+    "2793": {
+      "year": 1967,
+      "make": "Ferrari",
+      "model": "24 330 P 4",
+      "source": "game-file catalogue"
+    },
+    "1578": {
+      "year": 1963,
+      "make": "Ferrari",
+      "model": "250 GT Lusso",
+      "source": "game-file catalogue"
+    },
+    "249": {
+      "year": 1964,
+      "make": "Ferrari",
+      "model": "250 GTO",
+      "source": "game-file catalogue"
+    },
+    "3950": {
+      "year": 1967,
+      "make": "Ferrari",
+      "model": "275 GTS",
+      "source": "game-file catalogue"
+    },
+    "3724": {
+      "year": 2022,
+      "make": "Ferrari",
+      "model": "296 GTB",
+      "source": "game-file catalogue"
+    },
+    "253": {
+      "year": 1994,
+      "make": "Ferrari",
+      "model": "355 Berlinetta",
+      "source": "game-file catalogue"
+    },
+    "2184": {
+      "year": 2015,
+      "make": "Ferrari",
+      "model": "458 Speciale",
+      "source": "game-file catalogue"
+    },
+    "3227": {
+      "year": 2019,
+      "make": "Ferrari",
+      "model": "488 Pista",
+      "source": "game-file catalogue"
+    },
+    "255": {
+      "year": 1991,
+      "make": "Ferrari",
+      "model": "512 TR",
+      "source": "game-file catalogue"
+    },
+    "2974": {
+      "year": 2018,
+      "make": "Ferrari",
+      "model": "812 Superfast",
+      "source": "game-file catalogue"
+    },
+    "326": {
+      "year": 1969,
+      "make": "Ferrari",
+      "model": "Dino 246",
+      "source": "game-file catalogue"
+    },
+    "333": {
+      "year": 2002,
+      "make": "Ferrari",
+      "model": "Enzo",
+      "source": "game-file catalogue"
+    },
+    "2577": {
+      "year": 2015,
+      "make": "Ferrari",
+      "model": "F 12tdf",
+      "source": "game-file catalogue"
+    },
+    "1131": {
+      "year": 2010,
+      "make": "Ferrari",
+      "model": "F 142",
+      "source": "game-file catalogue"
+    },
+    "340": {
+      "year": 1987,
+      "make": "Ferrari",
+      "model": "F 40",
+      "source": "game-file catalogue"
+    },
+    "1022": {
+      "year": 2007,
+      "make": "Ferrari",
+      "model": "F 430 Scuderia",
+      "source": "game-file catalogue"
+    },
+    "342": {
+      "year": 1995,
+      "make": "Ferrari",
+      "model": "F 50",
+      "source": "game-file catalogue"
+    },
+    "4156": {
+      "year": 2025,
+      "make": "Ferrari",
+      "model": "F 80",
+      "source": "game-file catalogue"
+    },
+    "3367": {
+      "year": 2020,
+      "make": "Ferrari",
+      "model": "F 8 Tributo",
+      "source": "game-file catalogue"
+    },
+    "2371": {
+      "year": 2016,
+      "make": "Ferrari",
+      "model": "FXXK",
+      "source": "game-file catalogue"
+    },
+    "358": {
+      "year": 1984,
+      "make": "Ferrari",
+      "model": "GTO",
+      "source": "game-file catalogue"
+    },
+    "4341": {
+      "year": 2017,
+      "make": "Ferrari",
+      "model": "J 50 PO",
+      "source": "game-file catalogue"
+    },
+    "3226": {
+      "year": 2017,
+      "make": "Ferrari",
+      "model": "J 50",
+      "source": "game-file catalogue"
+    },
+    "2034": {
+      "year": 2013,
+      "make": "Ferrari",
+      "model": "La Ferrari",
+      "source": "game-file catalogue"
+    },
+    "3312": {
+      "year": 2019,
+      "make": "Ferrari",
+      "model": "Monza SP 2",
+      "source": "game-file catalogue"
+    },
+    "3225": {
+      "year": 2018,
+      "make": "Ferrari",
+      "model": "Portofino",
+      "source": "game-file catalogue"
+    },
+    "3594": {
+      "year": 2021,
+      "make": "Ferrari",
+      "model": "Roma",
+      "source": "game-file catalogue"
+    },
+    "3595": {
+      "year": 2020,
+      "make": "Ferrari",
+      "model": "SF 90 Stradale",
+      "source": "game-file catalogue"
+    },
+    "2740": {
+      "year": 2017,
+      "make": "Fiat",
+      "model": "124 Spider",
+      "source": "game-file catalogue"
+    },
+    "1124": {
+      "year": 1980,
+      "make": "Fiat",
+      "model": "131 Abarth Stradale",
+      "source": "game-file catalogue"
+    },
+    "2017": {
+      "year": 1968,
+      "make": "Fiat",
+      "model": "595 SS",
+      "source": "game-file catalogue"
+    },
+    "2489": {
+      "year": 2016,
+      "make": "Fiat",
+      "model": "695 Abarth",
+      "source": "game-file catalogue"
+    },
+    "2517": {
+      "year": 2014,
+      "make": "Ford",
+      "model": "11 F 150 Trophy Truck",
+      "source": "game-file catalogue"
+    },
+    "2937": {
+      "year": 2017,
+      "make": "Ford",
+      "model": "14 Fiesta GRC",
+      "source": "game-file catalogue"
+    },
+    "3404": {
+      "year": 2020,
+      "make": "Ford",
+      "model": "2069 Bronco R",
+      "source": "game-file catalogue"
+    },
+    "2792": {
+      "year": 1966,
+      "make": "Ford",
+      "model": "2 GT 40",
+      "source": "game-file catalogue"
+    },
+    "3670": {
+      "year": 2001,
+      "make": "Ford",
+      "model": "4 Focus WRC",
+      "source": "game-file catalogue"
+    },
+    "3184": {
+      "year": 1977,
+      "make": "Ford",
+      "model": "5 Escort Mk 2",
+      "source": "game-file catalogue"
+    },
+    "3736": {
+      "year": 2022,
+      "make": "Ford",
+      "model": "Bronco Raptor",
+      "source": "game-file catalogue"
+    },
+    "1529": {
+      "year": 1974,
+      "make": "Ford",
+      "model": "Capri",
+      "source": "game-file catalogue"
+    },
+    "2372": {
+      "year": 1932,
+      "make": "Ford",
+      "model": "Coupe",
+      "source": "game-file catalogue"
+    },
+    "1272": {
+      "year": 1992,
+      "make": "Ford",
+      "model": "Escort RS Cosworth",
+      "source": "game-file catalogue"
+    },
+    "3692": {
+      "year": 2022,
+      "make": "Ford",
+      "model": "F 150 Lightning",
+      "source": "game-file catalogue"
+    },
+    "4268": {
+      "year": 2023,
+      "make": "Ford",
+      "model": "F 150 Raptor RWP",
+      "source": "game-file catalogue"
+    },
+    "3849": {
+      "year": 2023,
+      "make": "Ford",
+      "model": "F 150 Raptor R",
+      "source": "game-file catalogue"
+    },
+    "3597": {
+      "year": 1983,
+      "make": "Ford",
+      "model": "F 150",
+      "source": "game-file catalogue"
+    },
+    "3439": {
+      "year": 2019,
+      "make": "Ford",
+      "model": "F 250 Deberti",
+      "source": "game-file catalogue"
+    },
+    "4175": {
+      "year": 2020,
+      "make": "Ford",
+      "model": "F 450 DRWFE",
+      "source": "game-file catalogue"
+    },
+    "3476": {
+      "year": 2020,
+      "make": "Ford",
+      "model": "F 450 DRW",
+      "source": "game-file catalogue"
+    },
+    "3903": {
+      "year": 2023,
+      "make": "Ford",
+      "model": "Fiesta ST",
+      "source": "game-file catalogue"
+    },
+    "1086": {
+      "year": 2009,
+      "make": "Ford",
+      "model": "Focus RS",
+      "source": "game-file catalogue"
+    },
+    "2357": {
+      "year": 2017,
+      "make": "Ford",
+      "model": "Focus RS",
+      "source": "game-file catalogue"
+    },
+    "3904": {
+      "year": 2022,
+      "make": "Ford",
+      "model": "Focus ST",
+      "source": "game-file catalogue"
+    },
+    "3051": {
+      "year": 2017,
+      "make": "Ford",
+      "model": "M Sport Fiesta",
+      "source": "game-file catalogue"
+    },
+    "405": {
+      "year": 2000,
+      "make": "Ford",
+      "model": "Mustang Cobra R",
+      "source": "game-file catalogue"
+    },
+    "3847": {
+      "year": 2024,
+      "make": "Ford",
+      "model": "Mustang Dark Horse",
+      "source": "game-file catalogue"
+    },
+    "2614": {
+      "year": 1968,
+      "make": "Ford",
+      "model": "Mustang GT 390",
+      "source": "game-file catalogue"
+    },
+    "1654": {
+      "year": 2013,
+      "make": "Ford",
+      "model": "Mustang GT 500",
+      "source": "game-file catalogue"
+    },
+    "3277": {
+      "year": 2020,
+      "make": "Ford",
+      "model": "Mustang GT 500",
+      "source": "game-file catalogue"
+    },
+    "3846": {
+      "year": 2024,
+      "make": "Ford",
+      "model": "Mustang GT",
+      "source": "game-file catalogue"
+    },
+    "3108": {
+      "year": 2018,
+      "make": "Ford",
+      "model": "Mustang RTR Spec 5",
+      "source": "game-file catalogue"
+    },
+    "1041": {
+      "year": 1993,
+      "make": "Ford",
+      "model": "Mustang SVT Cobra R",
+      "source": "game-file catalogue"
+    },
+    "1355": {
+      "year": 1965,
+      "make": "Ford",
+      "model": "Mustang",
+      "source": "game-file catalogue"
+    },
+    "2363": {
+      "year": 2016,
+      "make": "Ford",
+      "model": "Phoenix",
+      "source": "game-file catalogue"
+    },
+    "2551": {
+      "year": 2015,
+      "make": "Ford",
+      "model": "Pursuit Ute",
+      "source": "game-file catalogue"
+    },
+    "1108": {
+      "year": 1987,
+      "make": "Ford",
+      "model": "RS 200 Evolution",
+      "source": "game-file catalogue"
+    },
+    "1293": {
+      "year": 1987,
+      "make": "Ford",
+      "model": "RS 500",
+      "source": "game-file catalogue"
+    },
+    "3228": {
+      "year": 1999,
+      "make": "Ford",
+      "model": "Racing Puma",
+      "source": "game-file catalogue"
+    },
+    "3190": {
+      "year": 2003,
+      "make": "Ford",
+      "model": "SVT Lightning",
+      "source": "game-file catalogue"
+    },
+    "2400": {
+      "year": 2016,
+      "make": "Ford",
+      "model": "Shelby GT 350 R",
+      "source": "game-file catalogue"
+    },
+    "1477": {
+      "year": 2011,
+      "make": "Ford",
+      "model": "Transit SSV",
+      "source": "game-file catalogue"
+    },
+    "1278": {
+      "year": 1973,
+      "make": "Ford",
+      "model": "XB Falcon GT",
+      "source": "game-file catalogue"
+    },
+    "2935": {
+      "year": 2018,
+      "make": "Fun",
+      "model": "F 9",
+      "source": "game-file catalogue"
+    },
+    "3599": {
+      "year": 2022,
+      "make": "Gordon Murray Automotive",
+      "model": "T 50",
+      "source": "game-file catalogue"
+    },
+    "3722": {
+      "year": 2022,
+      "make": "GMC",
+      "model": "Hummer EV",
+      "source": "game-file catalogue"
+    },
+    "2613": {
+      "year": 1970,
+      "make": "GMC",
+      "model": "Jimmy",
+      "source": "game-file catalogue"
+    },
+    "1294": {
+      "year": 1992,
+      "make": "GMC",
+      "model": "Syclone",
+      "source": "game-file catalogue"
+    },
+    "1394": {
+      "year": 1993,
+      "make": "GMC",
+      "model": "Typhoon",
+      "source": "game-file catalogue"
+    },
+    "3189": {
+      "year": 2018,
+      "make": "Hennessey",
+      "model": "Velociraptor 6x 6",
+      "source": "game-file catalogue"
+    },
+    "3600": {
+      "year": 2021,
+      "make": "Hennessey",
+      "model": "Venom F 5",
+      "source": "game-file catalogue"
+    },
+    "1532": {
+      "year": 2012,
+      "make": "Hennessey",
+      "model": "Venom GT",
+      "source": "game-file catalogue"
+    },
+    "2422": {
+      "year": 2016,
+      "make": "Holden",
+      "model": "HSVGTS Maloo",
+      "source": "game-file catalogue"
+    },
+    "2131": {
+      "year": 2014,
+      "make": "Holden",
+      "model": "HSVGTS",
+      "source": "game-file catalogue"
+    },
+    "1533": {
+      "year": 1977,
+      "make": "Holden",
+      "model": "Torana",
+      "source": "game-file catalogue"
+    },
+    "3865": {
+      "year": 1994,
+      "make": "Honda",
+      "model": "Acty",
+      "source": "game-file catalogue"
+    },
+    "4216": {
+      "year": 1994,
+      "make": "Honda",
+      "model": "Acty Jobs",
+      "source": "game-file catalogue"
+    },
+    "4125": {
+      "year": 1994,
+      "make": "Honda",
+      "model": "Acty Traffic",
+      "source": "game-file catalogue"
+    },
+    "3852": {
+      "year": 1991,
+      "make": "Honda",
+      "model": "Beat",
+      "source": "game-file catalogue"
+    },
+    "2119": {
+      "year": 1984,
+      "make": "Honda",
+      "model": "CRX Mugen",
+      "source": "game-file catalogue"
+    },
+    "320": {
+      "year": 1991,
+      "make": "Honda",
+      "model": "CR Xsi",
+      "source": "game-file catalogue"
+    },
+    "3859": {
+      "year": 1984,
+      "make": "Honda",
+      "model": "City",
+      "source": "game-file catalogue"
+    },
+    "1568": {
+      "year": 1974,
+      "make": "Honda",
+      "model": "Civic RS",
+      "source": "game-file catalogue"
+    },
+    "302": {
+      "year": 2004,
+      "make": "Honda",
+      "model": "Civic R",
+      "source": "game-file catalogue"
+    },
+    "1650": {
+      "year": 1986,
+      "make": "Honda",
+      "model": "Civic Si",
+      "source": "game-file catalogue"
+    },
+    "625": {
+      "year": 2007,
+      "make": "Honda",
+      "model": "Civic Type R",
+      "source": "game-file catalogue"
+    },
+    "4234": {
+      "year": 2008,
+      "make": "Honda",
+      "model": "Civic Type R",
+      "source": "game-file catalogue"
+    },
+    "2163": {
+      "year": 2015,
+      "make": "Honda",
+      "model": "Civic Type R",
+      "source": "game-file catalogue"
+    },
+    "2870": {
+      "year": 2018,
+      "make": "Honda",
+      "model": "Civic Type R",
+      "source": "game-file catalogue"
+    },
+    "3773": {
+      "year": 2023,
+      "make": "Honda",
+      "model": "Civic Type R",
+      "source": "game-file catalogue"
+    },
+    "1273": {
+      "year": 1997,
+      "make": "Honda",
+      "model": "Civic Type R",
+      "source": "game-file catalogue"
+    },
+    "569": {
+      "year": 2005,
+      "make": "Honda",
+      "model": "NSXRGT",
+      "source": "game-file catalogue"
+    },
+    "411": {
+      "year": 2005,
+      "make": "Honda",
+      "model": "NSXR",
+      "source": "game-file catalogue"
+    },
+    "412": {
+      "year": 1992,
+      "make": "Honda",
+      "model": "NSXR",
+      "source": "game-file catalogue"
+    },
+    "2121": {
+      "year": 1994,
+      "make": "Honda",
+      "model": "Prelude",
+      "source": "game-file catalogue"
+    },
+    "4251": {
+      "year": 2003,
+      "make": "Honda",
+      "model": "S 2000 TG",
+      "source": "game-file catalogue"
+    },
+    "427": {
+      "year": 2003,
+      "make": "Honda",
+      "model": "S 2000",
+      "source": "game-file catalogue"
+    },
+    "2205": {
+      "year": 1970,
+      "make": "Honda",
+      "model": "S 800",
+      "source": "game-file catalogue"
+    },
+    "4034": {
+      "year": 1972,
+      "make": "Honda",
+      "model": "ZGT",
+      "source": "game-file catalogue"
+    },
+    "3908": {
+      "year": 2022,
+      "make": "Honda",
+      "model": "E",
+      "source": "game-file catalogue"
+    },
+    "4126": {
+      "year": 2022,
+      "make": "Honda",
+      "model": "e Traffic",
+      "source": "game-file catalogue"
+    },
+    "3827": {
+      "year": 2023,
+      "make": "Hyundai",
+      "model": "Ioniq 5 N",
+      "source": "game-file catalogue"
+    },
+    "3829": {
+      "year": 2022,
+      "make": "Hyundai",
+      "model": "N Vision 74",
+      "source": "game-file catalogue"
+    },
+    "2872": {
+      "year": 2019,
+      "make": "Hyundai",
+      "model": "Veloster N",
+      "source": "game-file catalogue"
+    },
+    "3928": {
+      "year": 2021,
+      "make": "Hyundai",
+      "model": "i20 N",
+      "source": "community-confirmed"
+    },
+    "3678": {
+      "year": 2020,
+      "make": "Hyundai",
+      "model": "i 30 N",
+      "source": "game-file catalogue"
+    },
+    "3055": {
+      "year": 2010,
+      "make": "Jaguar",
+      "model": "CX 75",
+      "source": "game-file catalogue"
+    },
+    "1301": {
+      "year": 1956,
+      "make": "Jaguar",
+      "model": "D Type",
+      "source": "game-file catalogue"
+    },
+    "2992": {
+      "year": 1964,
+      "make": "Jaguar",
+      "model": "Etype Lightweight",
+      "source": "game-file catalogue"
+    },
+    "336": {
+      "year": 1961,
+      "make": "Jaguar",
+      "model": "Etype",
+      "source": "game-file catalogue"
+    },
+    "3293": {
+      "year": 1993,
+      "make": "Jaguar",
+      "model": "XJ 220 S",
+      "source": "game-file catalogue"
+    },
+    "489": {
+      "year": 1993,
+      "make": "Jaguar",
+      "model": "XJ 220",
+      "source": "game-file catalogue"
+    },
+    "3287": {
+      "year": 1991,
+      "make": "Jaguar",
+      "model": "XJR 15",
+      "source": "game-file catalogue"
+    },
+    "3255": {
+      "year": 2020,
+      "make": "Jeep",
+      "model": "Gladiator",
+      "source": "game-file catalogue"
+    },
+    "2841": {
+      "year": 2018,
+      "make": "Jeep",
+      "model": "Trackhawk",
+      "source": "game-file catalogue"
+    },
+    "2742": {
+      "year": 2017,
+      "make": "Jeep",
+      "model": "Trailcat",
+      "source": "game-file catalogue"
+    },
+    "1522": {
+      "year": 2012,
+      "make": "Jeep",
+      "model": "Wrangler",
+      "source": "game-file catalogue"
+    },
+    "2910": {
+      "year": 2017,
+      "make": "Koenigsegg",
+      "model": "Agera RS",
+      "source": "game-file catalogue"
+    },
+    "1397": {
+      "year": 2011,
+      "make": "Koenigsegg",
+      "model": "Agera",
+      "source": "game-file catalogue"
+    },
+    "4081": {
+      "year": 2024,
+      "make": "Koenigsegg",
+      "model": "Gemera",
+      "source": "game-file catalogue"
+    },
+    "3289": {
+      "year": 2019,
+      "make": "Lamborghini",
+      "model": "Aventador SVJ",
+      "source": "game-file catalogue"
+    },
+    "3775": {
+      "year": 2022,
+      "make": "Lamborghini",
+      "model": "Aventador Ultimae",
+      "source": "game-file catalogue"
+    },
+    "2616": {
+      "year": 2017,
+      "make": "Lamborghini",
+      "model": "Bellissima",
+      "source": "game-file catalogue"
+    },
+    "3774": {
+      "year": 2023,
+      "make": "Lamborghini",
+      "model": "Countach",
+      "source": "game-file catalogue"
+    },
+    "316": {
+      "year": 1988,
+      "make": "Lamborghini",
+      "model": "Countach",
+      "source": "game-file catalogue"
+    },
+    "324": {
+      "year": 1999,
+      "make": "Lamborghini",
+      "model": "Diablo GTR",
+      "source": "game-file catalogue"
+    },
+    "325": {
+      "year": 1997,
+      "make": "Lamborghini",
+      "model": "Diablo SV",
+      "source": "game-file catalogue"
+    },
+    "1601": {
+      "year": 2012,
+      "make": "Lamborghini",
+      "model": "Gallardo LP 570 Spyder",
+      "source": "game-file catalogue"
+    },
+    "3759": {
+      "year": 2022,
+      "make": "Lamborghini",
+      "model": "Huracan EVO Spyder",
+      "source": "game-file catalogue"
+    },
+    "3371": {
+      "year": 2020,
+      "make": "Lamborghini",
+      "model": "Huracan EVO",
+      "source": "game-file catalogue"
+    },
+    "3672": {
+      "year": 2021,
+      "make": "Lamborghini",
+      "model": "Huracan STO",
+      "source": "game-file catalogue"
+    },
+    "3840": {
+      "year": 2023,
+      "make": "Lamborghini",
+      "model": "Huracan Sterrato",
+      "source": "game-file catalogue"
+    },
+    "3753": {
+      "year": 2023,
+      "make": "Lamborghini",
+      "model": "Huracan Tecnica",
+      "source": "game-file catalogue"
+    },
+    "2164": {
+      "year": 2015,
+      "make": "Lamborghini",
+      "model": "Huracan",
+      "source": "game-file catalogue"
+    },
+    "1173": {
+      "year": 2010,
+      "make": "Lamborghini",
+      "model": "LP 6704 SV",
+      "source": "game-file catalogue"
+    },
+    "1398": {
+      "year": 2012,
+      "make": "Lamborghini",
+      "model": "LP 7004",
+      "source": "game-file catalogue"
+    },
+    "637": {
+      "year": 1967,
+      "make": "Lamborghini",
+      "model": "Miura P 400",
+      "source": "game-file catalogue"
+    },
+    "3891": {
+      "year": 2024,
+      "make": "Lamborghini",
+      "model": "Revuelto",
+      "source": "game-file catalogue"
+    },
+    "1392": {
+      "year": 2011,
+      "make": "Lamborghini",
+      "model": "Sesto Elemento",
+      "source": "game-file catalogue"
+    },
+    "3608": {
+      "year": 2021,
+      "make": "Lamborghini",
+      "model": "Sian Roadster",
+      "source": "game-file catalogue"
+    },
+    "4002": {
+      "year": 2024,
+      "make": "Lamborghini",
+      "model": "Temerario",
+      "source": "game-file catalogue"
+    },
+    "3120": {
+      "year": 2019,
+      "make": "Lamborghini",
+      "model": "Urus",
+      "source": "game-file catalogue"
+    },
+    "1295": {
+      "year": 1982,
+      "make": "Lancia",
+      "model": "037 Stradale",
+      "source": "game-file catalogue"
+    },
+    "1661": {
+      "year": 1986,
+      "make": "Lancia",
+      "model": "Delta S 4",
+      "source": "game-file catalogue"
+    },
+    "323": {
+      "year": 1992,
+      "make": "Lancia",
+      "model": "Delta",
+      "source": "game-file catalogue"
+    },
+    "458": {
+      "year": 1974,
+      "make": "Lancia",
+      "model": "Stratos",
+      "source": "game-file catalogue"
+    },
+    "3520": {
+      "year": 2021,
+      "make": "Lexus",
+      "model": "LC 500",
+      "source": "game-file catalogue"
+    },
+    "4158": {
+      "year": 2010,
+      "make": "Lexus",
+      "model": "LFAFE",
+      "source": "game-file catalogue"
+    },
+    "1260": {
+      "year": 2010,
+      "make": "Lexus",
+      "model": "LFA",
+      "source": "game-file catalogue"
+    },
+    "2175": {
+      "year": 2015,
+      "make": "Lexus",
+      "model": "RCF",
+      "source": "game-file catalogue"
+    },
+    "1586": {
+      "year": 1962,
+      "make": "Lincoln",
+      "model": "Continental",
+      "source": "game-file catalogue"
+    },
+    "1376": {
+      "year": 1999,
+      "make": "Lotus",
+      "model": "Elise",
+      "source": "game-file catalogue"
+    },
+    "3716": {
+      "year": 2023,
+      "make": "Lotus",
+      "model": "Emira",
+      "source": "game-file catalogue"
+    },
+    "3449": {
+      "year": 2020,
+      "make": "Lotus",
+      "model": "Evija",
+      "source": "game-file catalogue"
+    },
+    "3661": {
+      "year": 2018,
+      "make": "Lotus",
+      "model": "Exige Cup 430",
+      "source": "game-file catalogue"
+    },
+    "3414": {
+      "year": 2020,
+      "make": "Land Rover",
+      "model": "Defender",
+      "source": "game-file catalogue"
+    },
+    "3811": {
+      "year": 2023,
+      "make": "Lucid",
+      "model": "Air",
+      "source": "game-file catalogue"
+    },
+    "1513": {
+      "year": 1997,
+      "make": "Maserati",
+      "model": "Ghibli",
+      "source": "game-file catalogue"
+    },
+    "391": {
+      "year": 2004,
+      "make": "Maserati",
+      "model": "MC 12",
+      "source": "game-file catalogue"
+    },
+    "3611": {
+      "year": 2022,
+      "make": "Maserati",
+      "model": "MC 20",
+      "source": "game-file catalogue"
+    },
+    "3798": {
+      "year": 2017,
+      "make": "Mazda",
+      "model": "00 MX 5 Cup",
+      "source": "game-file catalogue"
+    },
+    "1587": {
+      "year": 1972,
+      "make": "Mazda",
+      "model": "Cosmo",
+      "source": "game-file catalogue"
+    },
+    "3823": {
+      "year": 2022,
+      "make": "Mazda",
+      "model": "MX 5 RF",
+      "source": "game-file catalogue"
+    },
+    "2171": {
+      "year": 2005,
+      "make": "Mazda",
+      "model": "MX 5",
+      "source": "game-file catalogue"
+    },
+    "2004": {
+      "year": 2013,
+      "make": "Mazda",
+      "model": "MX 5",
+      "source": "game-file catalogue"
+    },
+    "2267": {
+      "year": 2016,
+      "make": "Mazda",
+      "model": "MX 5",
+      "source": "game-file catalogue"
+    },
+    "1221": {
+      "year": 2010,
+      "make": "Mazda",
+      "model": "Mazdaspeed 3",
+      "source": "game-file catalogue"
+    },
+    "2711": {
+      "year": 2010,
+      "make": "Mazda",
+      "model": "Mazdaspeed 3 Traffic",
+      "source": "game-file catalogue"
+    },
+    "4197": {
+      "year": 1994,
+      "make": "Mazda",
+      "model": "Miata FE",
+      "source": "game-file catalogue"
+    },
+    "1110": {
+      "year": 1994,
+      "make": "Mazda",
+      "model": "Miata",
+      "source": "game-file catalogue"
+    },
+    "4165": {
+      "year": 1973,
+      "make": "Mazda",
+      "model": "RX 3 FE",
+      "source": "game-file catalogue"
+    },
+    "1514": {
+      "year": 1973,
+      "make": "Mazda",
+      "model": "RX 3",
+      "source": "game-file catalogue"
+    },
+    "1480": {
+      "year": 1985,
+      "make": "Mazda",
+      "model": "RX 7",
+      "source": "game-file catalogue"
+    },
+    "423": {
+      "year": 1990,
+      "make": "Mazda",
+      "model": "RX 7",
+      "source": "game-file catalogue"
+    },
+    "4144": {
+      "year": 1992,
+      "make": "Mazda",
+      "model": "RX 7",
+      "source": "game-file catalogue"
+    },
+    "1426": {
+      "year": 2011,
+      "make": "Mazda",
+      "model": "RX 8 R 3",
+      "source": "game-file catalogue"
+    },
+    "2472": {
+      "year": 2016,
+      "make": "McLaren",
+      "model": "570 S",
+      "source": "game-file catalogue"
+    },
+    "3153": {
+      "year": 2019,
+      "make": "McLaren",
+      "model": "600 LT",
+      "source": "game-file catalogue"
+    },
+    "3655": {
+      "year": 2021,
+      "make": "McLaren",
+      "model": "620 R",
+      "source": "game-file catalogue"
+    },
+    "3087": {
+      "year": 2014,
+      "make": "McLaren",
+      "model": "650 S Spider",
+      "source": "game-file catalogue"
+    },
+    "3482": {
+      "year": 2021,
+      "make": "McLaren",
+      "model": "765 LT",
+      "source": "game-file catalogue"
+    },
+    "3668": {
+      "year": 2023,
+      "make": "McLaren",
+      "model": "Artura",
+      "source": "game-file catalogue"
+    },
+    "338": {
+      "year": 1997,
+      "make": "McLaren",
+      "model": "F 1 GT",
+      "source": "game-file catalogue"
+    },
+    "1314": {
+      "year": 1993,
+      "make": "McLaren",
+      "model": "F 1",
+      "source": "game-file catalogue"
+    },
+    "1130": {
+      "year": 2011,
+      "make": "McLaren",
+      "model": "MP 412 C",
+      "source": "game-file catalogue"
+    },
+    "1667": {
+      "year": 2013,
+      "make": "McLaren",
+      "model": "P 1",
+      "source": "game-file catalogue"
+    },
+    "3700": {
+      "year": 2021,
+      "make": "McLaren",
+      "model": "Sabre",
+      "source": "game-file catalogue"
+    },
+    "3156": {
+      "year": 2019,
+      "make": "McLaren",
+      "model": "Speedtail",
+      "source": "game-file catalogue"
+    },
+    "1296": {
+      "year": 1990,
+      "make": "Mercedes-Benz",
+      "model": "190 E",
+      "source": "game-file catalogue"
+    },
+    "251": {
+      "year": 1954,
+      "make": "Mercedes-Benz",
+      "model": "300 SL",
+      "source": "game-file catalogue"
+    },
+    "1559": {
+      "year": 1955,
+      "make": "Mercedes-Benz",
+      "model": "300Slr",
+      "source": "game-file catalogue"
+    },
+    "1658": {
+      "year": 2013,
+      "make": "Mercedes-Benz",
+      "model": "A 45 AMG",
+      "source": "game-file catalogue"
+    },
+    "3064": {
+      "year": 2018,
+      "make": "Mercedes-Benz",
+      "model": "AMGGT 4",
+      "source": "game-file catalogue"
+    },
+    "2654": {
+      "year": 2017,
+      "make": "Mercedes-Benz",
+      "model": "AMGGTR",
+      "source": "game-file catalogue"
+    },
+    "2242": {
+      "year": 2015,
+      "make": "Mercedes-Benz",
+      "model": "AMGGT",
+      "source": "game-file catalogue"
+    },
+    "3176": {
+      "year": 1987,
+      "make": "Mercedes-Benz",
+      "model": "AMG Hammer",
+      "source": "game-file catalogue"
+    },
+    "2471": {
+      "year": 2016,
+      "make": "Mercedes-Benz",
+      "model": "C 63 AMG Coupe",
+      "source": "game-file catalogue"
+    },
+    "1500": {
+      "year": 2012,
+      "make": "Mercedes-Benz",
+      "model": "C 63 AMG",
+      "source": "game-file catalogue"
+    },
+    "568": {
+      "year": 1998,
+      "make": "Mercedes-Benz",
+      "model": "CLKGTR",
+      "source": "game-file catalogue"
+    },
+    "3250": {
+      "year": 2018,
+      "make": "Mercedes-Benz",
+      "model": "E 63 SAMG",
+      "source": "game-file catalogue"
+    },
+    "3107": {
+      "year": 2014,
+      "make": "Mercedes-Benz",
+      "model": "G 63 AMG 6x 6",
+      "source": "game-file catalogue"
+    },
+    "1627": {
+      "year": 2013,
+      "make": "Mercedes-Benz",
+      "model": "G 65 AMG",
+      "source": "game-file catalogue"
+    },
+    "4124": {
+      "year": 2013,
+      "make": "Mercedes-Benz",
+      "model": "G 65 AMG Traffic",
+      "source": "game-file catalogue"
+    },
+    "4265": {
+      "year": 2021,
+      "make": "Mercedes-Benz",
+      "model": "GT Black Series WP",
+      "source": "game-file catalogue"
+    },
+    "3616": {
+      "year": 2021,
+      "make": "Mercedes-Benz",
+      "model": "GT Black Series",
+      "source": "game-file catalogue"
+    },
+    "3617": {
+      "year": 2022,
+      "make": "Mercedes-Benz",
+      "model": "SL 63 AMG",
+      "source": "game-file catalogue"
+    },
+    "1090": {
+      "year": 2009,
+      "make": "Mercedes-Benz",
+      "model": "SL 65 AMG",
+      "source": "game-file catalogue"
+    },
+    "3895": {
+      "year": 2020,
+      "make": "Mercedes-Benz",
+      "model": "SLC 43 AMG",
+      "source": "game-file catalogue"
+    },
+    "2986": {
+      "year": 2017,
+      "make": "Mercedes-Benz",
+      "model": "Unimog",
+      "source": "game-file catalogue"
+    },
+    "3063": {
+      "year": 2018,
+      "make": "Mercedes-Benz",
+      "model": "X Class",
+      "source": "game-file catalogue"
+    },
+    "3795": {
+      "year": 2023,
+      "make": "Meyers",
+      "model": "Manx",
+      "source": "game-file catalogue"
+    },
+    "2416": {
+      "year": 1971,
+      "make": "Meyers",
+      "model": "Manx",
+      "source": "game-file catalogue"
+    },
+    "1662": {
+      "year": 1965,
+      "make": "MINI",
+      "model": "Cooper S",
+      "source": "game-file catalogue"
+    },
+    "2003": {
+      "year": 2013,
+      "make": "MINI",
+      "model": "JCWGP",
+      "source": "game-file catalogue"
+    },
+    "3534": {
+      "year": 2021,
+      "make": "MINI",
+      "model": "JCWGP",
+      "source": "game-file catalogue"
+    },
+    "327": {
+      "year": 1995,
+      "make": "Mitsubishi",
+      "model": "Eclipse GSX",
+      "source": "game-file catalogue"
+    },
+    "357": {
+      "year": 1997,
+      "make": "Mitsubishi",
+      "model": "GTO",
+      "source": "game-file catalogue"
+    },
+    "1381": {
+      "year": 1992,
+      "make": "Mitsubishi",
+      "model": "Galant VR 4",
+      "source": "game-file catalogue"
+    },
+    "2712": {
+      "year": 1992,
+      "make": "Mitsubishi",
+      "model": "Galant VR 4 Traffic",
+      "source": "game-file catalogue"
+    },
+    "3886": {
+      "year": 1995,
+      "make": "Mitsubishi",
+      "model": "Lancer Evo III",
+      "source": "game-file catalogue"
+    },
+    "374": {
+      "year": 2006,
+      "make": "Mitsubishi",
+      "model": "Lancer Evo IXMR",
+      "source": "game-file catalogue"
+    },
+    "4267": {
+      "year": 2004,
+      "make": "Mitsubishi",
+      "model": "Lancer Evo VIIIMRWP",
+      "source": "game-file catalogue"
+    },
+    "378": {
+      "year": 2004,
+      "make": "Mitsubishi",
+      "model": "Lancer Evo VIIIMR",
+      "source": "game-file catalogue"
+    },
+    "4090": {
+      "year": 2001,
+      "make": "Mitsubishi",
+      "model": "Lancer Evo VITME",
+      "source": "game-file catalogue"
+    },
+    "1009": {
+      "year": 2008,
+      "make": "Mitsubishi",
+      "model": "Lancer Evo XGSR",
+      "source": "game-file catalogue"
+    },
+    "2652": {
+      "year": 1997,
+      "make": "Mitsubishi",
+      "model": "Pajero Evo",
+      "source": "game-file catalogue"
+    },
+    "3750": {
+      "year": 1995,
+      "make": "Mitsubishi",
+      "model": "Pajero",
+      "source": "game-file catalogue"
+    },
+    "4127": {
+      "year": 1995,
+      "make": "Mitsubishi",
+      "model": "Pajero Traffic",
+      "source": "game-file catalogue"
+    },
+    "1282": {
+      "year": 1994,
+      "make": "Nissan",
+      "model": "240 SX",
+      "source": "game-file catalogue"
+    },
+    "3307": {
+      "year": 2019,
+      "make": "Nissan",
+      "model": "370 Z Nismo",
+      "source": "game-file catalogue"
+    },
+    "1103": {
+      "year": 2010,
+      "make": "Nissan",
+      "model": "370 Z",
+      "source": "game-file catalogue"
+    },
+    "1104": {
+      "year": 1970,
+      "make": "Nissan",
+      "model": "510",
+      "source": "game-file catalogue"
+    },
+    "3856": {
+      "year": 1987,
+      "make": "Nissan",
+      "model": "BE 1",
+      "source": "game-file catalogue"
+    },
+    "343": {
+      "year": 1969,
+      "make": "Nissan",
+      "model": "Fairlady 432 Z",
+      "source": "game-file catalogue"
+    },
+    "344": {
+      "year": 2003,
+      "make": "Nissan",
+      "model": "Fairlady Z",
+      "source": "game-file catalogue"
+    },
+    "345": {
+      "year": 1994,
+      "make": "Nissan",
+      "model": "Fairlady Zv S Twin Turbo",
+      "source": "game-file catalogue"
+    },
+    "3855": {
+      "year": 1991,
+      "make": "Nissan",
+      "model": "Figaro",
+      "source": "game-file catalogue"
+    },
+    "4260": {
+      "year": 2024,
+      "make": "Nissan",
+      "model": "GTRNISMOID",
+      "source": "game-file catalogue"
+    },
+    "4094": {
+      "year": 2024,
+      "make": "Nissan",
+      "model": "GTRNISMO",
+      "source": "game-file catalogue"
+    },
+    "3622": {
+      "year": 2019,
+      "make": "Nissan",
+      "model": "GTR Nismo",
+      "source": "game-file catalogue"
+    },
+    "4303": {
+      "year": 2012,
+      "make": "Nissan",
+      "model": "GTRTG",
+      "source": "game-file catalogue"
+    },
+    "2002": {
+      "year": 2012,
+      "make": "Nissan",
+      "model": "GTR",
+      "source": "game-file catalogue"
+    },
+    "2618": {
+      "year": 2017,
+      "make": "Nissan",
+      "model": "GTR",
+      "source": "game-file catalogue"
+    },
+    "3918": {
+      "year": 1995,
+      "make": "Nissan",
+      "model": "Gloria",
+      "source": "game-file catalogue"
+    },
+    "3929": {
+      "year": 1989,
+      "make": "Nissan",
+      "model": "Pao",
+      "source": "game-file catalogue"
+    },
+    "4205": {
+      "year": 1972,
+      "make": "Nissan",
+      "model": "Patrol",
+      "source": "game-file catalogue"
+    },
+    "3257": {
+      "year": 1990,
+      "make": "Nissan",
+      "model": "Pulsar GTIR",
+      "source": "game-file catalogue"
+    },
+    "567": {
+      "year": 1998,
+      "make": "Nissan",
+      "model": "R 390",
+      "source": "game-file catalogue"
+    },
+    "4160": {
+      "year": 1989,
+      "make": "Nissan",
+      "model": "S Cargo FE",
+      "source": "game-file catalogue"
+    },
+    "3860": {
+      "year": 1989,
+      "make": "Nissan",
+      "model": "S Cargo",
+      "source": "game-file catalogue"
+    },
+    "2822": {
+      "year": 1985,
+      "make": "Nissan",
+      "model": "Safari",
+      "source": "game-file catalogue"
+    },
+    "4222": {
+      "year": 1989,
+      "make": "Nissan",
+      "model": "Silvia Ks",
+      "source": "game-file catalogue"
+    },
+    "440": {
+      "year": 1994,
+      "make": "Nissan",
+      "model": "Silvia Ks",
+      "source": "game-file catalogue"
+    },
+    "2659": {
+      "year": 1998,
+      "make": "Nissan",
+      "model": "Silvia Ks",
+      "source": "game-file catalogue"
+    },
+    "3999": {
+      "year": 2002,
+      "make": "Nissan",
+      "model": "Silvia Spec R",
+      "source": "game-file catalogue"
+    },
+    "1042": {
+      "year": 1971,
+      "make": "Nissan",
+      "model": "Skyline 2000 GTR",
+      "source": "game-file catalogue"
+    },
+    "4119": {
+      "year": 1998,
+      "make": "Nissan",
+      "model": "Skyline Autech",
+      "source": "game-file catalogue"
+    },
+    "4223": {
+      "year": 2000,
+      "make": "Nissan",
+      "model": "Skyline GTRV Spec II",
+      "source": "game-file catalogue"
+    },
+    "2270": {
+      "year": 1973,
+      "make": "Nissan",
+      "model": "Skyline GTR",
+      "source": "game-file catalogue"
+    },
+    "4114": {
+      "year": 1992,
+      "make": "Nissan",
+      "model": "Skyline GTR",
+      "source": "game-file catalogue"
+    },
+    "4057": {
+      "year": 1997,
+      "make": "Nissan",
+      "model": "Skyline GTR",
+      "source": "game-file catalogue"
+    },
+    "2512": {
+      "year": 1987,
+      "make": "Nissan",
+      "model": "Skyline GTSR",
+      "source": "game-file catalogue"
+    },
+    "3858": {
+      "year": 1997,
+      "make": "Nissan",
+      "model": "Stagea",
+      "source": "game-file catalogue"
+    },
+    "4129": {
+      "year": 1997,
+      "make": "Nissan",
+      "model": "Stagea Traffic",
+      "source": "game-file catalogue"
+    },
+    "3921": {
+      "year": 2024,
+      "make": "Nissan",
+      "model": "Z Nismo",
+      "source": "game-file catalogue"
+    },
+    "1253": {
+      "year": 2010,
+      "make": "Noble",
+      "model": "M 600",
+      "source": "game-file catalogue"
+    },
+    "1215": {
+      "year": 2000,
+      "make": "Nul",
+      "model": "CAR",
+      "source": "game-file catalogue"
+    },
+    "1369": {
+      "year": 2009,
+      "make": "Pagani",
+      "model": "Zonda Cinque",
+      "source": "game-file catalogue"
+    },
+    "4315": {
+      "year": 1962,
+      "make": "Peel",
+      "model": "P 50 Trolli",
+      "source": "game-file catalogue"
+    },
+    "2987": {
+      "year": 1962,
+      "make": "Peel",
+      "model": "P 50",
+      "source": "game-file catalogue"
+    },
+    "3180": {
+      "year": 1991,
+      "make": "Peugeot",
+      "model": "205 Rallye",
+      "source": "game-file catalogue"
+    },
+    "1591": {
+      "year": 1984,
+      "make": "Peugeot",
+      "model": "205 T 16",
+      "source": "game-file catalogue"
+    },
+    "615": {
+      "year": 2007,
+      "make": "Peugeot",
+      "model": "207 Super 2000",
+      "source": "game-file catalogue"
+    },
+    "2713": {
+      "year": 2014,
+      "make": "PGO",
+      "model": "Box Truck Traffic",
+      "source": "game-file catalogue"
+    },
+    "2714": {
+      "year": 2014,
+      "make": "PGO",
+      "model": "Bus Traffic",
+      "source": "game-file catalogue"
+    },
+    "2902": {
+      "year": 2018,
+      "make": "PGO",
+      "model": "Flatbed Truck Traffic",
+      "source": "game-file catalogue"
+    },
+    "281": {
+      "year": 1968,
+      "make": "Plymouth",
+      "model": "Barracuda",
+      "source": "game-file catalogue"
+    },
+    "2216": {
+      "year": 1958,
+      "make": "Plymouth",
+      "model": "Fury",
+      "source": "game-file catalogue"
+    },
+    "1276": {
+      "year": 1977,
+      "make": "Pontiac",
+      "model": "Firebird Trans Am",
+      "source": "game-file catalogue"
+    },
+    "1045": {
+      "year": 1987,
+      "make": "Pontiac",
+      "model": "Trans Am GTA",
+      "source": "game-file catalogue"
+    },
+    "3187": {
+      "year": 2018,
+      "make": "Porsche",
+      "model": "00 Macan RR",
+      "source": "game-file catalogue"
+    },
+    "3031": {
+      "year": 1986,
+      "make": "Porsche",
+      "model": "186 959",
+      "source": "game-file catalogue"
+    },
+    "3760": {
+      "year": 2022,
+      "make": "Porsche",
+      "model": "718 Cayman GT 4 RS",
+      "source": "game-file catalogue"
+    },
+    "3117": {
+      "year": 2018,
+      "make": "Porsche",
+      "model": "718 Cayman GTS",
+      "source": "game-file catalogue"
+    },
+    "3910": {
+      "year": 2023,
+      "make": "Porsche",
+      "model": "911 Dakar",
+      "source": "game-file catalogue"
+    },
+    "4261": {
+      "year": 1995,
+      "make": "Porsche",
+      "model": "911 GT 2 ID",
+      "source": "game-file catalogue"
+    },
+    "2297": {
+      "year": 2012,
+      "make": "Porsche",
+      "model": "911 GT 3 RS",
+      "source": "game-file catalogue"
+    },
+    "3072": {
+      "year": 2018,
+      "make": "Porsche",
+      "model": "911 GT 3 RS",
+      "source": "game-file catalogue"
+    },
+    "3667": {
+      "year": 2021,
+      "make": "Porsche",
+      "model": "911 GT 3",
+      "source": "game-file catalogue"
+    },
+    "3953": {
+      "year": 2023,
+      "make": "Porsche",
+      "model": "911 Turbo S",
+      "source": "game-file catalogue"
+    },
+    "2794": {
+      "year": 1993,
+      "make": "Porsche",
+      "model": "911 Turbo S",
+      "source": "game-file catalogue"
+    },
+    "265": {
+      "year": 1982,
+      "make": "Porsche",
+      "model": "911 Turbo",
+      "source": "game-file catalogue"
+    },
+    "2290": {
+      "year": 2014,
+      "make": "Porsche",
+      "model": "918 Spyder",
+      "source": "game-file catalogue"
+    },
+    "2535": {
+      "year": 1993,
+      "make": "Porsche",
+      "model": "928 GTS",
+      "source": "game-file catalogue"
+    },
+    "3288": {
+      "year": 1993,
+      "make": "Porsche",
+      "model": "962 CRS",
+      "source": "game-file catalogue"
+    },
+    "2534": {
+      "year": 1993,
+      "make": "Porsche",
+      "model": "968 Turbo S",
+      "source": "game-file catalogue"
+    },
+    "3123": {
+      "year": 2019,
+      "make": "Porsche",
+      "model": "992",
+      "source": "game-file catalogue"
+    },
+    "641": {
+      "year": 1998,
+      "make": "Porsche",
+      "model": "996 GT 1",
+      "source": "game-file catalogue"
+    },
+    "262": {
+      "year": 2004,
+      "make": "Porsche",
+      "model": "996 GT 3",
+      "source": "game-file catalogue"
+    },
+    "292": {
+      "year": 2003,
+      "make": "Porsche",
+      "model": "Carrera GT",
+      "source": "game-file catalogue"
+    },
+    "2773": {
+      "year": 2018,
+      "make": "Porsche",
+      "model": "Cayenne",
+      "source": "game-file catalogue"
+    },
+    "2755": {
+      "year": 2017,
+      "make": "Porsche",
+      "model": "Raymond",
+      "source": "game-file catalogue"
+    },
+    "3445": {
+      "year": 2020,
+      "make": "Porsche",
+      "model": "Taycan Turbo S",
+      "source": "game-file catalogue"
+    },
+    "3955": {
+      "year": 2024,
+      "make": "Ram",
+      "model": "TRX",
+      "source": "game-file catalogue"
+    },
+    "2563": {
+      "year": 1972,
+      "make": "Reliant",
+      "model": "Supervan III",
+      "source": "game-file catalogue"
+    },
+    "634": {
+      "year": 1980,
+      "make": "Renault",
+      "model": "5 Turbo",
+      "source": "game-file catalogue"
+    },
+    "3395": {
+      "year": 1967,
+      "make": "Renault",
+      "model": "8 Gordini",
+      "source": "game-file catalogue"
+    },
+    "2149": {
+      "year": 1993,
+      "make": "Renault",
+      "model": "Clio Williams",
+      "source": "game-file catalogue"
+    },
+    "3129": {
+      "year": 2008,
+      "make": "Renault",
+      "model": "Megane R 26 R",
+      "source": "game-file catalogue"
+    },
+    "1204": {
+      "year": 2010,
+      "make": "Renault",
+      "model": "Megane RS 250",
+      "source": "game-file catalogue"
+    },
+    "3134": {
+      "year": 2018,
+      "make": "Renault",
+      "model": "Megane RS",
+      "source": "game-file catalogue"
+    },
+    "3625": {
+      "year": 2021,
+      "make": "Rimac",
+      "model": "Nevera",
+      "source": "game-file catalogue"
+    },
+    "3657": {
+      "year": 2022,
+      "make": "Rivian",
+      "model": "R 1 T",
+      "source": "game-file catalogue"
+    },
+    "3498": {
+      "year": 2017,
+      "make": "Saleen",
+      "model": "S 7 LM",
+      "source": "game-file catalogue"
+    },
+    "306": {
+      "year": 1965,
+      "make": "Shelby",
+      "model": "Cobra 427",
+      "source": "game-file catalogue"
+    },
+    "1155": {
+      "year": 1965,
+      "make": "Shelby",
+      "model": "Cobra Daytona",
+      "source": "game-file catalogue"
+    },
+    "2140": {
+      "year": 1981,
+      "make": "Subaru",
+      "model": "BRAT",
+      "source": "game-file catalogue"
+    },
+    "4164": {
+      "year": 2022,
+      "make": "Subaru",
+      "model": "BRZFE",
+      "source": "game-file catalogue"
+    },
+    "1655": {
+      "year": 2013,
+      "make": "Subaru",
+      "model": "BRZ",
+      "source": "game-file catalogue"
+    },
+    "3735": {
+      "year": 2022,
+      "make": "Subaru",
+      "model": "BRZ",
+      "source": "game-file catalogue"
+    },
+    "4252": {
+      "year": 1998,
+      "make": "Subaru",
+      "model": "Impreza 22 BTG",
+      "source": "game-file catalogue"
+    },
+    "363": {
+      "year": 1998,
+      "make": "Subaru",
+      "model": "Impreza 22b",
+      "source": "game-file catalogue"
+    },
+    "379": {
+      "year": 2005,
+      "make": "Subaru",
+      "model": "Legacy B 4 GT",
+      "source": "game-file catalogue"
+    },
+    "2903": {
+      "year": 2005,
+      "make": "Subaru",
+      "model": "Legacy B 4 GT Traffic",
+      "source": "game-file catalogue"
+    },
+    "1382": {
+      "year": 1990,
+      "make": "Subaru",
+      "model": "Legacy RS",
+      "source": "game-file catalogue"
+    },
+    "2217": {
+      "year": 1996,
+      "make": "Subaru",
+      "model": "SVX",
+      "source": "game-file catalogue"
+    },
+    "3960": {
+      "year": 1994,
+      "make": "Subaru",
+      "model": "Vivio RXR",
+      "source": "game-file catalogue"
+    },
+    "2168": {
+      "year": 2015,
+      "make": "Subaru",
+      "model": "WRXSTI",
+      "source": "game-file catalogue"
+    },
+    "3412": {
+      "year": 2019,
+      "make": "Subaru",
+      "model": "WRXS Ti S 209",
+      "source": "game-file catalogue"
+    },
+    "364": {
+      "year": 2004,
+      "make": "Subaru",
+      "model": "WRXS Ti",
+      "source": "game-file catalogue"
+    },
+    "365": {
+      "year": 2005,
+      "make": "Subaru",
+      "model": "WRXS Ti",
+      "source": "game-file catalogue"
+    },
+    "1060": {
+      "year": 2008,
+      "make": "Subaru",
+      "model": "WRXS Ti",
+      "source": "game-file catalogue"
+    },
+    "1323": {
+      "year": 2011,
+      "make": "Subaru",
+      "model": "WRXS Ti",
+      "source": "game-file catalogue"
+    },
+    "3819": {
+      "year": 2022,
+      "make": "Subaru",
+      "model": "WRX",
+      "source": "game-file catalogue"
+    },
+    "4128": {
+      "year": 2022,
+      "make": "Subaru",
+      "model": "WRX Traffic",
+      "source": "game-file catalogue"
+    },
+    "247": {
+      "year": 1969,
+      "make": "Toyota",
+      "model": "2000 GT",
+      "source": "game-file catalogue"
+    },
+    "3373": {
+      "year": 2019,
+      "make": "Toyota",
+      "model": "4 Runner TRD Pro",
+      "source": "game-file catalogue"
+    },
+    "4038": {
+      "year": 1999,
+      "make": "Toyota",
+      "model": "Altezza",
+      "source": "game-file catalogue"
+    },
+    "3848": {
+      "year": 2023,
+      "make": "Toyota",
+      "model": "Camry TRD",
+      "source": "game-file catalogue"
+    },
+    "295": {
+      "year": 2003,
+      "make": "Toyota",
+      "model": "Celica SSI",
+      "source": "game-file catalogue"
+    },
+    "1517": {
+      "year": 1990,
+      "make": "Toyota",
+      "model": "Celica ST 185",
+      "source": "game-file catalogue"
+    },
+    "1034": {
+      "year": 1994,
+      "make": "Toyota",
+      "model": "Celica ST 205",
+      "source": "game-file catalogue"
+    },
+    "3914": {
+      "year": 1991,
+      "make": "Toyota",
+      "model": "Chaser GT",
+      "source": "game-file catalogue"
+    },
+    "3933": {
+      "year": 1997,
+      "make": "Toyota",
+      "model": "Chaser",
+      "source": "game-file catalogue"
+    },
+    "1537": {
+      "year": 1973,
+      "make": "Toyota",
+      "model": "Corolla SR 5",
+      "source": "game-file catalogue"
+    },
+    "4255": {
+      "year": 2005,
+      "make": "Toyota",
+      "model": "Crown Taxi",
+      "source": "game-file catalogue"
+    },
+    "4332": {
+      "year": 2005,
+      "make": "Toyota",
+      "model": "Crown Taxi Traffic",
+      "source": "game-file catalogue"
+    },
+    "2566": {
+      "year": 1975,
+      "make": "Toyota",
+      "model": "FJ 40",
+      "source": "game-file catalogue"
+    },
+    "3761": {
+      "year": 2022,
+      "make": "Toyota",
+      "model": "GR 86",
+      "source": "game-file catalogue"
+    },
+    "3880": {
+      "year": 2023,
+      "make": "Toyota",
+      "model": "GR Corolla",
+      "source": "game-file catalogue"
+    },
+    "2007": {
+      "year": 2013,
+      "make": "Toyota",
+      "model": "GT 86",
+      "source": "game-file catalogue"
+    },
+    "4257": {
+      "year": 2017,
+      "make": "Toyota",
+      "model": "JPN Taxi",
+      "source": "game-file catalogue"
+    },
+    "4333": {
+      "year": 2017,
+      "make": "Toyota",
+      "model": "JPN Taxi Traffic",
+      "source": "game-file catalogue"
+    },
+    "2743": {
+      "year": 2016,
+      "make": "Toyota",
+      "model": "Land Cruiser Arctic",
+      "source": "game-file catalogue"
+    },
+    "4278": {
+      "year": 2025,
+      "make": "Toyota",
+      "model": "Land Cruiser",
+      "source": "game-file catalogue"
+    },
+    "398": {
+      "year": 1995,
+      "make": "Toyota",
+      "model": "MR 2 GT",
+      "source": "game-file catalogue"
+    },
+    "1395": {
+      "year": 1989,
+      "make": "Toyota",
+      "model": "MR 2 SC",
+      "source": "game-file catalogue"
+    },
+    "3964": {
+      "year": 2024,
+      "make": "Toyota",
+      "model": "Prius",
+      "source": "game-file catalogue"
+    },
+    "4263": {
+      "year": 2026,
+      "make": "Toyota",
+      "model": "Scallop ID",
+      "source": "game-file catalogue"
+    },
+    "4221": {
+      "year": 2026,
+      "make": "Toyota",
+      "model": "Scallop",
+      "source": "game-file catalogue"
+    },
+    "3851": {
+      "year": 1991,
+      "make": "Toyota",
+      "model": "Sera",
+      "source": "game-file catalogue"
+    },
+    "3785": {
+      "year": 1997,
+      "make": "Toyota",
+      "model": "Soarer",
+      "source": "game-file catalogue"
+    },
+    "4342": {
+      "year": 1965,
+      "make": "Toyota",
+      "model": "Sports 800 Fanta",
+      "source": "game-file catalogue"
+    },
+    "2469": {
+      "year": 1965,
+      "make": "Toyota",
+      "model": "Sports 800",
+      "source": "game-file catalogue"
+    },
+    "4162": {
+      "year": 1985,
+      "make": "Toyota",
+      "model": "Sprinter FE",
+      "source": "game-file catalogue"
+    },
+    "4250": {
+      "year": 1985,
+      "make": "Toyota",
+      "model": "Sprinter TG",
+      "source": "game-file catalogue"
+    },
+    "455": {
+      "year": 1985,
+      "make": "Toyota",
+      "model": "Sprinter",
+      "source": "game-file catalogue"
+    },
+    "4055": {
+      "year": 1996,
+      "make": "Toyota",
+      "model": "Starlet Glanza",
+      "source": "game-file catalogue"
+    },
+    "460": {
+      "year": 1992,
+      "make": "Toyota",
+      "model": "Supra 20 GT",
+      "source": "game-file catalogue"
+    },
+    "3402": {
+      "year": 2020,
+      "make": "Toyota",
+      "model": "GR Supra",
+      "source": "community-confirmed"
+    },
+    "461": {
+      "year": 1998,
+      "make": "Toyota",
+      "model": "Supra RZ",
+      "source": "game-file catalogue"
+    },
+    "3374": {
+      "year": 2019,
+      "make": "Toyota",
+      "model": "Tacoma TRD Pro",
+      "source": "game-file catalogue"
+    },
+    "3629": {
+      "year": 2021,
+      "make": "Toyota",
+      "model": "Yaris GR",
+      "source": "game-file catalogue"
+    },
+    "296": {
+      "year": 1998,
+      "make": "TVR",
+      "model": "Cerbera",
+      "source": "game-file catalogue"
+    },
+    "2993": {
+      "year": 2018,
+      "make": "TVR",
+      "model": "Griffith",
+      "source": "game-file catalogue"
+    },
+    "433": {
+      "year": 2005,
+      "make": "TVR",
+      "model": "Sagaris",
+      "source": "game-file catalogue"
+    },
+    "2569": {
+      "year": 2015,
+      "make": "Ultima",
+      "model": "Evolution Coupe",
+      "source": "game-file catalogue"
+    },
+    "1562": {
+      "year": 2013,
+      "make": "Vip",
+      "model": "Viper",
+      "source": "game-file catalogue"
+    },
+    "1299": {
+      "year": 1983,
+      "make": "Volvo",
+      "model": "242 Turbo",
+      "source": "game-file catalogue"
+    },
+    "3007": {
+      "year": 2017,
+      "make": "Volkswagen",
+      "model": "34 Beetle GRC",
+      "source": "game-file catalogue"
+    },
+    "1435": {
+      "year": 1966,
+      "make": "Volkswagen",
+      "model": "Beetle",
+      "source": "game-file catalogue"
+    },
+    "3235": {
+      "year": 1982,
+      "make": "Volkswagen",
+      "model": "Caddy",
+      "source": "game-file catalogue"
+    },
+    "309": {
+      "year": 1995,
+      "make": "Volkswagen",
+      "model": "Corrado",
+      "source": "game-file catalogue"
+    },
+    "2995": {
+      "year": 1983,
+      "make": "Volkswagen",
+      "model": "Golf GTI",
+      "source": "game-file catalogue"
+    },
+    "353": {
+      "year": 1992,
+      "make": "Volkswagen",
+      "model": "Golf G Ti 16v Mk 2",
+      "source": "game-file catalogue"
+    },
+    "1231": {
+      "year": 2010,
+      "make": "Volkswagen",
+      "model": "Golf R",
+      "source": "game-file catalogue"
+    },
+    "2142": {
+      "year": 2014,
+      "make": "Volkswagen",
+      "model": "Golf R",
+      "source": "game-file catalogue"
+    },
+    "3413": {
+      "year": 2019,
+      "make": "Volkswagen",
+      "model": "Golf R",
+      "source": "game-file catalogue"
+    },
+    "3533": {
+      "year": 2022,
+      "make": "Volkswagen",
+      "model": "Golf R",
+      "source": "game-file catalogue"
+    },
+    "3783": {
+      "year": 1989,
+      "make": "Volkswagen",
+      "model": "Golf Rallye",
+      "source": "game-file catalogue"
+    },
+    "1428": {
+      "year": 2011,
+      "make": "Volkswagen",
+      "model": "Scirocco R",
+      "source": "game-file catalogue"
+    },
+    "2151": {
+      "year": 1963,
+      "make": "Volkswagen",
+      "model": "Type 2",
+      "source": "game-file catalogue"
+    },
+    "3548": {
+      "year": 2020,
+      "make": "Wul",
+      "model": "Hongguang S",
+      "source": "game-file catalogue"
+    },
+    "3789": {
+      "year": 2022,
+      "make": "Wul",
+      "model": "Mini EV",
+      "source": "game-file catalogue"
+    },
+    "3212": {
+      "year": 2019,
+      "make": "Zenvo",
+      "model": "TSRS",
+      "source": "game-file catalogue"
+    },
+    "2473": {
+      "year": 2016,
+      "make": "Audi",
+      "model": "R 8V 10Plus",
+      "source": "game-file catalogue"
+    },
+    "2625": {
+      "year": 2016,
+      "make": "Bentley",
+      "model": "Bentayga",
+      "source": "game-file catalogue"
+    },
+    "2412": {
+      "year": 1962,
+      "make": "BMW",
+      "model": "Isetta",
+      "source": "game-file catalogue"
+    },
+    "2739": {
+      "year": 2017,
+      "make": "Chevrolet",
+      "model": "Camarozl 1",
+      "source": "game-file catalogue"
+    },
+    "2468": {
+      "year": 2015,
+      "make": "Dodge",
+      "model": "Chargersrthellcat",
+      "source": "game-file catalogue"
+    },
+    "1352": {
+      "year": 1970,
+      "make": "Dodge",
+      "model": "Superbee",
+      "source": "game-file catalogue"
+    },
+    "2467": {
+      "year": 2016,
+      "make": "Ferrari",
+      "model": "488Gtb",
+      "source": "game-file catalogue"
+    },
+    "2649": {
+      "year": 2010,
+      "make": "Ford",
+      "model": "Crownvictoria",
+      "source": "game-file catalogue"
+    },
+    "2019": {
+      "year": 2003,
+      "make": "Ford",
+      "model": "Focusrs",
+      "source": "game-file catalogue"
+    },
+    "348": {
+      "year": 2005,
+      "make": "Ford",
+      "model": "Gt",
+      "source": "game-file catalogue"
+    },
+    "1668": {
+      "year": 1969,
+      "make": "Ford",
+      "model": "Mustangboss 302",
+      "source": "game-file catalogue"
+    },
+    "2188": {
+      "year": 2015,
+      "make": "Koenigsegg",
+      "model": "One",
+      "source": "game-file catalogue"
+    },
+    "2526": {
+      "year": 2016,
+      "make": "Koenigsegg",
+      "model": "Regera",
+      "source": "game-file catalogue"
+    },
+    "2494": {
+      "year": 2015,
+      "make": "Land Rover",
+      "model": "Rangeroversvr",
+      "source": "game-file catalogue"
+    },
+    "2147": {
+      "year": 1986,
+      "make": "MG",
+      "model": "Metro 6R 4",
+      "source": "game-file catalogue"
+    },
+    "2738": {
+      "year": 1995,
+      "make": "Nissan",
+      "model": "Gtrlm",
+      "source": "game-file catalogue"
+    },
+    "2420": {
+      "year": 1984,
+      "make": "Opel",
+      "model": "Manta 400",
+      "source": "game-file catalogue"
+    },
+    "2647": {
+      "year": 2016,
+      "make": "Pagani",
+      "model": "Huayra",
+      "source": "game-file catalogue"
+    },
+    "261": {
+      "year": 1995,
+      "make": "Porsche",
+      "model": "911Gt 2",
+      "source": "game-file catalogue"
+    },
+    "268": {
+      "year": 1989,
+      "make": "Porsche",
+      "model": "944Turbo",
+      "source": "game-file catalogue"
+    },
+    "269": {
+      "year": 1987,
+      "make": "Porsche",
+      "model": "959",
+      "source": "game-file catalogue"
+    },
+    "260": {
+      "year": 1973,
+      "make": "Porsche",
+      "model": "Carrerars",
+      "source": "game-file catalogue"
+    },
+    "3781": {
+      "year": 2023,
+      "make": "Porsche",
+      "model": "911 GT3 RS",
+      "source": "community-confirmed"
+    }
+  }
+}

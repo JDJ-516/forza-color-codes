@@ -1,0 +1,83 @@
+const $=s=>document.querySelector(s);
+let currentKey=null,writing=false;
+const profiles=new Map();
+const forms=['drag-form','tune-form','drift-form'];
+function controls(){return forms.flatMap(id=>[...document.querySelectorAll(`#${id} input,#${id} select,#${id} textarea`)]).filter(c=>!['drag-strip','drag-strip-name'].includes(c.id)&&c.name!=='distanceM'&&c.type!=='file');}
+const controlKey=c=>c.id||`${c.form.id}:${c.name||'gear-'+c.dataset.gear}`;
+function changed(form){form?.dispatchEvent(new Event('input',{bubbles:true}));}
+function saveProfile(){
+ if(!currentKey)return;
+ profiles.set(currentKey,controls().map(c=>({key:controlKey(c),value:c.value,checked:c.checked,manual:c.dataset.telemetryManual==='1',auto:c.dataset.telemetryValue===c.value})));
+ if(profiles.size>20)profiles.delete(profiles.keys().next().value);
+}
+function restoreProfile(key){
+ const profile=profiles.get(key)||[];
+ writing=true;
+ for(const c of controls()){c.value='';if(c.type==='checkbox')c.checked=false;delete c.dataset.telemetryValue;delete c.dataset.telemetryManual;}
+ const count=$('#gear-count'),countValue=profile.find(p=>p.key==='gear-count');
+ if(count){count.value=countValue?.value||'';count.dispatchEvent(new Event('change',{bubbles:true}));}
+ for(const c of controls()){
+  const saved=profile.find(p=>p.key===controlKey(c));
+  if(saved&&!saved.auto){c.value=saved.value;if(c.type==='checkbox')c.checked=saved.checked;if(saved.manual)c.dataset.telemetryManual='1';}
+ }
+ for(const id of forms)changed($('#'+id));
+ writing=false;
+ document.dispatchEvent(new CustomEvent('ingenium:car-changed'));
+}
+function fill(selector,value,source){
+ const c=$(selector);if(!c||value==null||c.dataset.telemetryManual==='1')return;
+ if(c.value!==''&&c.dataset.telemetryValue!==c.value)return;
+ if(c.type==='number'&&(!Number.isFinite(Number(value))||(c.min!==''&&Number(value)<Number(c.min))||(c.max!==''&&Number(value)>Number(c.max))))return;
+ const next=String(value);if(c.value===next)return;
+ writing=true;c.value=next;c.dataset.telemetryValue=next;c.title=source;
+ // Change handles selects; input recalculates numeric/car fields.
+ if(c.tagName==='SELECT')c.dispatchEvent(new Event('change',{bubbles:true}));
+ c.dispatchEvent(new Event('input',{bubbles:true}));writing=false;
+}
+function clearObservedInput(selector){
+ const c=$(selector);if(!c||c.dataset.telemetryManual==='1'||c.dataset.telemetryValue!==c.value)return;
+ writing=true;c.value='';delete c.dataset.telemetryValue;c.dispatchEvent(new Event('input',{bubbles:true}));writing=false;
+}
+document.addEventListener('input',e=>{
+ if(writing||!e.target.matches('input,select,textarea'))return;
+ if(forms.includes(e.target.form?.id)||e.target.form?.id==='competition-form'){
+  e.target.dataset.telemetryManual='1';delete e.target.dataset.telemetryValue;
+ }
+});
+document.addEventListener('click',e=>{
+ const button=e.target.closest('[data-drag-load],[data-load-tune],[data-drift-load]');if(!button)return;
+ const id=button.hasAttribute('data-drag-load')?'drag-form':button.hasAttribute('data-load-tune')?'tune-form':'drift-form';
+ for(const c of controls().filter(c=>c.form?.id===id)){c.dataset.telemetryManual='1';delete c.dataset.telemetryValue;}
+});
+export function updateTuningTelemetry(data,fresh){
+ const title=$('#current-car-title'),status=$('#tuning-car-status'),link=$('#tuning-setup-link'),evidence=$('#tuning-car-evidence');
+ const s=fresh?data.latest:null,active=s?.isRaceOn&&Number.isInteger(s.carOrdinal)&&s.carOrdinal>=0;
+ link.hidden=!!fresh;
+ if(!active){
+  title.textContent=fresh?'Game connected · enter driving':'Telemetry not connected';
+  for(const id of ['year','make','model'])$('#tuning-car-'+id).textContent='—';
+  status.textContent=fresh?'Enter driving to identify the current car. Existing inputs are retained.':'Connect telemetry to identify the current car. Existing inputs remain available for manual tuning.';
+  evidence.textContent='';return;
+ }
+ const key=[s.carOrdinal,s.carPerformanceIndex,s.drivetrain,s.engineMaxRpm].join(':');
+ if(currentKey&&currentKey!==key){saveProfile();restoreProfile(key);}
+ else if(!currentKey)document.dispatchEvent(new CustomEvent('ingenium:car-changed'));
+ currentKey=key;
+ const identity=data.car?.ordinal===s.carOrdinal?data.car:null;
+ title.textContent=identity?.name||`Car ID ${s.carOrdinal} · name unavailable`;
+ for(const id of ['year','make','model'])$('#tuning-car-'+id).textContent=identity?.[id]??'—';
+ const drive=['FWD','RWD','AWD'][s.drivetrain],className=['D','C','B','A','S1','S2','X'][s.carClass];
+ status.textContent=[`Live · car ID ${s.carOrdinal}`,className&&Number.isFinite(s.carPerformanceIndex)?`${className} ${s.carPerformanceIndex} PI`:null,drive,identity?.name?'Supported inputs fill automatically; your edits take priority.':'This ID is absent from the FH6 catalogue. Enter the name manually.'].filter(Boolean).join(' · ');
+ for(const selector of ['#drag-form [name=car]','#tune-car','#drift-form [name=car]','#competition-form [name=car]'])fill(selector,identity?.name,'Current car identified from FH6 telemetry ID');
+ fill('#competition-form [name=className]',className&&s.carPerformanceIndex?`${className} ${s.carPerformanceIndex}`:null,'Current reported car class / PI');
+ fill('#drag-form [name=drive]',drive,'Reported drivetrain');
+ for(const selector of ['#drag-form [name=shiftRpm]','#shift-rpm','#drift-form [name=rpm]'])fill(selector,s.engineMaxRpm==null?null:Math.round(s.engineMaxRpm),'Starting RPM from reported engine limit; adjust for your shift/target RPM');
+ const measured=data.engineMeasurements,eligible=measured?.key===key&&measured.eligibleSamples>=5;
+ if(!eligible)for(const selector of ['#drag-form [name=powerKw]','#drag-form [name=torqueNm]','#drag-form [name=torquePeakRpm]'])clearObservedInput(selector);
+ if(eligible){
+  fill('#drag-form [name=powerKw]',Math.round(measured.peakPowerW/1000),'Observed full-throttle maximum power; not a verified rated peak');
+  fill('#drag-form [name=torqueNm]',Math.round(measured.peakTorqueNm),'Observed full-throttle maximum torque; not a verified rated peak');
+  fill('#drag-form [name=torquePeakRpm]',Math.round(measured.torquePeakRpm),'RPM at observed maximum torque');
+ }
+ evidence.textContent=(eligible?`Observed engine maxima: ${(measured.peakPowerW/1000).toFixed(1)} kW · ${Math.round(measured.peakTorqueNm)} N·m at ${Math.round(measured.torquePeakRpm)} RPM. These may be below the rated peaks. `:'Drive a clean full-throttle pull in second gear or higher to prefill observed engine power and torque. ')+`RPM fields start at the reported engine limit; adjust before testing. Mass, tires, gearing and launch-control mode still need your inputs.`;
+}

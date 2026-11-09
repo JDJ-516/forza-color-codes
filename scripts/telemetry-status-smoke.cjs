@@ -14,7 +14,7 @@ const assert=require('node:assert/strict');
  for(const id of ids)assert.equal(await page.locator('#'+id).evaluate(e=>getComputedStyle(e).color),orange);assert.match(await page.locator('#home-telemetry-message').textContent(),/Current engine RPM = NaN/);
  await page.locator('.topbar [data-workspace=telemetry]').click();
  assert.equal(await page.locator('#export-telemetry-diagnostics, #packet-preview, #packet-check-table, footer').count(),0);
- assert.match(await page.locator('.telemetry-setup').textContent(),/Settings → HUD\/Display → Telemetry → Data Output = ON.*127.0.0.1.*5300/);
+ assert.match(await page.locator('.telemetry-setup').textContent(),/Settings.*HUD\/Display.*Telemetry.*Data Output.*ON.*127.0.0.1.*5300/);
  assert.equal(await page.locator('[data-channel]').count(),89);
  assert.match(await page.locator('#telemetry-readings-status').textContent(),/Unverified/);
  assert.equal(await page.locator('[data-channel=rpm]').textContent(),'—');

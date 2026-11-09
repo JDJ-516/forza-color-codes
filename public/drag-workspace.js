@@ -92,3 +92,5 @@ $('#drag-optimize').addEventListener('click',async()=>{
 $('#drag-apply-candidate').addEventListener('click',()=>{if(!candidate)return;const value=candidate.input;field('finalDrive').value=value.finalDrive;field(value.launchControl==='enabled'?'launchRpm':'manualRpm').value=value[value.launchControl==='enabled'?'launchRpm':'manualRpm'];field('shiftRpm').value=value.shiftRpm;field('ratios').value=value.gears.join(', ');calculate();notice('Candidate applied. Record three real runs before keeping the change.');});
 $('#drag-form').addEventListener('input',()=>{$('#drag-candidates').textContent='';});
 renderStrips();renderBuilds();renderHistory();stripSelect.value='';syncStrip();calculate();
+
+document.addEventListener('ingenium:car-changed',clearRun);
